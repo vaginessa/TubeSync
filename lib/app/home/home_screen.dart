@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tube_sync/app/home/home_tab.dart';
+import 'package:tube_sync/app/home/library_tab.dart';
 
 import 'home_app_bar.dart';
 import 'home_navigation_bar.dart';
@@ -9,19 +9,41 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const DefaultTabController(
+    return DefaultTabController(
       length: HomeNavigationBar.length,
       child: Scaffold(
-        appBar: HomeAppBar(),
+        appBar: const HomeAppBar(),
         body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             HomeTab(),
-            Center(child: Text("🤯🤯🤯🤯")),
+            const Center(child: Text("🤯🤯🤯🤯")),
           ],
         ),
-        bottomNavigationBar: HomeNavigationBar(),
+        bottomNavigationBar: const HomeNavigationBar(),
       ),
+    );
+  }
+}
+
+class HomeTab extends StatelessWidget {
+  HomeTab({super.key});
+
+  final ValueNotifier<Widget?> notifier = ValueNotifier(null);
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: notifier,
+      child: LibraryTab(notifier: notifier),
+      builder: (context, child, root) {
+        return Stack(
+          children: [
+            Offstage(offstage: child != null, child: root),
+            if (child != null) child,
+          ],
+        );
+      },
     );
   }
 }

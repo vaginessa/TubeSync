@@ -3,11 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class PlaylistEntryBuilder extends StatelessWidget {
-  final Playlist playlist;
+class VideoEntryBuilder extends StatelessWidget {
+  final Video video;
   final void Function()? onTap;
 
-  const PlaylistEntryBuilder(this.playlist, {super.key, this.onTap});
+  const VideoEntryBuilder(this.video, {super.key, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +17,11 @@ class PlaylistEntryBuilder extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         child: CachedNetworkImage(
           width: 80,
-          imageUrl: playlist.thumbnails.mediumResUrl,
+          imageUrl: video.thumbnails.mediumResUrl,
         ),
       ),
       title: Text(
-        playlist.title,
+        video.title,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
@@ -29,15 +29,13 @@ class PlaylistEntryBuilder extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (playlist.description.isNotEmpty)
+          if (video.description.isNotEmpty)
             Text(
-              playlist.description,
+              video.description,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-          Text(
-            "${playlist.videoCount} videos \u2022 ${playlist.engagement.viewCount} views",
-          ),
+          Text("${video.author} \u2022 ${video.engagement.viewCount} views"),
         ],
       ),
       trailing: IconButton(

@@ -11,7 +11,10 @@ class ImportPlaylistDialog extends StatefulWidget {
 
 class _ImportPlaylistDialogState extends State<ImportPlaylistDialog> {
   final ytClient = YoutubeExplode().playlists;
-  final TextEditingController input = TextEditingController();
+  final TextEditingController input = TextEditingController(
+      // TODO Remove placeholder
+      text:
+          "https://www.youtube.com/playlist?list=PLP_uM5nc6HCAu1X-VJznlTU-iWRbw0on4");
   bool loading = false;
   String? error;
 
@@ -19,8 +22,15 @@ class _ImportPlaylistDialogState extends State<ImportPlaylistDialog> {
     try {
       error = null;
       setState(() => loading = true);
-      if (input.text.isEmpty) throw "Empty url";
-      final playlist = await ytClient.get(input.text);
+      if (input.text.isEmpty) throw "Empty url!";
+
+      var playlist = await ytClient.get(input.text);
+      if (playlist.videoCount == 0) throw "Playlist is empty!";
+
+      // Workaround for playlist thumbnail
+      final video = await ytClient.getVideos(playlist.id).first;
+      playlist = playlist.copyWith(thumbnails: ThumbnailSet(video.id.value));
+
       if (mounted) Navigator.pop(context, playlist);
     } catch (e) {
       error = e.toString();
@@ -57,11 +67,14 @@ class _ImportPlaylistDialogState extends State<ImportPlaylistDialog> {
           if (error != null)
             Card(
               margin: const EdgeInsets.only(top: 12),
-              child: Text(
-                error!,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  error!,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
               ),
             ),
         ],

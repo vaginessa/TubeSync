@@ -2,16 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tube_sync/app/playlist/import_playlist_dialog.dart';
 import 'package:tube_sync/app/playlist/playlist_entry_builder.dart';
+import 'package:tube_sync/app/playlist/playlist_tab.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class HomeTab extends StatefulWidget {
-  const HomeTab({super.key});
+class LibraryTab extends StatefulWidget {
+  const LibraryTab({super.key, required this.notifier});
+
+  final ValueNotifier<Widget?> notifier;
 
   @override
-  State<HomeTab> createState() => _HomeTabState();
+  State<LibraryTab> createState() => _LibraryTabState();
 }
 
-class _HomeTabState extends State<HomeTab> with AutomaticKeepAliveClientMixin {
+class _LibraryTabState extends State<LibraryTab>
+    with AutomaticKeepAliveClientMixin {
   final List<Playlist> entries = List.empty(growable: true);
 
   @override
@@ -24,7 +28,13 @@ class _HomeTabState extends State<HomeTab> with AutomaticKeepAliveClientMixin {
         child: ListView.builder(
           itemCount: entries.length,
           itemBuilder: (context, index) {
-            return PlaylistEntryBuilder(entries[index]);
+            final playlist = entries[index];
+            return PlaylistEntryBuilder(playlist, onTap: () {
+              widget.notifier.value = PlaylistTab(
+                playlist,
+                notifier: widget.notifier,
+              );
+            });
           },
         ),
       ),
