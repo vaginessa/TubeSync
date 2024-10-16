@@ -45,8 +45,7 @@ class _LibraryTabState extends State<LibraryTab>
         ).then((playlist) {
           if (playlist == null) return;
           if (entries.contains(playlist)) return;
-          entries.add(playlist);
-          setState(() {});
+          setState(() => entries.add(playlist));
         }),
         label: const Text("Import"),
         icon: const Icon(CupertinoIcons.add),

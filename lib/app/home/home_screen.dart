@@ -4,6 +4,8 @@ import 'package:tube_sync/app/home/library_tab.dart';
 import 'home_app_bar.dart';
 import 'home_navigation_bar.dart';
 
+final rootScaffold = GlobalKey<ScaffoldState>();
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -12,6 +14,7 @@ class HomeScreen extends StatelessWidget {
     return DefaultTabController(
       length: HomeNavigationBar.length,
       child: Scaffold(
+        key: rootScaffold,
         appBar: const HomeAppBar(),
         body: TabBarView(
           physics: const NeverScrollableScrollPhysics(),

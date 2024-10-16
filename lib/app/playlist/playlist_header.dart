@@ -1,12 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
+import '../home/home_screen.dart';
+import '../player/player_sheet.dart';
+
 class PlaylistHeader extends StatelessWidget {
   final Playlist playlist;
+  final List<Video> videos;
 
-  const PlaylistHeader(this.playlist, {super.key});
+  const PlaylistHeader(this.playlist, {super.key, required this.videos});
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +30,42 @@ class PlaylistHeader extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  left: 2,
-                  top: 2,
+                  left: 4,
+                  top: 4,
                   child: IconButton.filledTonal(
                     onPressed: () => Navigator.maybePop(context),
-                    icon: const Icon(CupertinoIcons.back),
+                    icon: const Icon(Icons.arrow_back_ios_new_rounded),
                   ),
                 ),
+                Positioned(
+                  bottom: 4,
+                  left: 4,
+                  right: 4,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            rootScaffold.currentState?.showBottomSheet(
+                              (context) => PlayerSheet(videos),
+                              enableDrag: false,
+                              shape: InputBorder.none,
+                              elevation: 0,
+                            );
+                          },
+                          icon: const Icon(Icons.play_arrow_rounded),
+                          label: const Text("Play All"),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton.filledTonal(
+                        onPressed: () => Navigator.maybePop(context),
+                        visualDensity: VisualDensity.comfortable,
+                        icon: const Icon(Icons.more_horiz_rounded),
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
             const SizedBox(height: 8),

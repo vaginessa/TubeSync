@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tube_sync/app/playlist/playlist_header.dart';
 import 'package:tube_sync/app/playlist/video_entry_builder.dart';
@@ -22,9 +21,9 @@ class _PlaylistTabState extends State<PlaylistTab>
 
   Future<void> refreshHandler() async {
     try {
-      videos.addAll(
-        await ytClient.getVideos(widget.playlist.id.value).toList(),
-      );
+      final vids = await ytClient.getVideos(widget.playlist.id.value).toList();
+      videos.clear();
+      videos.addAll(vids);
     } catch (err) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -59,14 +58,12 @@ class _PlaylistTabState extends State<PlaylistTab>
           child: ListView.builder(
             itemCount: videos.length + 1,
             itemBuilder: (context, index) {
-              if (index == 0) return PlaylistHeader(widget.playlist);
+              if (index == 0) {
+                return PlaylistHeader(widget.playlist, videos: videos);
+              }
               return VideoEntryBuilder(videos[index - 1], onTap: () {});
             },
           ),
-        ),
-        floatingActionButton: FloatingActionButton.small(
-          onPressed: () {},
-          child: const Icon(CupertinoIcons.play_fill),
         ),
       ),
     );
