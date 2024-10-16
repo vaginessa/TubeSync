@@ -65,7 +65,9 @@ class PlaylistHeader extends StatelessWidget {
               playlist(context).title,
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            Text("by ${playlist(context).author}"),
+            Text(
+              "${playlist(context).videoCount} videos \u2022 by ${playlist(context).author}",
+            ),
             const SizedBox(height: 4),
           ],
         ),

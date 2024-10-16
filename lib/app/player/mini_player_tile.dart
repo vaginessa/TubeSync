@@ -5,25 +5,30 @@ import 'package:provider/provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MiniPlayerTile extends StatelessWidget {
-  final Video video;
   final void Function()? onTap;
+  final void Function()? onPrevious;
+  final void Function()? onNext;
   final void Function()? onClose;
-  final void Function(Video video)? onTrackChange;
 
-  const MiniPlayerTile(
-    this.video, {
+  const MiniPlayerTile({
     super.key,
     this.onTap,
+    this.onPrevious,
+    this.onNext,
     this.onClose,
-    this.onTrackChange,
   });
+
+  Video video(BuildContext context) => context.watch<Video>();
+
+  bool buffering(BuildContext context) => context.watch<bool>();
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
       key: const Key("MiniPlayer"),
       confirmDismiss: (direction) {
-        // todo prev next
+        if (direction == DismissDirection.startToEnd) onPrevious?.call();
+        if (direction == DismissDirection.endToStart) onNext?.call();
         return Future.value(false);
       },
       direction: DismissDirection.horizontal,
@@ -40,15 +45,19 @@ class MiniPlayerTile extends StatelessWidget {
           SizedBox(width: 18),
         ],
       ),
-      dismissThresholds: const {DismissDirection.horizontal: 0.3},
+      dismissThresholds: const {
+        DismissDirection.startToEnd: 0.2,
+        DismissDirection.endToStart: 0.2,
+      },
       child: Column(
         children: [
           ListTile(
             onTap: onTap,
             contentPadding: const EdgeInsets.only(left: 8, right: 4),
             leading: CircleAvatar(
+              radius: 24,
               backgroundImage: CachedNetworkImageProvider(
-                video.thumbnails.lowResUrl,
+                video(context).thumbnails.lowResUrl,
               ),
             ),
             titleTextStyle: Theme.of(context).textTheme.bodyMedium,
@@ -56,9 +65,13 @@ class MiniPlayerTile extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(video.title, maxLines: 1, overflow: TextOverflow.ellipsis),
                 Text(
-                  video.author,
+                  video(context).title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  video(context).author,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall,
@@ -84,7 +97,7 @@ class MiniPlayerTile extends StatelessWidget {
                           onPressed: () => player(context).pause(),
                           icon: const Icon(Icons.pause_rounded),
                         )
-                      else
+                      else if (!buffering(context))
                         IconButton(
                           onPressed: () => player(context).resume(),
                           icon: const Icon(Icons.play_arrow_rounded),
@@ -102,28 +115,31 @@ class MiniPlayerTile extends StatelessWidget {
           // Progress Indicator
           StreamBuilder<Duration>(
             stream: player(context).onPositionChanged,
-            builder: (context, snapshot) {
-              return LinearProgressIndicator(
-                minHeight: 1,
-                value: playerProgress(snapshot),
-              );
-            },
+            builder: (context, snapshot) => LinearProgressIndicator(
+              minHeight: 1,
+              value: playerProgress(context, snapshot),
+            ),
           )
         ],
       ),
     );
   }
 
-  double? playerProgress(AsyncSnapshot<Duration> snapshot) {
-    if (!snapshot.hasData || video.duration == null) return null;
-    return snapshot.requireData.inMilliseconds / video.duration!.inMilliseconds;
+  double? playerProgress(
+    BuildContext context,
+    AsyncSnapshot<Duration> snapshot,
+  ) {
+    if (buffering(context) || !snapshot.hasData) return null;
+    final vid = video(context);
+    if (vid.duration == null) return null;
+    return snapshot.requireData.inMilliseconds / vid.duration!.inMilliseconds;
   }
 
   String playlistInfo(BuildContext context) =>
       "${context.read<Playlist>().title} by ${context.read<Playlist>().author}";
 
   String positionInPlaylist(BuildContext context) =>
-      "${context.read<List<Video>>().indexOf(video) + 1}/${context.read<Playlist>().videoCount}";
+      "${context.read<List<Video>>().indexOf(video(context)) + 1}/${context.read<Playlist>().videoCount}";
 
   AudioPlayer player(BuildContext context) => context.read<AudioPlayer>();
 }

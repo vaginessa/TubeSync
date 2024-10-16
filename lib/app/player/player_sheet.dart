@@ -15,35 +15,39 @@ class PlayerSheet extends StatefulWidget {
 
 class _PlayerSheetState extends State<PlayerSheet> {
   final ytClient = YoutubeExplode().videos.streamsClient;
-  final player = AudioPlayer();
+  final player = AudioPlayer(playerId: "AudioPlayerNoDuplicate");
   final controller = DraggableScrollableController();
-  late Video nowPlaying;
+  late final ValueNotifier<Video> nowPlaying;
+
+  //Workaround for https://github.com/bluefireteam/audioplayers/issues/361
+  final ValueNotifier<bool> buffering = ValueNotifier(false);
 
   List<Video> playlist(BuildContext context) => context.read<List<Video>>();
 
   Future<void> beginPlay() async {
-    final videoManifest = await ytClient.getManifest(nowPlaying.id);
-    // final stream = ytClient.get(videoManifest.audioOnly.withHighestBitrate());
-    await player.setSourceUrl(
-      videoManifest.audioOnly.withHighestBitrate().url.toString(),
-    );
-
-    await player.resume();
+    buffering.value = true;
+    if (mounted) await player.pause();
+    final videoManifest = await ytClient.getManifest(nowPlaying.value.id);
+    final streamUri = videoManifest.audioOnly.withHighestBitrate().url;
+    final source = UrlSource(streamUri.toString());
+    if (mounted) await player.setSource(source);
+    buffering.value = false;
+    if (mounted) await player.resume();
   }
 
   @override
   void initState() {
     super.initState();
-    nowPlaying = widget.initialVideo ?? playlist(context).first;
-    beginPlay();
+    nowPlaying = ValueNotifier(widget.initialVideo ?? playlist(context).first);
+    nowPlaying.addListener(beginPlay);
   }
 
   @override
   void dispose() {
     super.dispose();
-
     controller.dispose();
     player.dispose();
+    nowPlaying.dispose();
   }
 
   @override
@@ -57,19 +61,21 @@ class _PlayerSheetState extends State<PlayerSheet> {
       snap: true,
       shouldCloseOnMinExtent: false,
       builder: (context, scrollController) {
-        return Provider<AudioPlayer>(
-          create: (_) => player,
+        return MultiProvider(
+          providers: [
+            Provider(create: (_) => player),
+            ValueListenableProvider<Video>.value(value: nowPlaying),
+            ValueListenableProvider<bool>.value(value: buffering),
+          ],
           child: ListView(
             controller: scrollController,
             physics: const ClampingScrollPhysics(),
             children: [
               MiniPlayerTile(
-                nowPlaying,
                 onTap: expand,
-                onClose: close,
-                onTrackChange: (video) {
-                  //
-                },
+                onPrevious: previousTrack,
+                onNext: nextTrack,
+                onClose: () => Navigator.of(context).pop(),
               ),
             ],
           ),
@@ -78,9 +84,16 @@ class _PlayerSheetState extends State<PlayerSheet> {
     );
   }
 
-  void close() {
-    // context.read<ScaffoldState>().
-    Navigator.of(context).pop();
+  void previousTrack() {
+    final currentIndex = playlist(context).indexOf(nowPlaying.value);
+    if (currentIndex == 0) return;
+    nowPlaying.value = playlist(context)[currentIndex - 1];
+  }
+
+  void nextTrack() {
+    final currentIndex = playlist(context).indexOf(nowPlaying.value);
+    if (currentIndex + 1 == playlist(context).length) return;
+    nowPlaying.value = playlist(context)[currentIndex + 1];
   }
 
   bool get isExpanded => controller.isAttached && controller.size == 1;
