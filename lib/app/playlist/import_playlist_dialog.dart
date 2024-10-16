@@ -14,7 +14,7 @@ class _ImportPlaylistDialogState extends State<ImportPlaylistDialog> {
   final TextEditingController input = TextEditingController(
       // TODO Remove placeholder
       text:
-          "https://www.youtube.com/playlist?list=PLP_uM5nc6HCAu1X-VJznlTU-iWRbw0on4");
+          "https://www.youtube.com/playlist?list=PLSMjMF34Cr_8X3awjsH7ZWjuvn3T7SUQr");
   bool loading = false;
   String? error;
 

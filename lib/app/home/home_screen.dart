@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tube_sync/app/home/library_tab.dart';
 
 import 'home_app_bar.dart';
 import 'home_navigation_bar.dart';
-
-final rootScaffold = GlobalKey<ScaffoldState>();
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,17 +12,23 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: HomeNavigationBar.length,
-      child: Scaffold(
-        key: rootScaffold,
-        appBar: const HomeAppBar(),
-        body: TabBarView(
+      child: Provider<GlobalKey<ScaffoldState>>(
+        create: (context) => GlobalKey(),
+        builder: (context, child) {
+          return Scaffold(
+            key: Provider.of<GlobalKey<ScaffoldState>>(context),
+            appBar: const HomeAppBar(),
+            body: child,
+            bottomNavigationBar: const HomeNavigationBar(),
+          );
+        },
+        child: TabBarView(
           physics: const NeverScrollableScrollPhysics(),
           children: [
             HomeTab(),
             const Center(child: Text("🤯🤯🤯🤯")),
           ],
         ),
-        bottomNavigationBar: const HomeNavigationBar(),
       ),
     );
   }

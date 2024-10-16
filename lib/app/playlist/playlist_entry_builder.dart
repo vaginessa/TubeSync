@@ -17,7 +17,8 @@ class PlaylistEntryBuilder extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         child: CachedNetworkImage(
           width: 80,
-          imageUrl: playlist.thumbnails.mediumResUrl,
+          imageUrl: playlist.thumbnails.lowResUrl,
+          fit: BoxFit.cover,
         ),
       ),
       title: Text(

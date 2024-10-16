@@ -1,15 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-import '../home/home_screen.dart';
-import '../player/player_sheet.dart';
-
 class PlaylistHeader extends StatelessWidget {
-  final Playlist playlist;
-  final List<Video> videos;
+  const PlaylistHeader({super.key, required this.onPlayAllInvoked});
 
-  const PlaylistHeader(this.playlist, {super.key, required this.videos});
+  Playlist playlist(BuildContext context) => context.read<Playlist>();
+  final void Function() onPlayAllInvoked;
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +17,15 @@ class PlaylistHeader extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Stack(
+              alignment: Alignment.center,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: CachedNetworkImage(
-                    imageUrl: playlist.thumbnails.mediumResUrl,
+                    imageUrl: playlist(context).thumbnails.mediumResUrl,
                   ),
                 ),
                 Positioned(
@@ -44,15 +43,8 @@ class PlaylistHeader extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            rootScaffold.currentState?.showBottomSheet(
-                              (context) => PlayerSheet(videos),
-                              enableDrag: false,
-                              shape: InputBorder.none,
-                              elevation: 0,
-                            );
-                          },
+                        child: FilledButton.tonalIcon(
+                          onPressed: onPlayAllInvoked,
                           icon: const Icon(Icons.play_arrow_rounded),
                           label: const Text("Play All"),
                         ),
@@ -69,8 +61,11 @@ class PlaylistHeader extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            Text(playlist.title, style: Theme.of(context).textTheme.titleLarge),
-            Text("by ${playlist.author}"),
+            Text(
+              playlist(context).title,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            Text("by ${playlist(context).author}"),
             const SizedBox(height: 4),
           ],
         ),

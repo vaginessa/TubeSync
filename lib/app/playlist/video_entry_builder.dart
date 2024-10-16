@@ -17,7 +17,8 @@ class VideoEntryBuilder extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         child: CachedNetworkImage(
           width: 80,
-          imageUrl: video.thumbnails.mediumResUrl,
+          imageUrl: video.thumbnails.lowResUrl,
+          fit: BoxFit.cover,
         ),
       ),
       title: Text(

@@ -1,25 +1,49 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tube_sync/app/player/mini_player_tile.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class PlayerSheet extends StatefulWidget {
-  final List<Video> playlist;
+  final Video? initialVideo;
 
-  const PlayerSheet(this.playlist, {super.key});
+  const PlayerSheet({super.key, this.initialVideo});
 
   @override
   State<PlayerSheet> createState() => _PlayerSheetState();
 }
 
 class _PlayerSheetState extends State<PlayerSheet> {
+  final ytClient = YoutubeExplode().videos.streamsClient;
+  final player = AudioPlayer();
   final controller = DraggableScrollableController();
   late Video nowPlaying;
+
+  List<Video> playlist(BuildContext context) => context.read<List<Video>>();
+
+  Future<void> beginPlay() async {
+    final videoManifest = await ytClient.getManifest(nowPlaying.id);
+    // final stream = ytClient.get(videoManifest.audioOnly.withHighestBitrate());
+    await player.setSourceUrl(
+      videoManifest.audioOnly.withHighestBitrate().url.toString(),
+    );
+
+    await player.resume();
+  }
 
   @override
   void initState() {
     super.initState();
-    nowPlaying = widget.playlist.first;
+    nowPlaying = widget.initialVideo ?? playlist(context).first;
+    beginPlay();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    controller.dispose();
+    player.dispose();
   }
 
   @override
@@ -33,37 +57,30 @@ class _PlayerSheetState extends State<PlayerSheet> {
       snap: true,
       shouldCloseOnMinExtent: false,
       builder: (context, scrollController) {
-        return ListView(
-          controller: scrollController,
-          physics: const ClampingScrollPhysics(),
-          children: [
-            Dismissible(
-              key: const Key("MiniPlayer"),
-              confirmDismiss: (direction) {
-
-                return Future.value(false);
-              },
-              direction: DismissDirection.horizontal,
-              background: const Row(
-                children: [
-                  SizedBox(width: 18),
-                  Icon(Icons.skip_previous_rounded),
-                ],
+        return Provider<AudioPlayer>(
+          create: (_) => player,
+          child: ListView(
+            controller: scrollController,
+            physics: const ClampingScrollPhysics(),
+            children: [
+              MiniPlayerTile(
+                nowPlaying,
+                onTap: expand,
+                onClose: close,
+                onTrackChange: (video) {
+                  //
+                },
               ),
-              secondaryBackground: const Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(Icons.skip_next_rounded),
-                  SizedBox(width: 18),
-                ],
-              ),
-              dismissThresholds: const {DismissDirection.horizontal: 0.3},
-              child: MiniPlayerTile(nowPlaying, onTap: expand),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
+  }
+
+  void close() {
+    // context.read<ScaffoldState>().
+    Navigator.of(context).pop();
   }
 
   bool get isExpanded => controller.isAttached && controller.size == 1;

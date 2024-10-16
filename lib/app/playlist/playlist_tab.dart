@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tube_sync/app/player/player_sheet.dart';
 import 'package:tube_sync/app/playlist/playlist_header.dart';
 import 'package:tube_sync/app/playlist/video_entry_builder.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -55,19 +57,50 @@ class _PlaylistTabState extends State<PlaylistTab>
         body: RefreshIndicator(
           key: refreshIndicator,
           onRefresh: refreshHandler,
-          child: ListView.builder(
-            itemCount: videos.length + 1,
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return PlaylistHeader(widget.playlist, videos: videos);
-              }
-              return VideoEntryBuilder(videos[index - 1], onTap: () {});
-            },
+          child: MultiProvider(
+            providers: [
+              Provider(create: (context) => widget.playlist),
+              Provider(create: (context) => videos),
+            ],
+            child: ListView.builder(
+              itemCount: videos.length + 1,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return PlaylistHeader(onPlayAllInvoked: () => launchPlayer());
+                }
+                return VideoEntryBuilder(
+                  videos[index - 1],
+                  onTap: () => launchPlayer(initialVideo: videos[index - 1]),
+                );
+              },
+            ),
           ),
         ),
       ),
     );
   }
+
+  void launchPlayer({Video? initialVideo}) {
+    scaffold(context)?.showBottomSheet(
+      (_) => MultiProvider(
+        providers: [
+          Provider<List<Video>>(
+            create: (_) => videos,
+          ),
+          Provider<Playlist>(
+            create: (_) => widget.playlist,
+          ),
+        ],
+        child: PlayerSheet(initialVideo: initialVideo),
+      ),
+      enableDrag: false,
+      shape: InputBorder.none,
+      elevation: 0,
+    );
+  }
+
+  ScaffoldState? scaffold(BuildContext context) =>
+      context.read<GlobalKey<ScaffoldState>>().currentState;
 
   @override
   bool get wantKeepAlive => true;
