@@ -15,11 +15,14 @@ class PlaylistEntryBuilder extends StatelessWidget {
       onTap: onTap,
       contentPadding: const EdgeInsets.only(left: 16, right: 8),
       leading: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: CachedNetworkImage(
-          width: 80,
-          imageUrl: playlist.thumbnails.lowResUrl,
-          fit: BoxFit.cover,
+        borderRadius: BorderRadius.circular(10),
+        child: Hero(
+          tag: playlist.thumbnails.videoId,
+          child: CachedNetworkImage(
+            width: 80,
+            imageUrl: playlist.thumbnails.lowResUrl,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
       title: Text(
@@ -27,6 +30,7 @@ class PlaylistEntryBuilder extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
+      subtitleTextStyle: Theme.of(context).textTheme.bodySmall,
       subtitle: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +42,7 @@ class PlaylistEntryBuilder extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           Text(
-            "${playlist.videoCount} videos \u2022 ${playlist.engagement.viewCount} views",
+            "${playlist.author} \u2022 ${playlist.videoCount} videos",
           ),
         ],
       ),

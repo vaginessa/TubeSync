@@ -50,7 +50,7 @@ class _PlayerSheetState extends State<PlayerSheet> {
   @override
   void dispose() {
     super.dispose();
-    player.dispose();
+    player.release();
     controller.dispose();
     nowPlaying.dispose();
   }

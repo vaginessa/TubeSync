@@ -22,28 +22,31 @@ class PlaylistHeader extends StatelessWidget {
             Stack(
               alignment: Alignment.center,
               children: [
-                SizedBox(
-                  height: 120,
-                  width: double.maxFinite,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider(
-                          playlist(context).thumbnails.mediumResUrl,
+                Hero(
+                  tag: playlist(context).thumbnails.videoId,
+                  child: SizedBox(
+                    height: 120,
+                    width: double.maxFinite,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(
+                            playlist(context).thumbnails.mediumResUrl,
+                          ),
                         ),
-                      ),
-                      gradient: const LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          Colors.transparent,
-                          Colors.black26,
-                          Colors.black38
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        stops: [0, 0.3, 0.8, 1],
+                        gradient: const LinearGradient(
+                          colors: [
+                            Colors.transparent,
+                            Colors.transparent,
+                            Colors.black26,
+                            Colors.black38
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          stops: [0, 0.3, 0.8, 1],
+                        ),
                       ),
                     ),
                   ),
