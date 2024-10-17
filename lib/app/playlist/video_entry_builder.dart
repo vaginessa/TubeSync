@@ -13,6 +13,7 @@ class VideoEntryBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onTap,
+      contentPadding: const EdgeInsets.only(left: 16, right: 8),
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: CachedNetworkImage(

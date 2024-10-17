@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,8 @@ class _PlayerSheetState extends State<PlayerSheet> {
   //Workaround for https://github.com/bluefireteam/audioplayers/issues/361
   final ValueNotifier<bool> buffering = ValueNotifier(false);
 
-  List<Video> playlist(BuildContext context) => context.read<List<Video>>();
+  // Reference queued beginPlay calls to cancel upon changes
+  CancelableOperation? playerQueue;
 
   Future<void> beginPlay() async {
     buffering.value = true;
@@ -39,14 +41,17 @@ class _PlayerSheetState extends State<PlayerSheet> {
   void initState() {
     super.initState();
     nowPlaying = ValueNotifier(widget.initialVideo ?? playlist(context).first);
-    nowPlaying.addListener(beginPlay);
+    nowPlaying.addListener(() async {
+      await playerQueue?.cancel();
+      playerQueue = CancelableOperation.fromFuture(beginPlay());
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    controller.dispose();
     player.dispose();
+    controller.dispose();
     nowPlaying.dispose();
   }
 
@@ -75,7 +80,7 @@ class _PlayerSheetState extends State<PlayerSheet> {
                 onTap: expand,
                 onPrevious: previousTrack,
                 onNext: nextTrack,
-                onClose: () => Navigator.of(context).pop(),
+                onClose: closePlayer,
               ),
             ],
           ),
@@ -83,6 +88,8 @@ class _PlayerSheetState extends State<PlayerSheet> {
       },
     );
   }
+
+  List<Video> playlist(BuildContext context) => context.read<List<Video>>();
 
   void previousTrack() {
     final currentIndex = playlist(context).indexOf(nowPlaying.value);
@@ -100,4 +107,10 @@ class _PlayerSheetState extends State<PlayerSheet> {
 
   void expand() => controller.animateTo(1.0,
       duration: Durations.medium1, curve: Curves.easeOut);
+
+  void closePlayer() {
+    playerQueue?.cancel();
+    player.release();
+    Navigator.of(context).pop();
+  }
 }
