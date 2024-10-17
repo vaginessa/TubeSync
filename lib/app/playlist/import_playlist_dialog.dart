@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -44,7 +43,7 @@ class _ImportPlaylistDialogState extends State<ImportPlaylistDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text("Import Playlist"),
-      icon: const Icon(CupertinoIcons.link),
+      icon: const Icon(Icons.link_rounded),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

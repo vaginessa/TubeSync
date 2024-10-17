@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -48,7 +47,7 @@ class PlaylistEntryBuilder extends StatelessWidget {
       ),
       trailing: IconButton(
         onPressed: () {},
-        icon: const Icon(CupertinoIcons.ellipsis_vertical, size: 18),
+        icon: const Icon(Icons.more_vert_rounded, size: 18),
       ),
     );
   }

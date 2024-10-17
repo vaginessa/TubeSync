@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tube_sync/app/playlist/import_playlist_dialog.dart';
 import 'package:tube_sync/app/playlist/playlist_entry_builder.dart';
@@ -48,7 +47,7 @@ class _LibraryTabState extends State<LibraryTab>
           setState(() => entries.add(playlist));
         }),
         label: const Text("Import"),
-        icon: const Icon(CupertinoIcons.add),
+        icon: const Icon(Icons.add_rounded),
       ),
     );
   }

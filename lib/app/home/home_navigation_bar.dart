@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeNavigationBar extends StatefulWidget {
@@ -20,13 +19,13 @@ class _HomeNavigationBarState extends State<HomeNavigationBar> {
       },
       destinations: const [
         NavigationDestination(
-          icon: Icon(CupertinoIcons.house),
-          selectedIcon: Icon(CupertinoIcons.house_fill),
+          icon: Icon(Icons.my_library_music_outlined),
+          selectedIcon: Icon(Icons.my_library_music_rounded),
           label: 'Home',
         ),
         NavigationDestination(
-          icon: Icon(CupertinoIcons.ellipsis),
-          selectedIcon: Icon(CupertinoIcons.ellipsis_circle_fill),
+          icon: Icon(Icons.more_horiz_rounded),
+          selectedIcon: Icon(Icons.more_rounded),
           label: 'More',
         )
       ],
