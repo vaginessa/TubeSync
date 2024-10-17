@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tube_sync/provider/playlist_provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class PlaylistHeader extends StatelessWidget {
   const PlaylistHeader({super.key, required this.onPlayAll});
 
-  Playlist playlist(BuildContext context) => context.read<Playlist>();
   final void Function() onPlayAll;
 
   @override
@@ -103,4 +103,7 @@ class PlaylistHeader extends StatelessWidget {
       ),
     );
   }
+
+  Playlist playlist(BuildContext context) =>
+      context.read<PlaylistProvider>().playlist;
 }

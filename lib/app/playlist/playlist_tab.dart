@@ -3,12 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:tube_sync/app/player/player_sheet.dart';
 import 'package:tube_sync/app/playlist/playlist_header.dart';
 import 'package:tube_sync/app/playlist/video_entry_builder.dart';
+import 'package:tube_sync/provider/playlist_provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class PlaylistTab extends StatefulWidget {
-  const PlaylistTab(this.playlist, {super.key, required this.notifier});
+  const PlaylistTab({super.key, required this.notifier});
 
-  final Playlist playlist;
   final ValueNotifier<Widget?> notifier;
 
   @override
@@ -17,15 +17,11 @@ class PlaylistTab extends StatefulWidget {
 
 class _PlaylistTabState extends State<PlaylistTab>
     with AutomaticKeepAliveClientMixin {
-  final ytClient = YoutubeExplode().playlists;
-  final List<Video> videos = List.empty(growable: true);
   final GlobalKey<RefreshIndicatorState> refreshIndicator = GlobalKey();
 
   Future<void> refreshHandler() async {
     try {
-      final vids = await ytClient.getVideos(widget.playlist.id.value).toList();
-      videos.clear();
-      videos.addAll(vids);
+      await context.read<PlaylistProvider>().refresh();
     } catch (err) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -54,23 +50,20 @@ class _PlaylistTabState extends State<PlaylistTab>
       },
       child: Scaffold(
         primary: false,
-        body: RefreshIndicator(
-          key: refreshIndicator,
-          onRefresh: refreshHandler,
-          child: MultiProvider(
-            providers: [
-              Provider(create: (context) => widget.playlist),
-              Provider(create: (context) => videos),
-            ],
+        body: Consumer<PlaylistProvider>(
+          child: PlaylistHeader(onPlayAll: () => launchPlayer()),
+          builder: (context, playlist, header) => RefreshIndicator(
+            key: refreshIndicator,
+            onRefresh: refreshHandler,
             child: ListView.builder(
-              itemCount: videos.length + 1,
+              itemCount: playlist.videos.length + 1,
               itemBuilder: (context, index) {
-                if (index == 0) {
-                  return PlaylistHeader(onPlayAll: () => launchPlayer());
-                }
+                if (index == 0) return header;
                 return VideoEntryBuilder(
-                  videos[index - 1],
-                  onTap: () => launchPlayer(initialVideo: videos[index - 1]),
+                  playlist.videos[index - 1],
+                  onTap: () => launchPlayer(
+                    initialVideo: playlist.videos[index - 1],
+                  ),
                 );
               },
             ),
@@ -82,15 +75,8 @@ class _PlaylistTabState extends State<PlaylistTab>
 
   void launchPlayer({Video? initialVideo}) {
     scaffold(context)?.showBottomSheet(
-      (_) => MultiProvider(
-        providers: [
-          Provider<List<Video>>(
-            create: (_) => videos,
-          ),
-          Provider<Playlist>(
-            create: (_) => widget.playlist,
-          ),
-        ],
+      (_) => ChangeNotifierProvider.value(
+        value: context.watch<PlaylistProvider>(),
         child: PlayerSheet(initialVideo: initialVideo),
       ),
       enableDrag: false,

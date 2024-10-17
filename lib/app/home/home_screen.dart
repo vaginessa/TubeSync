@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/home/library_tab.dart';
+import 'package:tube_sync/provider/library_provider.dart';
 
 import 'home_app_bar.dart';
 import 'home_navigation_bar.dart';
@@ -12,8 +13,13 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: HomeNavigationBar.length,
-      child: Provider<GlobalKey<ScaffoldState>>(
-        create: (context) => GlobalKey(),
+      child: MultiProvider(
+        providers: [
+          Provider<GlobalKey<ScaffoldState>>(create: (_) => GlobalKey()),
+          ChangeNotifierProvider<LibraryProvider>(
+            create: (_) => LibraryProvider(),
+          )
+        ],
         builder: (context, child) {
           return Scaffold(
             key: Provider.of<GlobalKey<ScaffoldState>>(context),

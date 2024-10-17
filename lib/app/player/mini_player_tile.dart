@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tube_sync/provider/playlist_provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MiniPlayerTile extends StatelessWidget {
@@ -136,10 +137,17 @@ class MiniPlayerTile extends StatelessWidget {
   }
 
   String playlistInfo(BuildContext context) =>
-      "${context.read<Playlist>().title} by ${context.read<Playlist>().author}";
+      "${playlist(context).title} by ${playlist(context).author}";
 
-  String positionInPlaylist(BuildContext context) =>
-      "${context.read<List<Video>>().indexOf(video(context)) + 1}/${context.read<Playlist>().videoCount}";
+  String positionInPlaylist(BuildContext context) {
+    return "${videos(context).indexOf(video(context)) + 1}/${playlist(context).videoCount}";
+  }
+
+  Playlist playlist(BuildContext context) =>
+      context.read<PlaylistProvider>().playlist;
+
+  List<Video> videos(BuildContext context) =>
+      context.read<PlaylistProvider>().videos;
 
   AudioPlayer player(BuildContext context) => context.read<AudioPlayer>();
 }

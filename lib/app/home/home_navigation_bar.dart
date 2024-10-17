@@ -21,11 +21,11 @@ class _HomeNavigationBarState extends State<HomeNavigationBar> {
         NavigationDestination(
           icon: Icon(Icons.my_library_music_outlined),
           selectedIcon: Icon(Icons.my_library_music_rounded),
-          label: 'Home',
+          label: 'Library',
         ),
         NavigationDestination(
           icon: Icon(Icons.more_horiz_rounded),
-          selectedIcon: Icon(Icons.more_rounded),
+          selectedIcon: Icon(Icons.more_vert_rounded),
           label: 'More',
         )
       ],

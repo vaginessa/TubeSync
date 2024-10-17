@@ -3,6 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/player/mini_player_tile.dart';
+import 'package:tube_sync/provider/playlist_provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class PlayerSheet extends StatefulWidget {
@@ -40,7 +41,7 @@ class _PlayerSheetState extends State<PlayerSheet> {
   @override
   void initState() {
     super.initState();
-    nowPlaying = ValueNotifier(widget.initialVideo ?? playlist(context).first);
+    nowPlaying = ValueNotifier(widget.initialVideo ?? videos(context).first);
     nowPlaying.addListener(() async {
       await playerQueue?.cancel();
       playerQueue = CancelableOperation.fromFuture(beginPlay());
@@ -68,7 +69,7 @@ class _PlayerSheetState extends State<PlayerSheet> {
       builder: (context, scrollController) {
         return MultiProvider(
           providers: [
-            Provider(create: (_) => player),
+            Provider<AudioPlayer>(create: (_) => player),
             ValueListenableProvider<Video>.value(value: nowPlaying),
             ValueListenableProvider<bool>.value(value: buffering),
           ],
@@ -89,18 +90,19 @@ class _PlayerSheetState extends State<PlayerSheet> {
     );
   }
 
-  List<Video> playlist(BuildContext context) => context.read<List<Video>>();
+  List<Video> videos(BuildContext context) =>
+      context.read<PlaylistProvider>().videos;
 
   void previousTrack() {
-    final currentIndex = playlist(context).indexOf(nowPlaying.value);
+    final currentIndex = videos(context).indexOf(nowPlaying.value);
     if (currentIndex == 0) return;
-    nowPlaying.value = playlist(context)[currentIndex - 1];
+    nowPlaying.value = videos(context)[currentIndex - 1];
   }
 
   void nextTrack() {
-    final currentIndex = playlist(context).indexOf(nowPlaying.value);
-    if (currentIndex + 1 == playlist(context).length) return;
-    nowPlaying.value = playlist(context)[currentIndex + 1];
+    final currentIndex = videos(context).indexOf(nowPlaying.value);
+    if (currentIndex + 1 == videos(context).length) return;
+    nowPlaying.value = videos(context)[currentIndex + 1];
   }
 
   bool get isExpanded => controller.isAttached && controller.size == 1;

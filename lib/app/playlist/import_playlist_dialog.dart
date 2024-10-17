@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tube_sync/provider/library_provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class ImportPlaylistDialog extends StatefulWidget {
@@ -23,15 +25,8 @@ class _ImportPlaylistDialogState extends State<ImportPlaylistDialog> {
       error = null;
       setState(() => loading = true);
       if (input.text.isEmpty) throw "Empty url!";
-
-      var playlist = await ytClient.get(input.text);
-      if (playlist.videoCount == 0) throw "Playlist is empty!";
-
-      // Workaround for playlist thumbnail (still no custom thumbnails)
-      final video = await ytClient.getVideos(playlist.id).first;
-      playlist = playlist.copyWith(thumbnails: ThumbnailSet(video.id.value));
-
-      if (mounted) Navigator.pop(context, playlist);
+      await context.read<LibraryProvider>().importPlaylist(input.text);
+      if (mounted) Navigator.pop(context);
     } catch (e) {
       error = e.toString();
     } finally {
