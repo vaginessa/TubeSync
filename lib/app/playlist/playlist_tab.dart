@@ -66,7 +66,7 @@ class _PlaylistTabState extends State<PlaylistTab>
               itemCount: videos.length + 1,
               itemBuilder: (context, index) {
                 if (index == 0) {
-                  return PlaylistHeader(onPlayAllInvoked: () => launchPlayer());
+                  return PlaylistHeader(onPlayAll: () => launchPlayer());
                 }
                 return VideoEntryBuilder(
                   videos[index - 1],

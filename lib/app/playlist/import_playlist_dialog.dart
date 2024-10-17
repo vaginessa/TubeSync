@@ -12,9 +12,10 @@ class ImportPlaylistDialog extends StatefulWidget {
 class _ImportPlaylistDialogState extends State<ImportPlaylistDialog> {
   final ytClient = YoutubeExplode().playlists;
   final TextEditingController input = TextEditingController(
-      // TODO Remove placeholder
-      text:
-          "https://www.youtube.com/playlist?list=PLSMjMF34Cr_8X3awjsH7ZWjuvn3T7SUQr");
+    // TODO Remove placeholder
+    text:
+        "https://www.youtube.com/playlist?list=PLSMjMF34Cr_8X3awjsH7ZWjuvn3T7SUQr",
+  );
   bool loading = false;
   String? error;
 
@@ -27,7 +28,7 @@ class _ImportPlaylistDialogState extends State<ImportPlaylistDialog> {
       var playlist = await ytClient.get(input.text);
       if (playlist.videoCount == 0) throw "Playlist is empty!";
 
-      // Workaround for playlist thumbnail
+      // Workaround for playlist thumbnail (still no custom thumbnails)
       final video = await ytClient.getVideos(playlist.id).first;
       playlist = playlist.copyWith(thumbnails: ThumbnailSet(video.id.value));
 
