@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tube_sync/model/playlist.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class PlaylistHeader extends StatelessWidget {
   const PlaylistHeader({super.key, required this.onPlayAll});
@@ -23,7 +23,7 @@ class PlaylistHeader extends StatelessWidget {
               alignment: Alignment.center,
               children: [
                 Hero(
-                  tag: playlist(context).thumbnails.videoId,
+                  tag: "PlaylistThumbnailHero",
                   child: SizedBox(
                     height: 120,
                     width: double.maxFinite,
@@ -33,7 +33,7 @@ class PlaylistHeader extends StatelessWidget {
                         image: DecorationImage(
                           fit: BoxFit.cover,
                           image: CachedNetworkImageProvider(
-                            playlist(context).thumbnails.mediumResUrl,
+                            playlist(context).thumbnail.medium,
                           ),
                         ),
                         gradient: const LinearGradient(

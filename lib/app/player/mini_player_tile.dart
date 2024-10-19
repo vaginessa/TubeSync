@@ -2,8 +2,9 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tube_sync/model/media.dart';
+import 'package:tube_sync/model/playlist.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MiniPlayerTile extends StatelessWidget {
   final void Function()? onTap;
@@ -19,7 +20,7 @@ class MiniPlayerTile extends StatelessWidget {
     this.onClose,
   });
 
-  Video video(BuildContext context) => context.watch<Video>();
+  Media media(BuildContext context) => context.watch<Media>();
 
   bool buffering(BuildContext context) => context.watch<bool>();
 
@@ -58,7 +59,7 @@ class MiniPlayerTile extends StatelessWidget {
             leading: CircleAvatar(
               radius: 24,
               backgroundImage: CachedNetworkImageProvider(
-                video(context).thumbnails.lowResUrl,
+                media(context).thumbnail.low,
               ),
             ),
             titleTextStyle: Theme.of(context).textTheme.bodyMedium,
@@ -67,12 +68,12 @@ class MiniPlayerTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  video(context).title,
+                  media(context).title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  video(context).author,
+                  media(context).author,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall,
@@ -131,23 +132,23 @@ class MiniPlayerTile extends StatelessWidget {
     AsyncSnapshot<Duration> snapshot,
   ) {
     if (buffering(context) || !snapshot.hasData) return null;
-    final vid = video(context);
-    if (vid.duration == null) return null;
-    return snapshot.requireData.inMilliseconds / vid.duration!.inMilliseconds;
+    final vid = media(context);
+    if (vid.durationMs == null) return null;
+    return snapshot.requireData.inMilliseconds / vid.durationMs!;
   }
 
   String playlistInfo(BuildContext context) =>
       "${playlist(context).title} by ${playlist(context).author}";
 
   String positionInPlaylist(BuildContext context) {
-    return "${videos(context).indexOf(video(context)) + 1}/${playlist(context).videoCount}";
+    return "${videos(context).indexOf(media(context)) + 1}/${playlist(context).videoCount}";
   }
 
   Playlist playlist(BuildContext context) =>
       context.read<PlaylistProvider>().playlist;
 
-  List<Video> videos(BuildContext context) =>
-      context.read<PlaylistProvider>().videos;
+  List<Media> videos(BuildContext context) =>
+      context.read<PlaylistProvider>().medias;
 
   AudioPlayer player(BuildContext context) => context.read<AudioPlayer>();
 }

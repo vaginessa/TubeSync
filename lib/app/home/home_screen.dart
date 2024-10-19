@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/home/library_tab.dart';
 import 'package:tube_sync/provider/library_provider.dart';
@@ -17,7 +18,7 @@ class HomeScreen extends StatelessWidget {
         providers: [
           Provider<GlobalKey<ScaffoldState>>(create: (_) => GlobalKey()),
           ChangeNotifierProvider<LibraryProvider>(
-            create: (_) => LibraryProvider(),
+            create: (_) => LibraryProvider(context.read<Isar>()),
           )
         ],
         builder: (context, child) {

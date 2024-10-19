@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+import 'package:tube_sync/model/media.dart';
 
-class VideoEntryBuilder extends StatelessWidget {
-  final Video video;
+class MediaEntryBuilder extends StatelessWidget {
+  final Media media;
   final void Function()? onTap;
 
-  const VideoEntryBuilder(this.video, {super.key, this.onTap});
+  const MediaEntryBuilder(this.media, {super.key, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class VideoEntryBuilder extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             child: CachedNetworkImage(
               width: 80,
-              imageUrl: video.thumbnails.lowResUrl,
+              imageUrl: media.thumbnail.low,
               fit: BoxFit.cover,
             ),
           ),
@@ -32,7 +32,7 @@ class VideoEntryBuilder extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                videoDuration(video.duration),
+                videoDuration(media.duration),
                 style: const TextStyle(color: Colors.white),
               ),
             ),
@@ -41,7 +41,7 @@ class VideoEntryBuilder extends StatelessWidget {
       ),
       subtitleTextStyle: Theme.of(context).textTheme.bodySmall,
       title: Text(
-        video.title,
+        media.title,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
@@ -55,7 +55,7 @@ class VideoEntryBuilder extends StatelessWidget {
               const WidgetSpan(
                 child: Icon(Icons.download_for_offline_rounded, size: 16),
               ),
-              TextSpan(text: " ${video.author}"),
+              TextSpan(text: " ${media.author}"),
             ]),
           ),
         ],

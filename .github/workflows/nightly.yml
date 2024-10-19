@@ -3,7 +3,7 @@ name: Nightly Build
 on:
   workflow_dispatch:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
 
 jobs:
   build-android-apk:
@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Perform Code Generation
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
       # - name: Generate SplashScreen
       #   run: flutter pub run flutter_native_splash:create
 
@@ -37,7 +40,7 @@ jobs:
       - name: Build Android Release
         run: flutter build apk --profile
 
-      - name: Upload a Build Artifact
+      - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: tubesync_android_${{ github.sha }}

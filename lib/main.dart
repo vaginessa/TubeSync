@@ -1,9 +1,19 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:tube_sync/app/home/home_screen.dart';
+import 'package:tube_sync/model/media.dart';
+import 'package:tube_sync/model/playlist.dart';
 
-void main() {
+void main() async {
+  final isarDB = Isar.open(
+    schemas: [PlaylistSchema, MediaSchema],
+    directory: (await getApplicationSupportDirectory()).path,
+  );
+
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -22,7 +32,10 @@ void main() {
         ),
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      home: Provider<Isar>(
+        create: (context) => isarDB,
+        child: const HomeScreen(),
+      ),
     ),
   );
 }

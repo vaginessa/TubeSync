@@ -3,13 +3,14 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/player/mini_player_tile.dart';
+import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class PlayerSheet extends StatefulWidget {
-  final Video? initialVideo;
+  final Media? initialMedia;
 
-  const PlayerSheet({super.key, this.initialVideo});
+  const PlayerSheet({super.key, this.initialMedia});
 
   @override
   State<PlayerSheet> createState() => _PlayerSheetState();
@@ -19,7 +20,7 @@ class _PlayerSheetState extends State<PlayerSheet> {
   final ytClient = YoutubeExplode().videos.streamsClient;
   final player = AudioPlayer(playerId: "AudioPlayerNoDuplicate");
   final controller = DraggableScrollableController();
-  late final ValueNotifier<Video> nowPlaying;
+  late final ValueNotifier<Media> nowPlaying;
 
   //Workaround for https://github.com/bluefireteam/audioplayers/issues/361
   final ValueNotifier<bool> buffering = ValueNotifier(false);
@@ -41,7 +42,7 @@ class _PlayerSheetState extends State<PlayerSheet> {
   @override
   void initState() {
     super.initState();
-    nowPlaying = ValueNotifier(widget.initialVideo ?? videos(context).first);
+    nowPlaying = ValueNotifier(widget.initialMedia ?? medias(context).first);
     nowPlaying.addListener(() async {
       await playerQueue?.cancel();
       playerQueue = CancelableOperation.fromFuture(beginPlay());
@@ -70,7 +71,7 @@ class _PlayerSheetState extends State<PlayerSheet> {
         return MultiProvider(
           providers: [
             Provider<AudioPlayer>(create: (_) => player),
-            ValueListenableProvider<Video>.value(value: nowPlaying),
+            ValueListenableProvider<Media>.value(value: nowPlaying),
             ValueListenableProvider<bool>.value(value: buffering),
           ],
           child: ListView(
@@ -90,19 +91,19 @@ class _PlayerSheetState extends State<PlayerSheet> {
     );
   }
 
-  List<Video> videos(BuildContext context) =>
-      context.read<PlaylistProvider>().videos;
+  List<Media> medias(BuildContext context) =>
+      context.read<PlaylistProvider>().medias;
 
   void previousTrack() {
-    final currentIndex = videos(context).indexOf(nowPlaying.value);
+    final currentIndex = medias(context).indexOf(nowPlaying.value);
     if (currentIndex == 0) return;
-    nowPlaying.value = videos(context)[currentIndex - 1];
+    nowPlaying.value = medias(context)[currentIndex - 1];
   }
 
   void nextTrack() {
-    final currentIndex = videos(context).indexOf(nowPlaying.value);
-    if (currentIndex + 1 == videos(context).length) return;
-    nowPlaying.value = videos(context)[currentIndex + 1];
+    final currentIndex = medias(context).indexOf(nowPlaying.value);
+    if (currentIndex + 1 == medias(context).length) return;
+    nowPlaying.value = medias(context)[currentIndex + 1];
   }
 
   bool get isExpanded => controller.isAttached && controller.size == 1;

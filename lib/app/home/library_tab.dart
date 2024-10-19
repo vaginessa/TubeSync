@@ -17,7 +17,7 @@ class LibraryTab extends StatelessWidget {
       primary: false,
       body: Consumer<LibraryProvider>(
         builder: (context, library, _) => RefreshIndicator(
-          onRefresh: () async {},
+          onRefresh: library.refresh,
           child: ListView.builder(
             itemCount: library.entries.length,
             itemBuilder: (context, index) {

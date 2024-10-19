@@ -1,24 +1,39 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+import 'package:isar/isar.dart';
+import 'package:tube_sync/model/playlist.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart' as yt;
 
 class LibraryProvider extends ChangeNotifier {
-  final _ytClient = YoutubeExplode().playlists;
+  final Isar isar;
+  final _ytClient = yt.YoutubeExplode().playlists;
   final List<Playlist> entries = List.empty(growable: true);
 
-  LibraryProvider();
+  LibraryProvider(this.isar) {
+    entries.addAll(isar.playlists.where().findAll());
+  }
 
   Future<void> importPlaylist(String url) async {
-    final playlist = await _ytClient.get(url);
-    // https://github.com/Hexer10/youtube_explode_dart/issues/298
-    if (entries.firstWhereOrNull((e) => e.id == playlist.id) != null) {
-      throw "Playlist already exists!";
-    }
+    var playlist = await _ytClient.get(url);
     if (playlist.videoCount == 0) throw "Playlist is empty!";
 
-    // Workaround for playlist thumbnail (still no custom thumbnails)
-    final video = await _ytClient.getVideos(playlist.id).first;
-    entries.add(playlist.copyWith(thumbnails: ThumbnailSet(video.id.value)));
+    if (entries.contains(Playlist.fromYTPlaylist(playlist))) {
+      throw "Playlist already exists!";
+    }
+
+    // Workaround for playlist thumbnail (thumb of first vid)
+    // still no custom thumbnails tho
+    playlist = playlist.copyWith(
+      thumbnails: yt.ThumbnailSet(
+        (await _ytClient.getVideos(playlist.id).first).id.value,
+      ),
+    );
+
+    entries.add(Playlist.fromYTPlaylist(playlist));
+    isar.write((isar) => isar.playlists.put(entries.last));
     notifyListeners();
+  }
+
+  Future<void> refresh() async {
+    //
   }
 }

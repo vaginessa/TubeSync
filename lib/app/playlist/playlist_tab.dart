@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/player/player_sheet.dart';
 import 'package:tube_sync/app/playlist/playlist_header.dart';
-import 'package:tube_sync/app/playlist/video_entry_builder.dart';
+import 'package:tube_sync/app/playlist/media_entry_builder.dart';
+import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -56,13 +57,13 @@ class _PlaylistTabState extends State<PlaylistTab>
             key: refreshIndicator,
             onRefresh: refreshHandler,
             child: ListView.builder(
-              itemCount: playlist.videos.length + 1,
+              itemCount: playlist.medias.length + 1,
               itemBuilder: (context, index) {
                 if (index == 0) return header;
-                return VideoEntryBuilder(
-                  playlist.videos[index - 1],
+                return MediaEntryBuilder(
+                  playlist.medias[index - 1],
                   onTap: () => launchPlayer(
-                    initialVideo: playlist.videos[index - 1],
+                    initialMedia: playlist.medias[index - 1],
                   ),
                 );
               },
@@ -73,11 +74,11 @@ class _PlaylistTabState extends State<PlaylistTab>
     );
   }
 
-  void launchPlayer({Video? initialVideo}) {
+  void launchPlayer({Media? initialMedia}) {
     scaffold(context)?.showBottomSheet(
       (_) => ChangeNotifierProvider.value(
         value: context.watch<PlaylistProvider>(),
-        child: PlayerSheet(initialVideo: initialVideo),
+        child: PlayerSheet(initialMedia: initialMedia),
       ),
       enableDrag: false,
       shape: InputBorder.none,
