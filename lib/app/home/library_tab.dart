@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/playlist/import_playlist_dialog.dart';
 import 'package:tube_sync/app/playlist/playlist_entry_builder.dart';
@@ -24,7 +25,10 @@ class LibraryTab extends StatelessWidget {
               final playlist = library.entries[index];
               return PlaylistEntryBuilder(playlist, onTap: () {
                 notifier.value = ChangeNotifierProvider<PlaylistProvider>(
-                  create: (_) => PlaylistProvider(playlist),
+                  create: (_) => PlaylistProvider(
+                    context.read<Isar>(),
+                    playlist,
+                  ),
                   child: PlaylistTab(notifier: notifier),
                 );
               });

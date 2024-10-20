@@ -29,7 +29,7 @@ class LibraryProvider extends ChangeNotifier {
     );
 
     entries.add(Playlist.fromYTPlaylist(playlist));
-    isar.write((isar) => isar.playlists.put(entries.last));
+    isar.writeAsyncWith(entries.last, (db, data) => db.playlists.put(data));
     notifyListeners();
   }
 

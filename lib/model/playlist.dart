@@ -16,6 +16,8 @@ class Playlist {
   final Thumbnails thumbnail;
   final int videoCount;
 
+  final List<String> videoIds;
+
   Playlist(
     this.id,
     this.title,
@@ -23,6 +25,7 @@ class Playlist {
     this.thumbnail,
     this.videoCount,
     this.description,
+    this.videoIds,
   );
 
   factory Playlist.fromYTPlaylist(yt.Playlist playlist) => Playlist(
@@ -32,6 +35,7 @@ class Playlist {
         Thumbnails.fromYTThumbnails(playlist.thumbnails),
         playlist.videoCount ?? -1,
         playlist.description.isNotEmpty ? playlist.description : null,
+        List.empty(growable: true),
       );
 
   @override

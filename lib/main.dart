@@ -22,12 +22,12 @@ void main() async {
         dragDevices: PointerDeviceKind.values.toSet(),
       ),
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
+          seedColor: Colors.red,
           brightness: Brightness.dark,
         ),
         useMaterial3: true,
