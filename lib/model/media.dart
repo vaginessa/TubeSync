@@ -46,4 +46,9 @@ class Media {
 
   @override
   int get hashCode => id.hashCode;
+
+  @override
+  String toString() {
+    return 'Media{_id: $_id, id: $id, title: $title, author: $author, description: $description, durationMs: $durationMs, thumbnail: $thumbnail}';
+  }
 }

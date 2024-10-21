@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/player/player_sheet.dart';
-import 'package:tube_sync/app/playlist/playlist_header.dart';
 import 'package:tube_sync/app/playlist/media_entry_builder.dart';
+import 'package:tube_sync/app/playlist/playlist_header.dart';
 import 'package:tube_sync/model/media.dart';
+import 'package:tube_sync/provider/media_provider.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class PlaylistTab extends StatefulWidget {
   const PlaylistTab({super.key, required this.notifier});
@@ -76,8 +76,12 @@ class _PlaylistTabState extends State<PlaylistTab>
 
   void launchPlayer({Media? initialMedia}) {
     scaffold(context)?.showBottomSheet(
-      (_) => ChangeNotifierProvider.value(
-        value: context.watch<PlaylistProvider>(),
+      (_) => Provider<MediaProvider>(
+        create: (_) => MediaProvider(
+          context.read<PlaylistProvider>(),
+          initialMedia,
+        ),
+        dispose: (_, provider) => provider.dispose(),
         child: PlayerSheet(initialMedia: initialMedia),
       ),
       enableDrag: false,

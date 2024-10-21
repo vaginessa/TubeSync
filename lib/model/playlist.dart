@@ -45,4 +45,9 @@ class Playlist {
 
   @override
   int get hashCode => id.hashCode;
+
+  @override
+  String toString() {
+    return 'Playlist{_id: $_id, id: $id, title: $title, author: $author, description: $description, thumbnail: $thumbnail, videoCount: $videoCount, videoIds: $videoIds}';
+  }
 }

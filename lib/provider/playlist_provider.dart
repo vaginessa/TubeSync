@@ -28,7 +28,6 @@ class PlaylistProvider extends ChangeNotifier {
     // Save to DB
     isar.writeAsyncWith(playlist, (db, data) => db.playlists.put(data));
     isar.writeAsyncWith(medias, (db, data) => db.medias.putAll(data));
-
     notifyListeners();
   }
 }
