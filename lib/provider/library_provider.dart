@@ -20,13 +20,7 @@ class LibraryProvider extends ChangeNotifier {
       throw "Playlist already exists!";
     }
 
-    // Workaround for playlist thumbnail (thumb of first vid)
-    // still no custom thumbnails tho
-    playlist = playlist.copyWith(
-      thumbnails: yt.ThumbnailSet(
-        (await _ytClient.getVideos(playlist.id).first).id.value,
-      ),
-    );
+    playlist = await _playlistWithThumbnail(playlist);
 
     entries.add(Playlist.fromYTPlaylist(playlist));
     isar.writeAsyncWith(entries.last, (db, data) => db.playlists.put(data));
@@ -34,6 +28,31 @@ class LibraryProvider extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
-    //
+    for (final (index, playlist) in entries.indexed) {
+      var update = await _ytClient.get(playlist.id);
+      update = await _playlistWithThumbnail(update);
+      entries[index] = Playlist.fromYTPlaylist(update);
+    }
+
+    isar.writeAsyncWith(entries, (db, data) => db.playlists.putAll(data));
+    notifyListeners();
+  }
+
+  void delete(Playlist playlist) {
+    entries.removeWhere((element) => element.id == playlist.id);
+    isar.writeAsync(
+      (isar) => isar.playlists.where().idEqualTo(playlist.id).deleteFirst(),
+    );
+    notifyListeners();
+  }
+
+  // Workaround for playlist thumbnail (thumb of first vid)
+  // still no custom thumbnails tho
+  Future<yt.Playlist> _playlistWithThumbnail(yt.Playlist playlist) async {
+    return playlist.copyWith(
+      thumbnails: yt.ThumbnailSet(
+        (await _ytClient.getVideos(playlist.id).first).id.value,
+      ),
+    );
   }
 }

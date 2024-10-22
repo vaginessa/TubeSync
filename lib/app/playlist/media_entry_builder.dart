@@ -19,6 +19,7 @@ class MediaEntryBuilder extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             child: CachedNetworkImage(
               width: 80,
+              height: double.maxFinite,
               imageUrl: media.thumbnail.low,
               fit: BoxFit.cover,
             ),
@@ -51,12 +52,15 @@ class MediaEntryBuilder extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text.rich(
-            TextSpan(children: [
-              const WidgetSpan(
-                child: Icon(Icons.download_for_offline_rounded, size: 16),
-              ),
-              TextSpan(text: " ${media.author}"),
-            ]),
+            TextSpan(
+              children: [
+                if (media.downloaded == true)
+                  const WidgetSpan(
+                    child: Icon(Icons.download_for_offline_rounded, size: 16),
+                  ),
+                TextSpan(text: media.author),
+              ],
+            ),
           ),
         ],
       ),

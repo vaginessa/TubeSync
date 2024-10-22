@@ -18,6 +18,9 @@ class Media {
   final Thumbnails thumbnail;
 
   @ignore
+  bool? downloaded;
+
+  @ignore
   Duration? get duration =>
       durationMs == null ? null : Duration(milliseconds: durationMs!);
 

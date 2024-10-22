@@ -1,12 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tube_sync/app/library/library_menu_sheet.dart';
 import 'package:tube_sync/model/playlist.dart';
+import 'package:tube_sync/provider/library_provider.dart';
 
-class PlaylistEntryBuilder extends StatelessWidget {
+class LibraryEntryBuilder extends StatelessWidget {
   final Playlist playlist;
   final void Function()? onTap;
 
-  const PlaylistEntryBuilder(this.playlist, {super.key, this.onTap});
+  const LibraryEntryBuilder(this.playlist, {super.key, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +22,7 @@ class PlaylistEntryBuilder extends StatelessWidget {
           tag: "PlaylistThumbnailHero",
           child: CachedNetworkImage(
             width: 80,
+            height: double.maxFinite,
             imageUrl: playlist.thumbnail.low,
             fit: BoxFit.cover,
           ),
@@ -34,7 +38,15 @@ class PlaylistEntryBuilder extends StatelessWidget {
         "${playlist.author} \u2022 ${playlist.videoCount} videos",
       ),
       trailing: IconButton(
-        onPressed: () {},
+        onPressed: () => showModalBottomSheet(
+          context: context,
+          useSafeArea: true,
+          backgroundColor: Colors.transparent,
+          builder: (_) => ChangeNotifierProvider.value(
+            value: context.read<LibraryProvider>(),
+            child: LibraryMenuSheet(playlist),
+          ),
+        ),
         icon: const Icon(Icons.more_vert_rounded, size: 18),
       ),
     );

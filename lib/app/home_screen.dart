@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/app/home/library_tab.dart';
+import 'package:tube_sync/app/library/library_tab.dart';
 import 'package:tube_sync/provider/library_provider.dart';
 
 import 'home_app_bar.dart';
