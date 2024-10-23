@@ -46,6 +46,8 @@ class PlaylistProvider extends ChangeNotifier {
 
   Future<void> downloadMedia(Media media) async {
     await MediaProvider.download(media);
+    medias.firstWhere((e) => e.id == media.id).downloaded =
+        await MediaProvider.isDownloaded(media);
     notifyListeners();
   }
 }

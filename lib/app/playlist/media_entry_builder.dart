@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tube_sync/app/playlist/media_menu_sheet.dart';
 import 'package:tube_sync/model/media.dart';
+import 'package:tube_sync/provider/playlist_provider.dart';
 
 class MediaEntryBuilder extends StatelessWidget {
   final Media media;
@@ -65,7 +68,15 @@ class MediaEntryBuilder extends StatelessWidget {
         ],
       ),
       trailing: IconButton(
-        onPressed: () {},
+        onPressed: () => showModalBottomSheet(
+          context: context,
+          useSafeArea: true,
+          backgroundColor: Colors.transparent,
+          builder: (_) => ChangeNotifierProvider.value(
+            value: context.read<PlaylistProvider>(),
+            child: MediaMenuSheet(media),
+          ),
+        ),
         icon: const Icon(Icons.more_vert_rounded, size: 18),
       ),
     );
