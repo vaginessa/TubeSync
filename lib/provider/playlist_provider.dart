@@ -16,7 +16,7 @@ class PlaylistProvider extends ChangeNotifier {
       final media = isar.medias.where().idEqualTo(id).findFirst();
       if (media != null) medias.add(media);
     }
-    updateDownloadedStatus();
+    updateDownloadedStatus(notify: true);
   }
 
   Future<void> refresh() async {
@@ -34,20 +34,30 @@ class PlaylistProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateDownloadedStatus() async {
-    for (final media in medias) {
-      media.downloaded = await MediaProvider.isDownloaded(media);
+  Future<void> updateDownloadedStatus({
+    Media? onlyOf,
+    bool notify = false,
+  }) async {
+    if (onlyOf != null) {
+      final media = medias.firstWhere((e) => e.id == onlyOf.id);
+      media.downloaded = await MediaProvider.isDownloaded(onlyOf);
+    } else {
+      for (final media in medias) {
+        media.downloaded = await MediaProvider.isDownloaded(media);
+      }
     }
-
-    notifyListeners();
+    if (notify) notifyListeners();
   }
-
-  void notify() => super.notifyListeners();
 
   Future<void> downloadMedia(Media media) async {
     await MediaProvider.download(media);
-    medias.firstWhere((e) => e.id == media.id).downloaded =
-        await MediaProvider.isDownloaded(media);
+    updateDownloadedStatus(onlyOf: media);
+    notifyListeners();
+  }
+
+  Future<void> deleteMedia(Media media) async {
+    await MediaProvider.delete(media);
+    updateDownloadedStatus(onlyOf: media);
     notifyListeners();
   }
 }

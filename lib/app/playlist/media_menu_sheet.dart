@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/model/media.dart';
-import 'package:tube_sync/provider/media_provider.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
 
 class MediaMenuSheet extends StatelessWidget {
@@ -33,7 +32,7 @@ class MediaMenuSheet extends StatelessWidget {
           ),
           if (media.downloaded != true)
             ListTile(
-              onTap: () async {
+              onTap: () {
                 context.read<PlaylistProvider>().downloadMedia(media);
                 Navigator.pop(context);
               },
@@ -42,10 +41,8 @@ class MediaMenuSheet extends StatelessWidget {
             ),
           if (media.downloaded == true)
             ListTile(
-              onTap: () async {
-                await MediaProvider.delete(media);
-                if (!context.mounted) return;
-                context.read<PlaylistProvider>().notify();
+              onTap: () {
+                context.read<PlaylistProvider>().deleteMedia(media);
                 Navigator.pop(context);
               },
               leading: Icon(Icons.delete_rounded),

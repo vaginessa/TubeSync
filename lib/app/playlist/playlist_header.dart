@@ -36,16 +36,22 @@ class PlaylistHeader extends StatelessWidget {
                             playlist(context).thumbnail.medium,
                           ),
                         ),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Colors.transparent,
-                            Colors.transparent,
-                            Colors.black26,
-                            Colors.black38
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          stops: [0, 0.3, 0.8, 1],
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          gradient: const LinearGradient(
+                            colors: [
+                              Colors.transparent,
+                              Colors.transparent,
+                              Colors.black38,
+                              Colors.black54,
+                              Colors.black87,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomLeft,
+                            stops: [0, 0.3, 0.6, 0.7, 1],
+                          ),
                         ),
                       ),
                     ),
