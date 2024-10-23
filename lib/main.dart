@@ -9,6 +9,7 @@ import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/model/playlist.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   final isarDB = Isar.open(
     schemas: [PlaylistSchema, MediaSchema],
     directory: (await getApplicationSupportDirectory()).path,

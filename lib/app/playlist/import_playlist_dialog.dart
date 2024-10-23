@@ -12,11 +12,7 @@ class ImportPlaylistDialog extends StatefulWidget {
 
 class _ImportPlaylistDialogState extends State<ImportPlaylistDialog> {
   final ytClient = YoutubeExplode().playlists;
-  final TextEditingController input = TextEditingController(
-    // TODO Remove placeholder
-    text:
-        "https://www.youtube.com/playlist?list=PLSMjMF34Cr_8X3awjsH7ZWjuvn3T7SUQr",
-  );
+  final TextEditingController input = TextEditingController();
   bool loading = false;
   String? error;
 
