@@ -8,7 +8,10 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       systemOverlayStyle: systemOverlayStyle(context),
-      leading: const Icon(Icons.queue_music_rounded),
+      leading: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Image.asset("tubesync.png"),
+      ),
       titleSpacing: 0,
       title: const Text("TubeSync"),
       actions: [

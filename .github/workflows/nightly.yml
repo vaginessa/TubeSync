@@ -34,8 +34,8 @@ jobs:
       # - name: Generate SplashScreen
       #   run: flutter pub run flutter_native_splash:create
 
-      # - name: Generate Launcher Icons
-      #   run: flutter pub run flutter_launcher_icons -f flutter_launcher_icons.yaml
+      - name: Generate Launcher Icons
+        run: flutter pub run flutter_launcher_icons -f flutter_launcher_icons.yaml
 
       - name: Build Android Release
         run: flutter build apk --profile
