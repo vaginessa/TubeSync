@@ -39,8 +39,10 @@ class PlaylistProvider extends ChangeNotifier {
     bool notify = false,
   }) async {
     if (onlyOf != null) {
-      final media = medias.firstWhere((e) => e.id == onlyOf.id);
-      media.downloaded = await MediaProvider.isDownloaded(onlyOf);
+      final index = medias.indexWhere((e) => e.id == onlyOf.id);
+      // notifying won't work for nested
+      medias[index] = medias[index]
+        ..downloaded = await MediaProvider.isDownloaded(medias[index]);
     } else {
       for (final media in medias) {
         media.downloaded = await MediaProvider.isDownloaded(media);

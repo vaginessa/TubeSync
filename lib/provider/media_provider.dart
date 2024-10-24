@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tube_sync/model/media.dart';
@@ -58,18 +59,18 @@ class MediaProvider {
     final ytClient = yt.YoutubeExplode().videos.streamsClient;
     final manifest = await ytClient.getManifest(media.id);
     final url = manifest.audioOnly.withHighestBitrate().url.toString();
-    await _downloadFile(url, await mediaFilePath(media));
-  }
+    final directory = await mediaFilePath(media);
 
-  // TODO Stream Progress to Notification
-  static Future<File> _downloadFile(String url, String path) async {
-    final httpClient = HttpClient();
-    var request = await httpClient.getUrl(Uri.parse(url));
-    var response = await request.close();
-    var bytes = await consolidateHttpClientResponseBytes(response);
-    File file = File(path);
-    await file.writeAsBytes(bytes);
-    return file;
+    final task = DownloadTask(
+      url: url,
+      displayName: media.title,
+      directory: directory.replaceFirst(media.id, ''),
+      filename: media.id,
+      baseDirectory: BaseDirectory.root,
+      updates: Updates.statusAndProgress,
+    );
+    await FileDownloader().enqueue(task);
+    await FileDownloader().database.recordForId(task.taskId);
   }
 
   static Future<bool> isDownloaded(Media media) async {

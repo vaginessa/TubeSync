@@ -41,6 +41,7 @@ class LibraryEntryBuilder extends StatelessWidget {
         onPressed: () => showModalBottomSheet(
           context: context,
           useSafeArea: true,
+          useRootNavigator: true,
           backgroundColor: Colors.transparent,
           builder: (_) => ChangeNotifierProvider.value(
             value: context.read<LibraryProvider>(),
