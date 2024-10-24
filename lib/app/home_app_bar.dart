@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBar({super.key});
@@ -6,16 +7,24 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      systemOverlayStyle: systemOverlayStyle(context),
       leading: const Icon(Icons.queue_music_rounded),
       titleSpacing: 0,
       title: const Text("TubeSync"),
-      actions: const [
+      actions: [
         CircleAvatar(
           radius: 16,
           child: Icon(Icons.person_rounded),
         ),
-        SizedBox(width: 12)
+        SizedBox(width: 12),
       ],
+    );
+  }
+
+  SystemUiOverlayStyle? systemOverlayStyle(BuildContext context) {
+    final theme = Theme.of(context);
+    return theme.appBarTheme.systemOverlayStyle?.copyWith(
+      systemNavigationBarColor: theme.colorScheme.surfaceContainer,
     );
   }
 
