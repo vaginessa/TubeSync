@@ -8,9 +8,7 @@ import 'package:tube_sync/provider/media_provider.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
 
 class PlaylistTab extends StatefulWidget {
-  const PlaylistTab({super.key, required this.notifier});
-
-  final ValueNotifier<Widget?> notifier;
+  const PlaylistTab({super.key});
 
   @override
   State<PlaylistTab> createState() => _PlaylistTabState();
@@ -44,30 +42,24 @@ class _PlaylistTabState extends State<PlaylistTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        widget.notifier.value = null;
-      },
-      child: Scaffold(
-        primary: false,
-        body: Consumer<PlaylistProvider>(
-          child: PlaylistHeader(onPlayAll: () => launchPlayer()),
-          builder: (context, playlist, header) => RefreshIndicator(
-            key: refreshIndicator,
-            onRefresh: refreshHandler,
-            child: ListView.builder(
-              itemCount: playlist.medias.length + 1,
-              itemBuilder: (context, index) {
-                if (index == 0) return header;
-                return MediaEntryBuilder(
-                  playlist.medias[index - 1],
-                  onTap: () => launchPlayer(
-                    initialMedia: playlist.medias[index - 1],
-                  ),
-                );
-              },
-            ),
+    return Scaffold(
+      primary: false,
+      body: Consumer<PlaylistProvider>(
+        child: PlaylistHeader(onPlayAll: () => launchPlayer()),
+        builder: (context, playlist, header) => RefreshIndicator(
+          key: refreshIndicator,
+          onRefresh: refreshHandler,
+          child: ListView.builder(
+            itemCount: playlist.medias.length + 1,
+            itemBuilder: (context, index) {
+              if (index == 0) return header;
+              return MediaEntryBuilder(
+                playlist.medias[index - 1],
+                onTap: () => launchPlayer(
+                  initialMedia: playlist.medias[index - 1],
+                ),
+              );
+            },
           ),
         ),
       ),

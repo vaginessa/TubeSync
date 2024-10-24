@@ -16,10 +16,10 @@ class LibraryEntryBuilder extends StatelessWidget {
     return ListTile(
       onTap: onTap,
       contentPadding: const EdgeInsets.only(left: 16, right: 8),
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Hero(
-          tag: "PlaylistThumbnailHero",
+      leading: Hero(
+        tag: playlist.id,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
           child: CachedNetworkImage(
             width: 80,
             height: double.maxFinite,

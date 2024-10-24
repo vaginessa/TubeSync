@@ -42,23 +42,18 @@ class HomeScreen extends StatelessWidget {
 }
 
 class HomeTab extends StatelessWidget {
-  HomeTab({super.key});
-
-  final ValueNotifier<Widget?> notifier = ValueNotifier(null);
+  const HomeTab({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: notifier,
-      child: LibraryTab(notifier: notifier),
-      builder: (context, child, root) {
-        return Stack(
-          children: [
-            Offstage(offstage: child != null, child: root),
-            if (child != null) child,
-          ],
-        );
-      },
+    return HeroControllerScope(
+      controller: MaterialApp.createMaterialHeroController(),
+      child: Navigator(
+        onGenerateRoute: (settings) => MaterialPageRoute(
+          settings: settings,
+          builder: (_) => LibraryTab(),
+        ),
+      ),
     );
   }
 }

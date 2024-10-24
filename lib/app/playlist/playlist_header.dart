@@ -20,65 +20,39 @@ class PlaylistHeader extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Stack(
-              alignment: Alignment.center,
               children: [
                 Hero(
-                  tag: "PlaylistThumbnailHero",
-                  child: SizedBox(
-                    height: 120,
-                    width: double.maxFinite,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(
-                            playlist(context).thumbnail.medium,
-                          ),
-                        ),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          gradient: const LinearGradient(
-                            colors: [
-                              Colors.transparent,
-                              Colors.transparent,
-                              Colors.black38,
-                              Colors.black54,
-                              Colors.black87,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomLeft,
-                            stops: [0, 0.3, 0.6, 0.7, 1],
-                          ),
-                        ),
+                  tag: playlist(context).id,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: CachedNetworkImage(
+                      height: 120,
+                      width: double.maxFinite,
+                      imageUrl: playlist(context).thumbnail.high,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          Colors.transparent,
+                          Colors.black38,
+                          Colors.black54,
+                          Colors.black87,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomLeft,
+                        stops: [0, 0.3, 0.6, 0.7, 1],
                       ),
                     ),
                   ),
                 ),
-                Positioned(
-                  left: 8,
-                  bottom: 8,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        playlist(context).title,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: Colors.white,
-                            ),
-                      ),
-                      Text(
-                        "${playlist(context).videoCount} videos \u2022 by ${playlist(context).author}",
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.white,
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
+                Positioned(left: 8, bottom: 8, child: playlistInfo(context)),
               ],
             ),
             const SizedBox(height: 8),
@@ -107,6 +81,28 @@ class PlaylistHeader extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget playlistInfo(BuildContext context) {
+    final titleStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
+          color: Colors.white,
+        );
+
+    final bodyStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: Colors.white,
+        );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(playlist(context).title, style: titleStyle),
+        Text(
+          "${playlist(context).videoCount} videos \u2022 by ${playlist(context).author}",
+          style: bodyStyle,
+        ),
+      ],
     );
   }
 
