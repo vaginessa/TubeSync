@@ -1,13 +1,7 @@
 flutter_launcher_icons:
-  android: "ic_launcher"
+  android: true
   image_path: "tubesync.png"
-#  web:
-#    generate: true
-#    image_path: "assets/amrserver_icon.png"
-#  windows:
-#    generate: true
-#    image_path: "assets/amrserver_icon.png"
-#    icon_size: 48 # min:48, max:256, default: 48
-#  macos:
-#    generate: false
-#    image_path: "assets/amrserver_icon.png"
+  adaptive_icon_foreground_inset: 30
+  adaptive_icon_foreground: "tubesync.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_monochrome: "tubesync.png"

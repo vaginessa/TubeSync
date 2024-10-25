@@ -41,14 +41,15 @@ class AppTheme {
       brightness: brightness,
     );
 
-    final statusBarIconBrightness = switch (brightness) {
+    final systemIconBrightness = switch (brightness) {
       Brightness.dark => Brightness.light,
       Brightness.light => Brightness.dark,
     };
 
     return SystemUiOverlayStyle(
-      statusBarIconBrightness: statusBarIconBrightness,
+      statusBarIconBrightness: systemIconBrightness,
       statusBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: systemIconBrightness,
       systemNavigationBarColor: theme.surface,
     );
   }
