@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tube_sync/app/app_theme.dart';
 import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
 
 class MoreTab extends StatelessWidget {
@@ -31,12 +32,15 @@ class MoreTab extends StatelessWidget {
         Image.asset("tubesync.png", height: 80),
         SizedBox(height: 16),
         Divider(),
-        SwitchListTile(
-          value: false,
-          onChanged: (value) {},
-          secondary: Icon(Icons.palette_rounded),
-          title: Text("Material You"),
-          subtitle: Text("Use dynamic colors"),
+        ValueListenableBuilder(
+          valueListenable: AppTheme.dynamicColors,
+          builder: (_, value, __) => SwitchListTile(
+            value: value,
+            onChanged: (value) => AppTheme.dynamicColors.value = value,
+            secondary: Icon(Icons.palette_rounded),
+            title: Text("Material You"),
+            subtitle: Text("Use dynamic colors"),
+          ),
         ),
         Divider(),
         ListTile(

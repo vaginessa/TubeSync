@@ -4,7 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AppTheme {
+  static ValueNotifier<bool> dynamicColors = ValueNotifier(false);
+
   final Color _color = Colors.red;
+  final ColorScheme? colorScheme;
+
+  AppTheme({this.colorScheme});
 
   ThemeData get light => _themeBuilder(Brightness.light);
 
@@ -12,10 +17,11 @@ class AppTheme {
 
   ThemeData _themeBuilder(Brightness brightness) {
     return ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: _color,
-        brightness: brightness,
-      ),
+      colorScheme: colorScheme ??
+          ColorScheme.fromSeed(
+            seedColor: _color,
+            brightness: brightness,
+          ),
       snackBarTheme: const SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
       ),

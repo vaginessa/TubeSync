@@ -1,4 +1,5 @@
 import 'package:background_downloader/background_downloader.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -38,13 +39,32 @@ void main() async {
   FileDownloader().trackTasks();
 
   runApp(
-    MaterialApp(
-      navigatorKey: rootNavigator,
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme().light,
-      darkTheme: AppTheme().dark,
-      scrollBehavior: AppTheme.scrollBehavior,
-      home: Provider<Isar>(
+    ValueListenableBuilder(
+      valueListenable: AppTheme.dynamicColors,
+      builder: (_, dynamicColor, home) {
+        if (dynamicColor) {
+          return DynamicColorBuilder(
+            builder: (light, dark) => MaterialApp(
+              navigatorKey: rootNavigator,
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme(colorScheme: light).light,
+              darkTheme: AppTheme(colorScheme: dark).dark,
+              scrollBehavior: AppTheme.scrollBehavior,
+              home: home!,
+            ),
+          );
+        }
+
+        return MaterialApp(
+          navigatorKey: rootNavigator,
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme().light,
+          darkTheme: AppTheme().dark,
+          scrollBehavior: AppTheme.scrollBehavior,
+          home: home!,
+        );
+      },
+      child: Provider<Isar>(
         create: (context) => isarDB,
         child: const HomeScreen(),
       ),
