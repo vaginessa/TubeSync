@@ -19,11 +19,11 @@ class PlaylistHeader extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Stack(
-              children: [
-                Hero(
-                  tag: playlist(context).id,
-                  child: ClipRRect(
+            Hero(
+              tag: playlist(context).id,
+              child: Stack(
+                children: [
+                  ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: CachedNetworkImage(
                       height: 120,
@@ -32,28 +32,28 @@ class PlaylistHeader extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   ),
-                ),
-                Positioned.fill(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      gradient: const LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          Colors.transparent,
-                          Colors.black38,
-                          Colors.black54,
-                          Colors.black87,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomLeft,
-                        stops: [0, 0.3, 0.6, 0.7, 1],
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Colors.transparent,
+                            Colors.transparent,
+                            Colors.black38,
+                            Colors.black54,
+                            Colors.black87,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomLeft,
+                          stops: [0, 0.3, 0.6, 0.7, 1],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Positioned(left: 8, bottom: 8, child: playlistInfo(context)),
-              ],
+                  Positioned(left: 8, bottom: 8, child: playlistInfo(context)),
+                ],
+              ),
             ),
             const SizedBox(height: 8),
             Row(

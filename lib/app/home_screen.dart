@@ -49,6 +49,7 @@ class HomeTab extends StatelessWidget {
     return HeroControllerScope(
       controller: MaterialApp.createMaterialHeroController(),
       child: Navigator(
+        
         onGenerateRoute: (settings) => MaterialPageRoute(
           settings: settings,
           builder: (_) => LibraryTab(),

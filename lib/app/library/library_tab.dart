@@ -24,8 +24,19 @@ class LibraryTab extends StatelessWidget {
               return LibraryEntryBuilder(
                 playlist,
                 onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
+                  PageRouteBuilder(
+                    transitionsBuilder: (_, animation, __, child) {
+                      return SlideTransition(
+                        position: animation.drive(
+                          Tween(
+                            begin: Offset(0.0, 1.0),
+                            end: Offset.zero,
+                          ).chain(CurveTween(curve: Curves.ease)),
+                        ),
+                        child: child,
+                      );
+                    },
+                    pageBuilder: (context, _, __) {
                       return ChangeNotifierProvider<PlaylistProvider>(
                         child: PlaylistTab(),
                         create: (_) => PlaylistProvider(

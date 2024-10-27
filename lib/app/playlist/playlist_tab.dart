@@ -18,11 +18,11 @@ class _PlaylistTabState extends State<PlaylistTab>
     with AutomaticKeepAliveClientMixin {
   final GlobalKey<RefreshIndicatorState> refreshIndicator = GlobalKey();
 
-  Future<void> refreshHandler() async {
+  Future<void> refreshHandler({bool emitError = false}) async {
     try {
       await context.read<PlaylistProvider>().refresh();
     } catch (err) {
-      if (!mounted) return;
+      if (!mounted || !emitError) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(err.toString())),
       );
@@ -35,7 +35,12 @@ class _PlaylistTabState extends State<PlaylistTab>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      refreshIndicator.currentState?.show();
+      if (context.read<PlaylistProvider>().medias.isNotEmpty) {
+        // Silently try to refresh
+        refreshHandler(emitError: false);
+      } else {
+        refreshIndicator.currentState?.show();
+      }
     });
   }
 
