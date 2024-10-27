@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/foundation.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
@@ -20,13 +21,13 @@ class MediaProvider {
     nowPlayingNotifier = ValueNotifier(initialMedia ?? playlist.medias.first);
   }
 
-  Future<Source> getMedia() async {
+  Future<Source?> getMedia() async {
     // Try from offline
     final downloaded = File(await mediaFilePath(nowPlaying));
     if (downloaded.existsSync()) return DeviceFileSource(downloaded.path);
 
-    // Fallback to online
-    // TODO Skip on no internet
+    if (!await hasInternet) return null;
+
     final videoManifest = await _ytClient.getManifest(nowPlaying.id);
     final streamUri = videoManifest.audioOnly.withHighestBitrate().url;
     final source = UrlSource(streamUri.toString());
@@ -81,4 +82,6 @@ class MediaProvider {
     final file = File(await mediaFilePath(media));
     if (file.existsSync()) await file.delete();
   }
+
+  Future<bool> get hasInternet => InternetConnection().hasInternetAccess;
 }

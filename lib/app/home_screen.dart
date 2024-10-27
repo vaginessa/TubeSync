@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/library/library_tab.dart';
@@ -16,10 +17,14 @@ class HomeScreen extends StatelessWidget {
       length: HomeNavigationBar.length,
       child: MultiProvider(
         providers: [
+          StreamProvider<InternetStatus>(
+            create: (_) => InternetConnection().onStatusChange,
+            initialData: InternetStatus.connected,
+          ),
           Provider<GlobalKey<ScaffoldState>>(create: (_) => GlobalKey()),
           ChangeNotifierProvider<LibraryProvider>(
             create: (_) => LibraryProvider(context.read<Isar>()),
-          )
+          ),
         ],
         builder: (context, child) {
           return Scaffold(

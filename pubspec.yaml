@@ -35,6 +35,7 @@ dependencies:
   # Youtube/Network Client
   youtube_explode_dart: ^2.3.3
   background_downloader: ^8.6.0
+  internet_connection_checker_plus: ^2.5.2
 
   # Data Management
   provider: ^6.1.2

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tube_sync/app/preference/active_downloads_screen.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
 
@@ -33,6 +34,7 @@ class MediaMenuSheet extends StatelessWidget {
               onTap: () {
                 context.read<PlaylistProvider>().downloadMedia(media);
                 Navigator.pop(context);
+                ActiveDownloadsScreen.showEnqueuedSnackbar(context);
               },
               leading: Icon(Icons.download_rounded),
               title: Text("Download"),

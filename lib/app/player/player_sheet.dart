@@ -30,11 +30,16 @@ class _PlayerSheetState extends State<PlayerSheet> {
       buffering.value = true;
       if (mounted) await player.pause();
 
-      if (mounted) {
-        final source = await mediaProvider(context).getMedia();
-        await player.setSource(source);
+      if (!mounted) return;
+      final source = await mediaProvider(context).getMedia();
+
+      // No internet / broken media. Skip to next
+      if (source == null) {
+        if (mounted) context.read<MediaProvider>().nextTrack();
+        return;
       }
 
+      await player.setSource(source);
       if (mounted) await player.resume();
     } catch (err) {
       if (!mounted) return;
@@ -53,6 +58,10 @@ class _PlayerSheetState extends State<PlayerSheet> {
     mediaProvider(context).nowPlayingNotifier.addListener(() async {
       await playerQueue?.cancel();
       playerQueue = CancelableOperation.fromFuture(beginPlay());
+    });
+
+    player.onPlayerComplete.listen((_) {
+      if (mounted) context.read<MediaProvider>().nextTrack;
     });
   }
 

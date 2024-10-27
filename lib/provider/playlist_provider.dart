@@ -63,6 +63,13 @@ class PlaylistProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> downloadAll() async {
+    //
+  }
+
+
+
+
   @override
   void dispose() {
     super.dispose();
@@ -72,4 +79,5 @@ class PlaylistProvider extends ChangeNotifier {
   bool _mounted = false;
 
   bool get mounted => _mounted;
+
 }

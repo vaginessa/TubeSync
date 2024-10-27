@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tube_sync/app/playlist/playlist_menu_sheet.dart';
 import 'package:tube_sync/model/playlist.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
 
@@ -72,7 +73,16 @@ class PlaylistHeader extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 IconButton.filledTonal(
-                  onPressed: () {},
+                  onPressed: () => showModalBottomSheet(
+                    context: context,
+                    useSafeArea: true,
+                    useRootNavigator: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) => ChangeNotifierProvider.value(
+                      value: context.read<PlaylistProvider>(),
+                      child: PlaylistMenuSheet(),
+                    ),
+                  ),
                   icon: const Icon(Icons.more_horiz_rounded),
                 ),
               ],
