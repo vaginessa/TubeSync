@@ -31,6 +31,11 @@ class AppTheme {
       appBarTheme: AppBarTheme(
         systemOverlayStyle: systemOverlayStyle(brightness),
       ),
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+        },
+      ),
       useMaterial3: true,
     );
   }

@@ -42,17 +42,22 @@ class HomeScreen extends StatelessWidget {
 }
 
 class HomeTab extends StatelessWidget {
-  const HomeTab({super.key});
+  HomeTab({super.key});
+
+  final homeNavigator = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
     return HeroControllerScope(
       controller: MaterialApp.createMaterialHeroController(),
-      child: Navigator(
-        
-        onGenerateRoute: (settings) => MaterialPageRoute(
-          settings: settings,
-          builder: (_) => LibraryTab(),
+      child: NavigatorPopHandler(
+        onPop: () => homeNavigator.currentState?.pop(),
+        child: Navigator(
+          key: homeNavigator,
+          onGenerateRoute: (settings) => MaterialPageRoute(
+            settings: settings,
+            builder: (_) => LibraryTab(),
+          ),
         ),
       ),
     );

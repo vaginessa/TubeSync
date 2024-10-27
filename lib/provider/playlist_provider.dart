@@ -48,7 +48,7 @@ class PlaylistProvider extends ChangeNotifier {
         media.downloaded = await MediaProvider.isDownloaded(media);
       }
     }
-    if (notify) notifyListeners();
+    if (notify && mounted) notifyListeners();
   }
 
   Future<void> downloadMedia(Media media) async {
@@ -62,4 +62,14 @@ class PlaylistProvider extends ChangeNotifier {
     updateDownloadedStatus(onlyOf: media);
     notifyListeners();
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _mounted = false;
+  }
+
+  bool _mounted = false;
+
+  bool get mounted => _mounted;
 }
