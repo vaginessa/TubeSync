@@ -63,12 +63,7 @@ class PlaylistProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> downloadAll() async {
-    //
-  }
-
-
-
+  Future<void> downloadAll() async => medias.forEach(downloadMedia);
 
   @override
   void dispose() {
@@ -79,5 +74,4 @@ class PlaylistProvider extends ChangeNotifier {
   bool _mounted = false;
 
   bool get mounted => _mounted;
-
 }

@@ -6,7 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/app_theme.dart';
 import 'package:tube_sync/app/home_screen.dart';
-import 'package:tube_sync/app/preference/active_downloads_screen.dart';
+import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/model/playlist.dart';
 

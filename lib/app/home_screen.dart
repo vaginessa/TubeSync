@@ -3,6 +3,7 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/library/library_tab.dart';
+import 'package:tube_sync/app/more/more_tab.dart';
 import 'package:tube_sync/provider/library_provider.dart';
 
 import 'home_app_bar.dart';
@@ -36,10 +37,7 @@ class HomeScreen extends StatelessWidget {
         },
         child: TabBarView(
           physics: const NeverScrollableScrollPhysics(),
-          children: [
-            HomeTab(),
-            const Center(child: Text("🤯🤯🤯🤯")),
-          ],
+          children: [HomeTab(), MoreTab()],
         ),
       ),
     );

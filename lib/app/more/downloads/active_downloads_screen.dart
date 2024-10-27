@@ -1,5 +1,6 @@
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
+import 'package:tube_sync/app/more/downloads/download_entry_builder.dart';
 import 'package:tube_sync/main.dart';
 
 class ActiveDownloadsScreen extends StatefulWidget {
@@ -65,18 +66,47 @@ class _ActiveDownloadsScreenState extends State<ActiveDownloadsScreen> {
     FileDownloader().unregisterCallbacks(callback: taskStatusCallback);
   }
 
+  Future<void> cancelAll() async {
+    Iterable<TaskRecord> records = await FileDownloader().database.allRecords();
+
+    await FileDownloader().cancelTasksWithIds(
+      records.map((e) => e.taskId).toList(),
+    );
+    await FileDownloader().database.deleteAllRecords();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Active Downloads")),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: Icon(Icons.clear_all_rounded),
+        label: Text("Cancel All"),
+        onPressed: cancelAll,
+      ),
       body: FutureBuilder<List<TaskRecord>>(
         future: FileDownloader().database.allRecords(),
-        builder: (context, snapshot) => ListView.builder(
-          itemCount: snapshot.data?.length ?? 0,
-          itemBuilder: (context, index) {
-            return Text(snapshot.data![index].toString());
-          },
-        ),
+        builder: (context, snapshot) {
+          if (snapshot.requireData.isEmpty) {
+            return Center(
+              child: Text("No Active Downloads!"),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data?.length ?? 0,
+            padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight * 2),
+            itemBuilder: (context, index) {
+              final entry = snapshot.requireData[index];
+              return DownloadEntryBuilder(
+                key: ValueKey(entry.hashCode),
+                index: index,
+                entry: entry,
+              );
+            },
+          );
+        },
       ),
     );
   }
@@ -89,9 +119,10 @@ class _ActiveDownloadsScreenState extends State<ActiveDownloadsScreen> {
       case TaskStatus.failed:
       case TaskStatus.notFound:
       case TaskStatus.canceled:
-        FileDownloader().database.deleteRecordWithId(update.task.taskId).then(
-              (_) => setState(() {}),
-            );
+        FileDownloader()
+            .database
+            .deleteRecordWithId(update.task.taskId)
+            .whenComplete(() => setState(() {}));
         break;
 
       default:
