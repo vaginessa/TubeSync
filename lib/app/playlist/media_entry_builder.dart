@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tube_sync/app/extensions.dart';
 import 'package:tube_sync/app/playlist/media_menu_sheet.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
@@ -36,7 +37,7 @@ class MediaEntryBuilder extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                videoDuration(media.duration),
+                media.duration.formatHHMM(),
                 style: const TextStyle(color: Colors.white),
               ),
             ),
@@ -81,14 +82,5 @@ class MediaEntryBuilder extends StatelessWidget {
         icon: const Icon(Icons.more_vert_rounded, size: 18),
       ),
     );
-  }
-
-  String videoDuration(Duration? d) {
-    if (d == null) return " ??:?? ";
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
-    final String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
-    final hour = twoDigits(d.inHours);
-    return " ${hour == '00' ? '' : '$hour:'}$twoDigitMinutes:$twoDigitSeconds ";
   }
 }
