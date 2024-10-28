@@ -10,6 +10,7 @@ import 'package:tube_sync/app/home_screen.dart';
 import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/model/playlist.dart';
+import 'package:tube_sync/model/preferences.dart';
 
 final rootNavigator = GlobalKey<NavigatorState>();
 
@@ -18,8 +19,12 @@ void main() async {
 
   // DB Initialization
   final isarDB = Isar.open(
-    schemas: [PlaylistSchema, MediaSchema],
+    schemas: [PreferencesSchema, PlaylistSchema, MediaSchema],
     directory: (await getApplicationSupportDirectory()).path,
+  );
+
+  AppTheme.dynamicColors.value = isarDB.preferences.getValue<bool>(
+    Preference.materialYou,
   );
 
   // Background downloader notifications
@@ -42,7 +47,7 @@ void main() async {
     ValueListenableBuilder(
       valueListenable: AppTheme.dynamicColors,
       builder: (_, dynamicColor, home) {
-        if (dynamicColor) {
+        if (dynamicColor == true) {
           return DynamicColorBuilder(
             builder: (light, dark) => MaterialApp(
               navigatorKey: rootNavigator,

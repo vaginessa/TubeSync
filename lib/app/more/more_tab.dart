@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
+import 'package:provider/provider.dart';
 import 'package:tube_sync/app/app_theme.dart';
 import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
+import 'package:tube_sync/model/preferences.dart';
 
 class MoreTab extends StatelessWidget {
   MoreTab({super.key});
@@ -29,14 +32,24 @@ class MoreTab extends StatelessWidget {
       children: [
         // BigAss Branding
         SizedBox(height: 8),
-        Image.asset("tubesync.png", height: 80),
+        Image.asset(
+          "tubesync.png",
+          height: 80,
+          color: Theme.of(context).colorScheme.primary,
+        ),
         SizedBox(height: 16),
         Divider(),
         ValueListenableBuilder(
           valueListenable: AppTheme.dynamicColors,
           builder: (_, value, __) => SwitchListTile(
-            value: value,
-            onChanged: (value) => AppTheme.dynamicColors.value = value,
+            value: value == true,
+            onChanged: (value) {
+              AppTheme.dynamicColors.value = value;
+              context.read<Isar>().preferences.setValue(
+                    Preference.materialYou,
+                    value,
+                  );
+            },
             secondary: Icon(Icons.palette_rounded),
             title: Text("Material You"),
             subtitle: Text("Use dynamic colors"),

@@ -6,10 +6,9 @@ part 'playlist.g.dart';
 
 @collection
 class Playlist {
-  // ignore: unused_field isar auto-generated id
-  Id? _id;
-
-  final String id, title, author;
+  @Id()
+  final String id;
+  final String title, author;
 
   final String? description;
 
@@ -48,6 +47,6 @@ class Playlist {
 
   @override
   String toString() {
-    return 'Playlist{_id: $_id, id: $id, title: $title, author: $author, description: $description, thumbnail: $thumbnail, videoCount: $videoCount, videoIds: $videoIds}';
+    return 'Playlist{id: $id, title: $title, author: $author, description: $description, thumbnail: $thumbnail, videoCount: $videoCount, videoIds: $videoIds}';
   }
 }

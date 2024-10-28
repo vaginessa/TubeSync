@@ -6,10 +6,9 @@ part 'media.g.dart';
 
 @collection
 class Media {
-  // ignore: unused_field isar auto-generated id
-  Id? _id;
-
-  final String id, title, author;
+  @Id()
+  final String id;
+  final String title, author;
 
   final String? description;
 
@@ -52,6 +51,6 @@ class Media {
 
   @override
   String toString() {
-    return 'Media{_id: $_id, id: $id, title: $title, author: $author, description: $description, durationMs: $durationMs, thumbnail: $thumbnail}';
+    return 'Media{id: $id, title: $title, author: $author, description: $description, durationMs: $durationMs, thumbnail: $thumbnail}';
   }
 }

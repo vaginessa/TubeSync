@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AppTheme {
-  static ValueNotifier<bool> dynamicColors = ValueNotifier(false);
+  static ValueNotifier<bool?> dynamicColors = ValueNotifier(false);
 
   final Color _color = Colors.red;
   final ColorScheme? colorScheme;
@@ -37,9 +37,10 @@ class AppTheme {
       appBarTheme: AppBarTheme(
         systemOverlayStyle: systemOverlayStyle(brightness),
       ),
-      pageTransitionsTheme: const PageTransitionsTheme(
+      pageTransitionsTheme: PageTransitionsTheme(
         builders: {
-          TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+          for (final platform in TargetPlatform.values)
+            platform: CupertinoPageTransitionsBuilder()
         },
       ),
       useMaterial3: true,
