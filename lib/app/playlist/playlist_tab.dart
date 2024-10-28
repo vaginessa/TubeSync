@@ -7,53 +7,17 @@ import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/provider/player_provider.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
 
-class PlaylistTab extends StatefulWidget {
+class PlaylistTab extends StatelessWidget {
   const PlaylistTab({super.key});
 
   @override
-  State<PlaylistTab> createState() => _PlaylistTabState();
-}
-
-class _PlaylistTabState extends State<PlaylistTab>
-    with AutomaticKeepAliveClientMixin {
-  final GlobalKey<RefreshIndicatorState> refreshIndicator = GlobalKey();
-
-  Future<void> refreshHandler({bool emitError = false}) async {
-    try {
-      await context.read<PlaylistProvider>().refresh();
-    } catch (err) {
-      if (!mounted || !emitError) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(err.toString())),
-      );
-    } finally {
-      if (mounted) setState(() {});
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (context.read<PlaylistProvider>().medias.isNotEmpty) {
-        // Silently try to refresh
-        refreshHandler(emitError: false);
-      } else {
-        refreshIndicator.currentState?.show();
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       primary: false,
       body: Consumer<PlaylistProvider>(
-        child: PlaylistHeader(onPlayAll: () => launchPlayer()),
+        child: PlaylistHeader(onPlayAll: () => launchPlayer(context: context)),
         builder: (context, playlist, header) => RefreshIndicator(
-          key: refreshIndicator,
-          onRefresh: refreshHandler,
+          onRefresh: playlist.refresh,
           child: ListView.builder(
             padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight * 2),
             itemCount: playlist.medias.length + 1,
@@ -62,6 +26,7 @@ class _PlaylistTabState extends State<PlaylistTab>
               return MediaEntryBuilder(
                 playlist.medias[index - 1],
                 onTap: () => launchPlayer(
+                  context: context,
                   initialMedia: playlist.medias[index - 1],
                 ),
               );
@@ -72,8 +37,8 @@ class _PlaylistTabState extends State<PlaylistTab>
     );
   }
 
-  void launchPlayer({Media? initialMedia}) {
-    scaffold?.showBottomSheet(
+  void launchPlayer({required BuildContext context, Media? initialMedia}) {
+    scaffold(context)?.showBottomSheet(
       (_) => Provider<PlayerProvider>(
         create: (_) => PlayerProvider(
           context.read<PlaylistProvider>(),
@@ -88,9 +53,6 @@ class _PlaylistTabState extends State<PlaylistTab>
     );
   }
 
-  ScaffoldState? get scaffold =>
+  ScaffoldState? scaffold(BuildContext context) =>
       context.read<GlobalKey<ScaffoldState>>().currentState;
-
-  @override
-  bool get wantKeepAlive => true;
 }

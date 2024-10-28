@@ -21,7 +21,7 @@ class _ImportPlaylistDialogState extends State<ImportPlaylistDialog> {
       error = null;
       setState(() => loading = true);
       if (input.text.isEmpty) throw "Empty url!";
-      await context.read<LibraryProvider>().importPlaylist(input.text);
+      await context.read<LibraryProvider>().importPlaylist(input.text.trim());
       if (mounted) Navigator.pop(context);
     } catch (e) {
       error = e.toString();

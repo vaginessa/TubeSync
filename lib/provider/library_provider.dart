@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:tube_sync/model/playlist.dart';
+import 'package:tube_sync/provider/media_provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' as yt;
 
 class LibraryProvider extends ChangeNotifier {
@@ -10,6 +11,8 @@ class LibraryProvider extends ChangeNotifier {
 
   LibraryProvider(this.isar) {
     entries.addAll(isar.playlists.where().findAll());
+    notifyListeners();
+    refresh();
   }
 
   Future<void> importPlaylist(String url) async {
@@ -28,10 +31,15 @@ class LibraryProvider extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
+    if (!await MediaProvider.hasInternet) return;
     for (final (index, playlist) in entries.indexed) {
-      var update = await _ytClient.get(playlist.id);
-      update = await _playlistWithThumbnail(update);
-      entries[index] = Playlist.fromYTPlaylist(update);
+      try {
+        var update = await _ytClient.get(playlist.id);
+        update = await _playlistWithThumbnail(update);
+        entries[index] = Playlist.fromYTPlaylist(update);
+      } catch (_) {
+        // TODO Error
+      }
     }
 
     isar.writeAsyncWith(entries, (db, data) => db.playlists.putAll(data));
@@ -54,5 +62,18 @@ class LibraryProvider extends ChangeNotifier {
         (await _ytClient.getVideos(playlist.id).first).id.value,
       ),
     );
+  }
+
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) super.notifyListeners();
   }
 }
