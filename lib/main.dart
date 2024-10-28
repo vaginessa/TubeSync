@@ -2,6 +2,7 @@ import 'package:background_downloader/background_downloader.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
+import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -47,7 +48,9 @@ void main() async {
 
   // Using the database to track Tasks
   FileDownloader().trackTasks();
+
   await MediaProvider().init();
+  JustAudioMediaKit.ensureInitialized();
 
   runApp(
     ValueListenableBuilder(

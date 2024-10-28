@@ -1,6 +1,6 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/player/expanded_player_sheet.dart';
 import 'package:tube_sync/model/media.dart';
@@ -16,11 +16,11 @@ class MiniPlayerSheet extends StatelessWidget {
       key: const Key("MiniPlayer"),
       confirmDismiss: (direction) {
         switch (direction) {
-          case DismissDirection.endToStart:
+          case DismissDirection.startToEnd:
             context.read<PlayerProvider>().previousTrack();
             return Future.value(false);
 
-          case DismissDirection.startToEnd:
+          case DismissDirection.endToStart:
             context.read<PlayerProvider>().nextTrack();
             return Future.value(false);
 
@@ -84,38 +84,18 @@ class MiniPlayerSheet extends StatelessWidget {
                   ),
                 ],
               ),
-              //Some Actions
+              //Player Actions
               trailing: StreamBuilder(
-                stream: player(context).onPlayerStateChanged,
-                builder: (context, snapshot) {
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (snapshot.hasData) ...{
-                        if (snapshot.requireData == PlayerState.playing)
-                          IconButton(
-                            onPressed: () => player(context).pause(),
-                            icon: const Icon(Icons.pause_rounded),
-                          )
-                        else if (!buffering(context))
-                          IconButton(
-                            onPressed: () => player(context).resume(),
-                            icon: const Icon(Icons.play_arrow_rounded),
-                          ),
-                      },
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.close_rounded),
-                      ),
-                    ],
-                  );
-                },
+                stream: player(context).playerStateStream,
+                initialData: player(context).playerState,
+                builder: actions,
               ),
             ),
           ),
           // Progress Indicator
           StreamBuilder<Duration>(
-            stream: player(context).onPositionChanged,
+            stream: player(context).positionStream,
+            initialData: player(context).position,
             builder: (context, snapshot) => LinearProgressIndicator(
               minHeight: 1,
               value: playerProgress(context, snapshot),
@@ -123,6 +103,33 @@ class MiniPlayerSheet extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+
+  Widget actions(BuildContext context, AsyncSnapshot<PlayerState> snapshot) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (snapshot.requireData.playing)
+          IconButton(
+            onPressed: () => player(context).pause(),
+            icon: const Icon(Icons.pause_rounded),
+          )
+        else ...{
+          switch (snapshot.requireData.processingState) {
+            ProcessingState.loading => SizedBox(),
+            ProcessingState.buffering => CircularProgressIndicator(),
+            _ => IconButton(
+                onPressed: () => player(context).play(),
+                icon: const Icon(Icons.play_arrow_rounded),
+              ),
+          }
+        },
+        IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.close_rounded),
+        ),
+      ],
     );
   }
 
@@ -143,14 +150,19 @@ class MiniPlayerSheet extends StatelessWidget {
     BuildContext context,
     AsyncSnapshot<Duration> snapshot,
   ) {
-    if (buffering(context) || !snapshot.hasData) return null;
+    switch (player(context).playerState.processingState) {
+      case ProcessingState.buffering:
+      case ProcessingState.loading:
+        return null;
+
+      default:
+        break;
+    }
+
     final vid = context.read<PlayerProvider>().nowPlaying.value;
     if (vid.durationMs == null) return null;
     return snapshot.requireData.inMilliseconds / vid.durationMs!;
   }
-
-  bool buffering(BuildContext context) =>
-      context.read<PlayerProvider>().buffering.value;
 
   String playlistInfo(BuildContext context) =>
       "${playlist(context).title} by ${playlist(context).author}";

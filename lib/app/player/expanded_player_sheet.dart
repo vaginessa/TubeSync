@@ -1,6 +1,6 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/extensions.dart';
 import 'package:tube_sync/model/media.dart';
@@ -63,43 +63,40 @@ class ExpandedPlayerSheet extends StatelessWidget {
           ),
         ),
         // SeekBar
-        FutureBuilder(
-          future: player(context).getCurrentPosition(),
-          builder: (context, position) => StreamBuilder<Duration>(
-            stream: player(context).onPositionChanged,
-            initialData: position.data ?? Duration(),
-            builder: (context, currentPosition) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(currentPosition.data.formatHHMM()),
-                        Spacer(),
-                        Text(nowPlaying(context).duration.formatHHMM()),
-                      ],
+        StreamBuilder<Duration>(
+          stream: player(context).positionStream,
+          initialData: player(context).position,
+          builder: (context, currentPosition) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(currentPosition.data.formatHHMM()),
+                      Spacer(),
+                      Text(nowPlaying(context).duration.formatHHMM()),
+                    ],
+                  ),
+                  Slider(
+                    onChanged: (value) => player(context).seek(
+                      Duration(seconds: value.toInt()),
                     ),
-                    Slider(
-                      onChanged: (value) => player(context).seek(
-                        Duration(seconds: value.toInt()),
-                      ),
-                      max: nowPlaying(context).duration!.inSeconds.toDouble(),
-                      value: currentPosition.requireData.inSeconds.toDouble(),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+                    max: nowPlaying(context).duration!.inSeconds.toDouble(),
+                    value: currentPosition.requireData.inSeconds.toDouble(),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
 
         StreamBuilder(
-          stream: player(context).onPlayerStateChanged,
-          initialData: player(context).state,
+          stream: player(context).playerStateStream,
+          initialData: player(context).playerState,
           builder: (context, snapshot) => Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -109,18 +106,21 @@ class ExpandedPlayerSheet extends StatelessWidget {
                     : playerProvider(context).previousTrack,
                 icon: Icon(Icons.skip_previous_rounded),
               ),
-              if (snapshot.requireData == PlayerState.playing)
+              if (snapshot.requireData.playing)
                 IconButton(
                   onPressed: () => player(context).pause(),
                   icon: const Icon(Icons.pause_rounded),
                 )
-              else if (!buffering(context))
-                IconButton(
-                  onPressed: () => player(context).resume(),
-                  icon: const Icon(Icons.play_arrow_rounded),
-                )
-              else
-                CircularProgressIndicator(),
+              else ...{
+                switch (snapshot.requireData.processingState) {
+                  ProcessingState.loading => CircularProgressIndicator(),
+                  ProcessingState.buffering => CircularProgressIndicator(),
+                  _ => IconButton(
+                      onPressed: () => player(context).play(),
+                      icon: const Icon(Icons.play_arrow_rounded),
+                    ),
+                }
+              },
               IconButton(
                 onPressed: playerProvider(context).hasNoNext
                     ? null
@@ -137,9 +137,6 @@ class ExpandedPlayerSheet extends StatelessWidget {
 
   PlayerProvider playerProvider(BuildContext context) =>
       context.read<PlayerProvider>();
-
-  bool buffering(BuildContext context) =>
-      playerProvider(context).buffering.value;
 
   String playlistInfo(BuildContext context) =>
       "${playlist(context).title} by ${playlist(context).author}";

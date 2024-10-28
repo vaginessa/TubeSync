@@ -55,7 +55,7 @@ packages:
     source: hosted
     version: "2.11.0"
   audio_service:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: audio_service
       sha256: "9dd5ba7e77567b290c35908b1950d61485b4dfdd3a0ac398e98cfeec04651b75"
@@ -86,62 +86,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.21"
-  audioplayers:
-    dependency: "direct main"
-    description:
-      name: audioplayers
-      sha256: c346ba5a39dc208f1bab55fc239855f573d69b0e832402114bf0b793622adc4d
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.1.0"
-  audioplayers_android:
-    dependency: transitive
-    description:
-      name: audioplayers_android
-      sha256: de576b890befe27175c2f511ba8b742bec83765fa97c3ce4282bba46212f58e4
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.0.0"
-  audioplayers_darwin:
-    dependency: transitive
-    description:
-      name: audioplayers_darwin
-      sha256: e507887f3ff18d8e5a10a668d7bedc28206b12e10b98347797257c6ae1019c3b
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.0"
-  audioplayers_linux:
-    dependency: transitive
-    description:
-      name: audioplayers_linux
-      sha256: "3d3d244c90436115417f170426ce768856d8fe4dfc5ed66a049d2890acfa82f9"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.0"
-  audioplayers_platform_interface:
-    dependency: transitive
-    description:
-      name: audioplayers_platform_interface
-      sha256: "6834dd48dfb7bc6c2404998ebdd161f79cd3774a7e6779e1348d54a3bfdcfaa5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.0.0"
-  audioplayers_web:
-    dependency: transitive
-    description:
-      name: audioplayers_web
-      sha256: "3609bdf0e05e66a3d9750ee40b1e37f2a622c4edb796cc600b53a90a30a2ace4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.0.1"
-  audioplayers_windows:
-    dependency: transitive
-    description:
-      name: audioplayers_windows
-      sha256: "8605762dddba992138d476f6a0c3afd9df30ac5b96039929063eceed416795c2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.0"
   background_downloader:
     dependency: "direct main"
     description:
@@ -557,6 +501,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.9.0"
+  just_audio:
+    dependency: "direct main"
+    description:
+      name: just_audio
+      sha256: b41646a8241688f1d99c2e69c4da2bb26aa4b3a99795f6ff205c2a165e033fda
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.41"
+  just_audio_background:
+    dependency: "direct main"
+    description:
+      name: just_audio_background
+      sha256: "7547b076d5445431c780b0915707f18baa6d9588077d5d8f811e8a77b4e0bec5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1-beta.13"
+  just_audio_media_kit:
+    dependency: "direct main"
+    description:
+      name: just_audio_media_kit
+      sha256: "9f3517213dfc7bbaf6980656feb66c35600f114c7efc0b5b3f4476cd5c18b45e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.6"
+  just_audio_platform_interface:
+    dependency: transitive
+    description:
+      name: just_audio_platform_interface
+      sha256: "0243828cce503c8366cc2090cefb2b3c871aa8ed2f520670d76fd47aa1ab2790"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.3.0"
+  just_audio_web:
+    dependency: transitive
+    description:
+      name: just_audio_web
+      sha256: "9a98035b8b24b40749507687520ec5ab404e291d2b0937823ff45d92cb18d448"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.13"
+  just_waveform:
+    dependency: "direct main"
+    description:
+      name: just_waveform
+      sha256: a566b92e8a2cae00a914918bbd37227a09551b98dc60bea20a52cf736df0bf51
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.5"
   leak_tracker:
     dependency: transitive
     description:
@@ -629,6 +621,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.1"
+  media_kit:
+    dependency: transitive
+    description:
+      name: media_kit
+      sha256: "1f1deee148533d75129a6f38251ff8388e33ee05fc2d20a6a80e57d6051b7b62"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.11"
+  media_kit_libs_linux:
+    dependency: "direct main"
+    description:
+      name: media_kit_libs_linux
+      sha256: e186891c31daa6bedab4d74dcdb4e8adfccc7d786bfed6ad81fe24a3b3010310
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.3"
+  media_kit_libs_windows_audio:
+    dependency: "direct main"
+    description:
+      name: media_kit_libs_windows_audio
+      sha256: c2fd558cc87b9d89a801141fcdffe02e338a3b21a41a18fbd63d5b221a1b8e53
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.9"
   meta:
     dependency: transitive
     description:
@@ -845,6 +861,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
+  safe_local_storage:
+    dependency: transitive
+    description:
+      name: safe_local_storage
+      sha256: ede4eb6cb7d88a116b3d3bf1df70790b9e2038bc37cb19112e381217c74d9440
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   shelf:
     dependency: transitive
     description:
@@ -1018,6 +1042,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.2"
+  universal_platform:
+    dependency: transitive
+    description:
+      name: universal_platform
+      sha256: "64e16458a0ea9b99260ceb5467a214c1f298d647c659af1bff6d3bf82536b1ec"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
+  uri_parser:
+    dependency: transitive
+    description:
+      name: uri_parser
+      sha256: "6543c9fd86d2862fac55d800a43e67c0dcd1a41677cb69c2f8edfe73bbcf1835"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   uuid:
     dependency: transitive
     description:
