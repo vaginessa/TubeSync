@@ -8,54 +8,89 @@ import 'package:tube_sync/model/media.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' as yt;
 
 class MediaProvider {
+  MediaProvider._();
+
+  static final MediaProvider _instance = MediaProvider._();
+
+  factory MediaProvider() => _instance;
+
+  Future<void> init() async {
+    final dir = await getApplicationCacheDirectory();
+    mediaFileDir = dir.path + Platform.pathSeparator;
+  }
+
+  late final String mediaFileDir;
   final _ytClient = yt.YoutubeExplode().videos.streamsClient;
+
+  bool _abortQueueing = false;
+
+  File mediaFile(Media media) => File(mediaFileDir + media.id);
 
   Future<Source?> getMedia(Media media) async {
     // Try from offline
-    final downloaded = File(await mediaFilePath(media));
+    final downloaded = mediaFile(media);
     if (downloaded.existsSync()) return DeviceFileSource(downloaded.path);
 
     if (!await hasInternet) return null;
 
     final videoManifest = await _ytClient.getManifest(media.id);
     final streamUri = videoManifest.audioOnly.withHighestBitrate().url;
-    final source = UrlSource(streamUri.toString());
-
-    return source;
+    return UrlSource(streamUri.toString());
   }
 
-  static Future<String> mediaFilePath(Media media) async {
-    // return "/home/khaled/.cache/tubesync.app/${media.id}";
-    final dir = await getApplicationCacheDirectory();
-    return dir.path + Platform.pathSeparator + media.id;
+  Future<void> download(Media media) async {
+    try {
+      final manifest = await _ytClient.getManifest(media.id);
+      final url = manifest.audioOnly.withHighestBitrate().url.toString();
+
+      final task = DownloadTask(
+        url: url,
+        displayName: media.title,
+        directory: mediaFileDir,
+        filename: media.id,
+        baseDirectory: BaseDirectory.root,
+        updates: Updates.statusAndProgress,
+      );
+
+      await FileDownloader().enqueue(task);
+    } catch (_) {
+      //TODO Error
+    }
   }
 
-  static Future<void> download(Media media) async {
-    final ytClient = yt.YoutubeExplode().videos.streamsClient;
-    final manifest = await ytClient.getManifest(media.id);
-    final url = manifest.audioOnly.withHighestBitrate().url.toString();
-    final directory = await mediaFilePath(media);
+  Future<void> downloadAll(List<Media> medias) async {
+    _abortQueueing = false;
+    for (final media in medias) {
+      try {
+        if (mediaFile(media).existsSync()) continue;
 
-    final task = DownloadTask(
-      url: url,
-      displayName: media.title,
-      directory: directory.replaceFirst(media.id, ''),
-      filename: media.id,
-      baseDirectory: BaseDirectory.root,
-      updates: Updates.statusAndProgress,
-    );
-    await FileDownloader().enqueue(task);
-    await FileDownloader().database.recordForId(task.taskId);
+        final manifest = await _ytClient.getManifest(media.id);
+        final url = manifest.audioOnly.withHighestBitrate().url.toString();
+
+        if (_abortQueueing) break;
+
+        FileDownloader().enqueue(DownloadTask(
+          url: url,
+          displayName: media.title,
+          directory: mediaFileDir,
+          filename: media.id,
+          baseDirectory: BaseDirectory.root,
+          updates: Updates.statusAndProgress,
+        ));
+      } catch (_) {
+        // TODO Error
+      }
+    }
   }
 
-  static Future<bool> isDownloaded(Media media) async {
-    return File(await mediaFilePath(media)).exists();
-  }
+  void abortQueueing() => _abortQueueing = true;
 
-  static Future<void> delete(Media media) async {
-    final file = File(await mediaFilePath(media));
+  Future<bool> isDownloaded(Media media) async => mediaFile(media).exists();
+
+  Future<void> delete(Media media) async {
+    final file = mediaFile(media);
     if (file.existsSync()) await file.delete();
   }
 
-  Future<bool> get hasInternet => InternetConnection().hasInternetAccess;
+  static Future<bool> get hasInternet => InternetConnection().hasInternetAccess;
 }

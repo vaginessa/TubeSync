@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
+import 'package:tube_sync/extensions.dart';
 
 class DownloadEntryBuilder extends StatelessWidget {
   const DownloadEntryBuilder({
@@ -26,7 +27,11 @@ class DownloadEntryBuilder extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: [Text(getFileSizeString(bytes: entry.expectedFileSize))],
+            children: [
+              Text(entry.status.name.normalizeCamelCase().toCapitalCase()),
+              Text(" \u2022 "),
+              Text(getFileSizeString(bytes: entry.expectedFileSize))
+            ],
           ),
           LinearProgressIndicator(value: entry.progress)
         ],

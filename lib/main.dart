@@ -11,6 +11,7 @@ import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/model/playlist.dart';
 import 'package:tube_sync/model/preferences.dart';
+import 'package:tube_sync/provider/media_provider.dart';
 
 final rootNavigator = GlobalKey<NavigatorState>();
 
@@ -24,6 +25,11 @@ void main() async {
 
   AppTheme.dynamicColors.value = isarDB.preferences.getValue<bool>(
     Preference.materialYou,
+  );
+
+  // Limit concurrent downloads
+  await FileDownloader().configure(
+    globalConfig: (Config.holdingQueue, (3, 3, 3)),
   );
 
   // Background downloader notifications
@@ -41,6 +47,7 @@ void main() async {
 
   // Using the database to track Tasks
   FileDownloader().trackTasks();
+  await MediaProvider().init();
 
   runApp(
     ValueListenableBuilder(

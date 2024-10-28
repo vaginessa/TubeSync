@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/app/extensions.dart';
+import 'package:tube_sync/extensions.dart';
 import 'package:tube_sync/app/playlist/media_menu_sheet.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
+import 'package:tube_sync/provider/media_provider.dart';
+import 'package:tube_sync/provider/playlist_provider.dart';
 
 class PlaylistMenuSheet extends StatelessWidget {
   const PlaylistMenuSheet({super.key});
@@ -26,7 +29,9 @@ class PlaylistMenuSheet extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              // context.read<PlaylistProvider>().downloadAll();
+              MediaProvider().downloadAll(
+                context.read<PlaylistProvider>().medias,
+              );
               ActiveDownloadsScreen.showEnqueuedSnackbar(context);
               Navigator.pop(context);
             },

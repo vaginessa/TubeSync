@@ -2,6 +2,7 @@ import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:tube_sync/app/more/downloads/download_entry_builder.dart';
 import 'package:tube_sync/main.dart';
+import 'package:tube_sync/provider/media_provider.dart';
 
 class ActiveDownloadsScreen extends StatefulWidget {
   const ActiveDownloadsScreen({super.key});
@@ -67,6 +68,8 @@ class _ActiveDownloadsScreenState extends State<ActiveDownloadsScreen> {
   }
 
   Future<void> cancelAll() async {
+    FileDownloader().taskQueues.forEach(FileDownloader().removeTaskQueue);
+    MediaProvider().abortQueueing();
     Iterable<TaskRecord> records = await FileDownloader().database.allRecords();
 
     await FileDownloader().cancelTasksWithIds(
@@ -84,6 +87,7 @@ class _ActiveDownloadsScreenState extends State<ActiveDownloadsScreen> {
         future: FileDownloader().database.allRecords(),
         initialData: [],
         builder: (context, snapshot) {
+          if (snapshot.hasError) return const SizedBox();
           if (snapshot.requireData.isEmpty) return const SizedBox();
           return FloatingActionButton.extended(
             icon: Icon(Icons.clear_all_rounded),
@@ -96,10 +100,11 @@ class _ActiveDownloadsScreenState extends State<ActiveDownloadsScreen> {
         future: FileDownloader().database.allRecords(),
         initialData: [],
         builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text(snapshot.error.toString()));
+          }
           if (snapshot.requireData.isEmpty) {
-            return Center(
-              child: Text("No Active Downloads!"),
-            );
+            return Center(child: Text("No Active Downloads!"));
           }
 
           return ListView.builder(
