@@ -17,6 +17,7 @@ class PlaylistProvider extends ChangeNotifier {
       if (media != null) medias.add(media);
     }
     notifyListeners();
+    updateDownloadStatus();
     refresh();
   }
 
@@ -32,10 +33,25 @@ class PlaylistProvider extends ChangeNotifier {
       // Save to DB
       isar.writeAsyncWith(playlist, (db, data) => db.playlists.put(data));
       isar.writeAsyncWith(medias, (db, data) => db.medias.putAll(data));
+      updateDownloadStatus();
       notifyListeners();
     } catch (_) {
       //TODO Error
     }
+  }
+
+  void updateDownloadStatus({Media? media}) {
+    if (media != null) {
+      media.downloaded = MediaProvider().isDownloaded(media);
+      notifyListeners();
+      return;
+    }
+
+    for (final media in medias) {
+      media.downloaded = MediaProvider().isDownloaded(media);
+    }
+
+    notifyListeners();
   }
 
   bool _disposed = false;

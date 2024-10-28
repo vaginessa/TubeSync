@@ -44,9 +44,14 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class HomeTab extends StatelessWidget {
-  HomeTab({super.key});
+class HomeTab extends StatefulWidget {
+  const HomeTab({super.key});
 
+  @override
+  State<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
   final homeNavigator = GlobalKey<NavigatorState>();
 
   @override

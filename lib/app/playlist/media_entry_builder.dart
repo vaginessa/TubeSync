@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/extensions.dart';
 import 'package:tube_sync/app/playlist/media_menu_sheet.dart';
+import 'package:tube_sync/extensions.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
 
@@ -23,9 +23,8 @@ class MediaEntryBuilder extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             child: CachedNetworkImage(
               width: 80,
-              height: double.maxFinite,
               imageUrl: media.thumbnail.low,
-              fit: BoxFit.cover,
+              fit: BoxFit.none,
             ),
           ),
           Positioned(
@@ -56,11 +55,19 @@ class MediaEntryBuilder extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text.rich(
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             TextSpan(
               children: [
                 if (media.downloaded == true)
                   const WidgetSpan(
-                    child: Icon(Icons.download_for_offline_rounded, size: 16),
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 2),
+                      child: Icon(
+                        Icons.download_for_offline_rounded,
+                        size: 16,
+                      ),
+                    ),
                   ),
                 TextSpan(text: media.author),
               ],

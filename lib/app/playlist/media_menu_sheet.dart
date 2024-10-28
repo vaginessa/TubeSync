@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/provider/media_provider.dart';
+import 'package:tube_sync/provider/playlist_provider.dart';
 
 class MediaMenuSheet extends StatelessWidget {
   final Media media;
@@ -42,6 +44,9 @@ class MediaMenuSheet extends StatelessWidget {
             ListTile(
               onTap: () {
                 MediaProvider().delete(media);
+                context.read<PlaylistProvider>().updateDownloadStatus(
+                      media: media,
+                    );
                 Navigator.pop(context);
               },
               leading: Icon(Icons.delete_rounded),

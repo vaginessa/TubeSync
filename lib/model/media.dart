@@ -44,7 +44,10 @@ class Media {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Media && runtimeType == other.runtimeType && id == other.id;
+      other is Media &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          downloaded == other.downloaded;
 
   @override
   int get hashCode => id.hashCode;

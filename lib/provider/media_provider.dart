@@ -40,6 +40,7 @@ class MediaProvider {
 
   Future<void> download(Media media) async {
     try {
+      if (isDownloaded(media)) return;
       final manifest = await _ytClient.getManifest(media.id);
       final url = manifest.audioOnly.withHighestBitrate().url.toString();
 
@@ -62,7 +63,7 @@ class MediaProvider {
     _abortQueueing = false;
     for (final media in medias) {
       try {
-        if (mediaFile(media).existsSync()) continue;
+        if (isDownloaded(media)) continue;
 
         final manifest = await _ytClient.getManifest(media.id);
         final url = manifest.audioOnly.withHighestBitrate().url.toString();
@@ -85,11 +86,11 @@ class MediaProvider {
 
   void abortQueueing() => _abortQueueing = true;
 
-  Future<bool> isDownloaded(Media media) async => mediaFile(media).exists();
+  bool isDownloaded(Media media) => mediaFile(media).existsSync();
 
-  Future<void> delete(Media media) async {
+  void delete(Media media) {
     final file = mediaFile(media);
-    if (file.existsSync()) await file.delete();
+    if (file.existsSync()) file.deleteSync();
   }
 
   static Future<bool> get hasInternet => InternetConnection().hasInternetAccess;

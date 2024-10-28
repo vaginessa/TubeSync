@@ -27,9 +27,8 @@ class LibraryEntryBuilder extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             child: CachedNetworkImage(
               width: 80,
-              height: double.maxFinite,
               imageUrl: playlist.thumbnail.low,
-              fit: BoxFit.cover,
+              fit: BoxFit.none,
             ),
           ),
         ),

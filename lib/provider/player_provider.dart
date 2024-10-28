@@ -65,8 +65,8 @@ class PlayerProvider {
 
   void dispose() {
     playerQueue?.cancel();
-    player.pause().then((value) => player.release());
     nowPlaying.dispose();
     buffering.dispose();
+    player.dispose();
   }
 }
