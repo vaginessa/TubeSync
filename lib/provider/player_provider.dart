@@ -44,6 +44,13 @@ class PlayerProvider {
     }
   }
 
+  bool get hasNoPrevious => playlist.medias.indexOf(nowPlaying.value) == 0;
+
+  bool get hasNoNext {
+    return playlist.medias.indexOf(nowPlaying.value) + 1 ==
+        playlist.medias.length;
+  }
+
   void previousTrack() {
     final currentIndex = playlist.medias.indexOf(nowPlaying.value);
     if (currentIndex == 0) return;

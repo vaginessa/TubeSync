@@ -55,6 +55,7 @@ class _PlaylistTabState extends State<PlaylistTab>
           key: refreshIndicator,
           onRefresh: refreshHandler,
           child: ListView.builder(
+            padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight * 2),
             itemCount: playlist.medias.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) return header;

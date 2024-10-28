@@ -80,13 +80,21 @@ class _ActiveDownloadsScreenState extends State<ActiveDownloadsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Active Downloads")),
-      floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.clear_all_rounded),
-        label: Text("Cancel All"),
-        onPressed: cancelAll,
+      floatingActionButton: FutureBuilder(
+        future: FileDownloader().database.allRecords(),
+        initialData: [],
+        builder: (context, snapshot) {
+          if (snapshot.requireData.isEmpty) return const SizedBox();
+          return FloatingActionButton.extended(
+            icon: Icon(Icons.clear_all_rounded),
+            label: Text("Cancel All"),
+            onPressed: cancelAll,
+          );
+        },
       ),
       body: FutureBuilder<List<TaskRecord>>(
         future: FileDownloader().database.allRecords(),
+        initialData: [],
         builder: (context, snapshot) {
           if (snapshot.requireData.isEmpty) {
             return Center(

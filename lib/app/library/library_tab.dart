@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/app/library/library_entry_builder.dart';
 import 'package:tube_sync/app/library/import_playlist_dialog.dart';
+import 'package:tube_sync/app/library/library_entry_builder.dart';
 import 'package:tube_sync/app/playlist/playlist_tab.dart';
 import 'package:tube_sync/provider/library_provider.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
@@ -18,6 +18,7 @@ class LibraryTab extends StatelessWidget {
         builder: (context, library, _) => RefreshIndicator(
           onRefresh: library.refresh,
           child: ListView.builder(
+            padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight * 2),
             itemCount: library.entries.length,
             itemBuilder: (context, index) {
               final playlist = library.entries[index];

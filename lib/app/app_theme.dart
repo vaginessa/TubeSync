@@ -48,10 +48,11 @@ class AppTheme {
   }
 
   SystemUiOverlayStyle systemOverlayStyle(Brightness brightness) {
-    final theme = ColorScheme.fromSeed(
-      seedColor: _color,
-      brightness: brightness,
-    );
+    final theme = colorScheme ??
+        ColorScheme.fromSeed(
+          seedColor: _color,
+          brightness: brightness,
+        );
 
     final systemIconBrightness = switch (brightness) {
       Brightness.dark => Brightness.light,
@@ -62,7 +63,8 @@ class AppTheme {
       statusBarIconBrightness: systemIconBrightness,
       statusBarColor: Colors.transparent,
       systemNavigationBarIconBrightness: systemIconBrightness,
-      systemNavigationBarColor: theme.surface,
+      systemNavigationBarColor: theme.surfaceContainer,
+      systemNavigationBarDividerColor: theme.surfaceContainer,
     );
   }
 

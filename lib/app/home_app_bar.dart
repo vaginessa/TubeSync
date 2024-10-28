@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:provider/provider.dart';
 
@@ -9,7 +8,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      systemOverlayStyle: systemOverlayStyle(context),
       leading: Padding(
         padding: const EdgeInsets.all(12),
         child: Image.asset(
@@ -40,13 +38,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         SizedBox(width: 12),
       ],
-    );
-  }
-
-  SystemUiOverlayStyle? systemOverlayStyle(BuildContext context) {
-    final theme = Theme.of(context);
-    return theme.appBarTheme.systemOverlayStyle?.copyWith(
-      systemNavigationBarColor: theme.colorScheme.surfaceContainer,
     );
   }
 

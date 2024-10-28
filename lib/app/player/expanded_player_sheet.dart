@@ -23,7 +23,7 @@ class ExpandedPlayerSheet extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ValueListenableBuilder(
-          valueListenable: context.read<PlayerProvider>().nowPlaying,
+          valueListenable: playerProvider(context).nowPlaying,
           builder: (context, media, child) => ListTile(
             contentPadding: const EdgeInsets.only(left: 8, right: 4),
             leading: CircleAvatar(
@@ -104,25 +104,27 @@ class ExpandedPlayerSheet extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: playerProvider(context).hasNoPrevious
+                    ? null
+                    : playerProvider(context).previousTrack,
                 icon: Icon(Icons.skip_previous_rounded),
               ),
-              if (snapshot.hasData) ...{
-                if (snapshot.requireData == PlayerState.playing)
-                  IconButton(
-                    onPressed: () => player(context).pause(),
-                    icon: const Icon(Icons.pause_rounded),
-                  )
-                else if (!buffering(context))
-                  IconButton(
-                    onPressed: () => player(context).resume(),
-                    icon: const Icon(Icons.play_arrow_rounded),
-                  ),
-              } else ...{
-                CircularProgressIndicator()
-              },
+              if (snapshot.requireData == PlayerState.playing)
+                IconButton(
+                  onPressed: () => player(context).pause(),
+                  icon: const Icon(Icons.pause_rounded),
+                )
+              else if (!buffering(context))
+                IconButton(
+                  onPressed: () => player(context).resume(),
+                  icon: const Icon(Icons.play_arrow_rounded),
+                )
+              else
+                CircularProgressIndicator(),
               IconButton(
-                onPressed: () {},
+                onPressed: playerProvider(context).hasNoNext
+                    ? null
+                    : playerProvider(context).nextTrack,
                 icon: Icon(Icons.skip_next_rounded),
               ),
             ],
@@ -133,8 +135,11 @@ class ExpandedPlayerSheet extends StatelessWidget {
     );
   }
 
+  PlayerProvider playerProvider(BuildContext context) =>
+      context.read<PlayerProvider>();
+
   bool buffering(BuildContext context) =>
-      context.read<PlayerProvider>().buffering.value;
+      playerProvider(context).buffering.value;
 
   String playlistInfo(BuildContext context) =>
       "${playlist(context).title} by ${playlist(context).author}";
@@ -144,14 +149,13 @@ class ExpandedPlayerSheet extends StatelessWidget {
   }
 
   Media nowPlaying(BuildContext context) =>
-      context.read<PlayerProvider>().nowPlaying.value;
+      playerProvider(context).nowPlaying.value;
 
   Playlist playlist(BuildContext context) =>
-      context.read<PlayerProvider>().playlist.playlist;
+      playerProvider(context).playlist.playlist;
 
   List<Media> videos(BuildContext context) =>
-      context.read<PlayerProvider>().playlist.medias;
+      playerProvider(context).playlist.medias;
 
-  AudioPlayer player(BuildContext context) =>
-      context.read<PlayerProvider>().player;
+  AudioPlayer player(BuildContext context) => playerProvider(context).player;
 }
