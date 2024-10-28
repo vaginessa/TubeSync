@@ -32,7 +32,7 @@ class MediaMenuSheet extends StatelessWidget {
           if (media.downloaded != true)
             ListTile(
               onTap: () {
-                context.read<PlaylistProvider>().downloadMedia(media);
+                // context.read<PlaylistProvider>().downloadMedia(media);
                 Navigator.pop(context);
                 ActiveDownloadsScreen.showEnqueuedSnackbar(context);
               },
@@ -42,7 +42,7 @@ class MediaMenuSheet extends StatelessWidget {
           if (media.downloaded == true)
             ListTile(
               onTap: () {
-                context.read<PlaylistProvider>().deleteMedia(media);
+                // context.read<PlaylistProvider>().deleteMedia(media);
                 Navigator.pop(context);
               },
               leading: Icon(Icons.delete_rounded),

@@ -16,7 +16,6 @@ final rootNavigator = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   // DB Initialization
   final isarDB = Isar.open(
     schemas: [PreferencesSchema, PlaylistSchema, MediaSchema],

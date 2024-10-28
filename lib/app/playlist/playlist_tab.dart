@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/app/player/player_sheet.dart';
+import 'package:tube_sync/app/player/mini_player_sheet.dart';
 import 'package:tube_sync/app/playlist/media_entry_builder.dart';
 import 'package:tube_sync/app/playlist/playlist_header.dart';
 import 'package:tube_sync/model/media.dart';
-import 'package:tube_sync/provider/media_provider.dart';
+import 'package:tube_sync/provider/player_provider.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
 
 class PlaylistTab extends StatefulWidget {
@@ -72,14 +72,14 @@ class _PlaylistTabState extends State<PlaylistTab>
   }
 
   void launchPlayer({Media? initialMedia}) {
-    scaffold(context)?.showBottomSheet(
-      (_) => Provider<MediaProvider>(
-        create: (_) => MediaProvider(
+    scaffold?.showBottomSheet(
+      (_) => Provider<PlayerProvider>(
+        create: (_) => PlayerProvider(
           context.read<PlaylistProvider>(),
-          initialMedia,
+          start: initialMedia,
         ),
         dispose: (_, provider) => provider.dispose(),
-        child: PlayerSheet(initialMedia: initialMedia),
+        child: MiniPlayerSheet(),
       ),
       enableDrag: false,
       shape: InputBorder.none,
@@ -87,7 +87,7 @@ class _PlaylistTabState extends State<PlaylistTab>
     );
   }
 
-  ScaffoldState? scaffold(BuildContext context) =>
+  ScaffoldState? get scaffold =>
       context.read<GlobalKey<ScaffoldState>>().currentState;
 
   @override

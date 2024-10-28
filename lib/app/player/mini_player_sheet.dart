@@ -2,32 +2,31 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tube_sync/app/player/expanded_player_sheet.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/model/playlist.dart';
-import 'package:tube_sync/provider/media_provider.dart';
+import 'package:tube_sync/provider/player_provider.dart';
 
-class MiniPlayerTile extends StatelessWidget {
-  final void Function()? onTap;
-  final void Function()? onPrevious;
-  final void Function()? onNext;
-  final void Function()? onClose;
-
-  const MiniPlayerTile({
-    super.key,
-    this.onTap,
-    this.onPrevious,
-    this.onNext,
-    this.onClose,
-  });
+class MiniPlayerSheet extends StatelessWidget {
+  const MiniPlayerSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
       key: const Key("MiniPlayer"),
       confirmDismiss: (direction) {
-        if (direction == DismissDirection.startToEnd) onPrevious?.call();
-        if (direction == DismissDirection.endToStart) onNext?.call();
-        return Future.value(false);
+        switch (direction) {
+          case DismissDirection.endToStart:
+            context.read<PlayerProvider>().previousTrack();
+            return Future.value(false);
+
+          case DismissDirection.startToEnd:
+            context.read<PlayerProvider>().nextTrack();
+            return Future.value(false);
+
+          default:
+            return Future.value(false);
+        }
       },
       direction: DismissDirection.horizontal,
       background: const Row(
@@ -48,11 +47,12 @@ class MiniPlayerTile extends StatelessWidget {
         DismissDirection.endToStart: 0.2,
       },
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           ValueListenableBuilder(
-            valueListenable: context.read<MediaProvider>().nowPlayingNotifier,
+            valueListenable: context.read<PlayerProvider>().nowPlaying,
             builder: (context, media, child) => ListTile(
-              onTap: onTap,
+              onTap: () => openPlayerSheet(context),
               contentPadding: const EdgeInsets.only(left: 8, right: 4),
               leading: CircleAvatar(
                 radius: 24,
@@ -104,7 +104,7 @@ class MiniPlayerTile extends StatelessWidget {
                           ),
                       },
                       IconButton(
-                        onPressed: onClose,
+                        onPressed: () => Navigator.pop(context),
                         icon: const Icon(Icons.close_rounded),
                       ),
                     ],
@@ -126,17 +126,31 @@ class MiniPlayerTile extends StatelessWidget {
     );
   }
 
+  void openPlayerSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      useRootNavigator: true,
+      builder: (_) => Provider<PlayerProvider>.value(
+        value: context.read<PlayerProvider>(),
+        child: ExpandedPlayerSheet(),
+      ),
+    );
+  }
+
   double? playerProgress(
     BuildContext context,
     AsyncSnapshot<Duration> snapshot,
   ) {
     if (buffering(context) || !snapshot.hasData) return null;
-    final vid = context.read<MediaProvider>().nowPlaying;
+    final vid = context.read<PlayerProvider>().nowPlaying.value;
     if (vid.durationMs == null) return null;
     return snapshot.requireData.inMilliseconds / vid.durationMs!;
   }
 
-  bool buffering(BuildContext context) => context.read<bool>();
+  bool buffering(BuildContext context) =>
+      context.read<PlayerProvider>().buffering.value;
 
   String playlistInfo(BuildContext context) =>
       "${playlist(context).title} by ${playlist(context).author}";
@@ -146,10 +160,11 @@ class MiniPlayerTile extends StatelessWidget {
   }
 
   Playlist playlist(BuildContext context) =>
-      context.read<MediaProvider>().playlist.playlist;
+      context.read<PlayerProvider>().playlist.playlist;
 
   List<Media> videos(BuildContext context) =>
-      context.read<MediaProvider>().playlist.medias;
+      context.read<PlayerProvider>().playlist.medias;
 
-  AudioPlayer player(BuildContext context) => context.read<AudioPlayer>();
+  AudioPlayer player(BuildContext context) =>
+      context.read<PlayerProvider>().player;
 }
