@@ -36,7 +36,10 @@ class LibraryProvider extends ChangeNotifier {
       try {
         var update = await _ytClient.get(playlist.id);
         update = await _playlistWithThumbnail(update);
-        entries[index] = Playlist.fromYTPlaylist(update);
+        entries[index] = Playlist.fromYTPlaylist(
+          update,
+          videoIds: entries[index].videoIds, // Pass previously cached videoIds
+        );
       } catch (_) {
         // TODO Error
       }

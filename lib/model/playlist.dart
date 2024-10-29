@@ -27,14 +27,18 @@ class Playlist {
     this.videoIds,
   );
 
-  factory Playlist.fromYTPlaylist(yt.Playlist playlist) => Playlist(
+  factory Playlist.fromYTPlaylist(
+    yt.Playlist playlist, {
+    List<String>? videoIds,
+  }) =>
+      Playlist(
         playlist.id.value,
         playlist.title,
         playlist.author,
         Thumbnails.fromYTThumbnails(playlist.thumbnails),
         playlist.videoCount ?? -1,
         playlist.description.isNotEmpty ? playlist.description : null,
-        List.empty(growable: true),
+        videoIds ?? List.empty(growable: true),
       );
 
   @override
