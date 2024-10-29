@@ -26,13 +26,12 @@ class MediaProvider {
 
   File mediaFile(Media media) => File(mediaFileDir + media.id);
 
-  Future<AudioSource?> getMedia(Media media) async {
+  Future<AudioSource> getMedia(Media media) async {
     // Try from offline
     final downloaded = mediaFile(media);
     if (downloaded.existsSync()) return AudioSource.file(downloaded.path);
 
-    if (!await hasInternet) return null;
-
+    if (!await hasInternet) throw HttpException("No internet!");
     final videoManifest = await _ytClient.getManifest(media.id);
     final streamUri = videoManifest.audioOnly.withHighestBitrate().url;
     return AudioSource.uri(streamUri);

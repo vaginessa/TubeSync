@@ -50,7 +50,7 @@ void main() async {
   FileDownloader().trackTasks();
 
   await MediaProvider().init();
-  JustAudioMediaKit.ensureInitialized();
+  // JustAudioMediaKit.ensureInitialized();
 
   runApp(
     ValueListenableBuilder(

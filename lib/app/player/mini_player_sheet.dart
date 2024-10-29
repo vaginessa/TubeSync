@@ -1,10 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/player/expanded_player_sheet.dart';
 import 'package:tube_sync/model/media.dart';
-import 'package:tube_sync/model/playlist.dart';
 import 'package:tube_sync/provider/player_provider.dart';
 
 class MiniPlayerSheet extends StatelessWidget {
@@ -46,90 +44,111 @@ class MiniPlayerSheet extends StatelessWidget {
         DismissDirection.startToEnd: 0.2,
         DismissDirection.endToStart: 0.2,
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ValueListenableBuilder(
-            valueListenable: context.read<PlayerProvider>().nowPlaying,
-            builder: (context, media, child) => ListTile(
-              onTap: () => openPlayerSheet(context),
-              contentPadding: const EdgeInsets.only(left: 8, right: 4),
-              leading: CircleAvatar(
-                radius: 24,
-                backgroundImage: CachedNetworkImageProvider(
-                  media.thumbnail.low,
+      child: ValueListenableBuilder(
+        valueListenable: context.read<PlayerProvider>().nowPlaying,
+        builder: (context, nowPlaying, _) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              mediaDetails(context, nowPlaying),
+              // Progress Indicator
+              ValueListenableBuilder(
+                valueListenable: context.read<PlayerProvider>().buffering,
+                builder: (_, buffering, progressIndicator) {
+                  if (!buffering) return progressIndicator!;
+                  return const LinearProgressIndicator(minHeight: 1);
+                },
+                child: StreamBuilder<Duration>(
+                  stream: context.read<PlayerProvider>().player.positionStream,
+                  builder: (context, snapshot) {
+                    final duration = nowPlaying.durationMs;
+                    var progress = (duration != null && snapshot.hasData)
+                        ? snapshot.requireData.inMilliseconds / duration
+                        : null;
+                    return LinearProgressIndicator(
+                      minHeight: 1,
+                      value: progress,
+                    );
+                  },
                 ),
               ),
-              titleTextStyle: Theme.of(context).textTheme.bodyMedium,
-              title: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    media.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    media.author,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  Text(
-                    "${positionInPlaylist(context, media)} \u2022 ${playlistInfo(context)}",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-              //Player Actions
-              trailing: StreamBuilder(
-                stream: player(context).playerStateStream,
-                initialData: player(context).playerState,
-                builder: actions,
-              ),
-            ),
-          ),
-          // Progress Indicator
-          StreamBuilder<Duration>(
-            stream: player(context).positionStream,
-            initialData: player(context).position,
-            builder: (context, snapshot) => LinearProgressIndicator(
-              minHeight: 1,
-              value: playerProgress(context, snapshot),
-            ),
-          )
-        ],
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget actions(BuildContext context, AsyncSnapshot<PlayerState> snapshot) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (snapshot.requireData.playing)
-          IconButton(
-            onPressed: () => player(context).pause(),
-            icon: const Icon(Icons.pause_rounded),
-          )
-        else ...{
-          switch (snapshot.requireData.processingState) {
-            ProcessingState.loading => SizedBox(),
-            ProcessingState.buffering => CircularProgressIndicator(),
-            _ => IconButton(
-                onPressed: () => player(context).play(),
-                icon: const Icon(Icons.play_arrow_rounded),
-              ),
-          }
-        },
-        IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.close_rounded),
+  Widget mediaDetails(BuildContext context, Media media) {
+    return ListTile(
+      onTap: () => openPlayerSheet(context),
+      contentPadding: const EdgeInsets.only(left: 8, right: 4),
+      leading: CircleAvatar(
+        radius: 24,
+        backgroundImage: CachedNetworkImageProvider(
+          media.thumbnail.low,
         ),
-      ],
+      ),
+      titleTextStyle: Theme.of(context).textTheme.bodyMedium,
+      title: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            media.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          Text(
+            media.author,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          Text(
+            "${positionInPlaylist(context, media)} \u2022 ${playlistInfo(context)}",
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      ),
+      //Player Actions
+      trailing: actions(context),
+    );
+  }
+
+  Widget actions(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: context.read<PlayerProvider>().buffering,
+      child: IconButton(
+        onPressed: () => Navigator.pop(context),
+        icon: const Icon(Icons.close_rounded),
+      ),
+      builder: (context, buffering, closeButton) {
+        if (buffering) return closeButton!;
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            StreamBuilder(
+              stream: context.read<PlayerProvider>().player.playerStateStream,
+              builder: (context, state) {
+                if (state.data?.playing == true) {
+                  return IconButton(
+                    onPressed: context.read<PlayerProvider>().player.pause,
+                    icon: const Icon(Icons.pause_rounded),
+                  );
+                }
+                return IconButton(
+                  onPressed: context.read<PlayerProvider>().player.play,
+                  icon: const Icon(Icons.play_arrow_rounded),
+                );
+              },
+            ),
+            closeButton!
+          ],
+        );
+      },
     );
   }
 
@@ -146,37 +165,13 @@ class MiniPlayerSheet extends StatelessWidget {
     );
   }
 
-  double? playerProgress(
-    BuildContext context,
-    AsyncSnapshot<Duration> snapshot,
-  ) {
-    switch (player(context).playerState.processingState) {
-      case ProcessingState.buffering:
-      case ProcessingState.loading:
-        return null;
-
-      default:
-        break;
-    }
-
-    final vid = context.read<PlayerProvider>().nowPlaying.value;
-    if (vid.durationMs == null) return null;
-    return snapshot.requireData.inMilliseconds / vid.durationMs!;
+  String playlistInfo(BuildContext context) {
+    final playlist = context.read<PlayerProvider>().playlist.playlist;
+    return "${playlist.title} by ${playlist.author}";
   }
-
-  String playlistInfo(BuildContext context) =>
-      "${playlist(context).title} by ${playlist(context).author}";
 
   String positionInPlaylist(BuildContext context, Media media) {
-    return "${videos(context).indexOf(media) + 1}/${playlist(context).videoCount}";
+    final medias = context.read<PlayerProvider>().playlist.medias;
+    return "${medias.indexOf(media) + 1}/${medias.length}";
   }
-
-  Playlist playlist(BuildContext context) =>
-      context.read<PlayerProvider>().playlist.playlist;
-
-  List<Media> videos(BuildContext context) =>
-      context.read<PlayerProvider>().playlist.medias;
-
-  AudioPlayer player(BuildContext context) =>
-      context.read<PlayerProvider>().player;
 }
