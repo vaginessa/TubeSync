@@ -4,6 +4,11 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+def process = "git rev-parse --short HEAD".execute()
+process.waitFor()
+def gitCommitHash = process.in.text.trim()
+process.destroy()
+
 android {
     namespace = "tubesync.app"
     compileSdk = flutter.compileSdkVersion
@@ -28,10 +33,24 @@ android {
         versionName = flutter.versionName
     }
 
-    buildTypes {
+    signingConfigs {
         release {
-            // TODO: Add your own signing config for the release build.
-            signingConfig = signingConfigs.debug
+            keyAlias = "tubesync"
+            keyPassword = System.getenv("TUBESYNC_KEY_PASSWORD")
+            storeFile = file("../../tubesync.jks")
+            storePassword = System.getenv("TUBESYNC_KEY_PASSWORD")
+        }
+    }
+
+
+    buildTypes {
+        profile {
+            signingConfig = signingConfigs.release
+            versionNameSuffix = "+" + gitCommitHash
+        }
+
+        release {
+            signingConfig = signingConfigs.release
         }
     }
 }
