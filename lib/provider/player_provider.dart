@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:async/async.dart';
@@ -5,11 +6,13 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+// ignore: depend_on_referenced_packages Just for Types. Doesn't matter
+import 'package:rxdart/rxdart.dart' show BehaviorSubject;
 import 'package:tube_sync/model/media.dart';
-import 'package:tube_sync/provider/media_provider.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
+import 'package:tube_sync/services/media_service.dart';
 
-class PlayerProvider extends BaseAudioHandler {
+class PlayerProvider {
   final player = AudioPlayer();
   final PlaylistProvider playlist;
 
@@ -36,14 +39,14 @@ class PlayerProvider extends BaseAudioHandler {
     });
 
     player.positionStream.listen(
-      (position) => playbackState.add(playbackState.value.copyWith(
+      (position) => notificationState.add(notificationState.value.copyWith(
         updatePosition: position,
         bufferedPosition: player.bufferedPosition,
       )),
     );
 
     player.playerStateStream.listen(
-      (state) => playbackState.add(playbackState.value.copyWith(
+      (state) => notificationState.add(notificationState.value.copyWith(
         playing: state.playing,
         processingState: buffering.value
             ? AudioProcessingState.loading
@@ -61,15 +64,6 @@ class PlayerProvider extends BaseAudioHandler {
         },
       )),
     );
-
-    AudioService.init(
-      builder: () => this,
-      config: AudioServiceConfig(
-        rewindInterval: Duration(seconds: 5),
-        androidNotificationChannelName: 'TubeSync',
-        preloadArtwork: true,
-      ),
-    );
   }
 
   Future<void> beginPlay() async {
@@ -79,24 +73,22 @@ class PlayerProvider extends BaseAudioHandler {
       await player.seek(Duration.zero);
 
       // Post service notification update
-      mediaItem.add(
-        MediaItem(
-          id: nowPlaying.value.id,
-          title: nowPlaying.value.title,
-          artist: nowPlaying.value.author,
-          duration: nowPlaying.value.duration,
-          album: playlist.playlist.title,
-          artUri: Uri.parse(nowPlaying.value.thumbnail.medium),
-        ),
-      );
+      notificationMetadata.add(MediaItem(
+        id: nowPlaying.value.id,
+        title: nowPlaying.value.title,
+        artist: nowPlaying.value.author,
+        duration: nowPlaying.value.duration,
+        album: playlist.playlist.title,
+        artUri: Uri.parse(nowPlaying.value.thumbnail.medium),
+      ));
 
-      playbackState.add(playbackState.value.copyWith(
+      notificationState.add(notificationState.value.copyWith(
         processingState: AudioProcessingState.loading,
         playing: player.playing,
       ));
 
       await player.setAudioSource(
-        await MediaProvider().getMedia(nowPlaying.value),
+        await MediaService().getMedia(nowPlaying.value),
       );
 
       if (_disposed) return;
@@ -139,29 +131,9 @@ class PlayerProvider extends BaseAudioHandler {
     player.stop().whenComplete(player.dispose);
   }
 
-  @override
-  Future<void> play() => player.play();
+  BehaviorSubject<PlaybackState> get notificationState =>
+      MediaService().playbackState;
 
-  @override
-  Future<void> pause() => player.pause();
-
-  @override
-  Future<void> stop() => player.stop();
-
-  @override
-  Future<void> seek(Duration position) => player.seek(position);
-
-  @override
-  Future<void> skipToPrevious() async => previousTrack();
-
-  @override
-  Future<void> skipToNext() async => nextTrack();
-
-  @override
-  Future<void> rewind() => player.seek(player.position - Duration(seconds: 5));
-
-  @override
-  Future<void> fastForward() {
-    return player.seek(player.position + Duration(seconds: 5));
-  }
+  BehaviorSubject<MediaItem?> get notificationMetadata =>
+      MediaService().mediaItem;
 }

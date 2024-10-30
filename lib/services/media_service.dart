@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:background_downloader/background_downloader.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:just_audio/just_audio.dart';
@@ -8,23 +9,36 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' as yt;
 
-class MediaProvider {
-  MediaProvider._();
+class MediaService extends BaseAudioHandler {
+  /// <-- Singleton
+  static late final MediaService _instance;
 
-  static final MediaProvider _instance = MediaProvider._();
+  factory MediaService() => _instance;
 
-  factory MediaProvider() => _instance;
+  MediaService._();
 
-  Future<void> init() async {
-    final dir = await getApplicationCacheDirectory();
-    mediaFileDir = dir.path + Platform.pathSeparator;
-    JustAudioMediaKit.ensureInitialized();
-  }
+  /// Singleton -->
 
   late final String mediaFileDir;
   final _ytClient = yt.YoutubeExplode().videos.streamsClient;
 
   bool _abortQueueing = false;
+
+  /// Must call before runApp
+  static Future<void> init() async {
+    _instance = await AudioService.init(
+      builder: () => MediaService._(),
+      config: AudioServiceConfig(
+        rewindInterval: Duration(seconds: 5),
+        androidNotificationChannelName: 'TubeSync',
+        preloadArtwork: true,
+      ),
+    );
+
+    final dir = await getApplicationCacheDirectory();
+    _instance.mediaFileDir = dir.path + Platform.pathSeparator;
+    JustAudioMediaKit.ensureInitialized();
+  }
 
   File mediaFile(Media media) => File(mediaFileDir + media.id);
 

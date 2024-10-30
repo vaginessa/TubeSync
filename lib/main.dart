@@ -11,7 +11,7 @@ import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/model/playlist.dart';
 import 'package:tube_sync/model/preferences.dart';
-import 'package:tube_sync/provider/media_provider.dart';
+import 'package:tube_sync/services/media_service.dart';
 
 final rootNavigator = GlobalKey<NavigatorState>();
 
@@ -48,7 +48,7 @@ void main() async {
   // Using the database to track Tasks
   FileDownloader().trackTasks();
 
-  await MediaProvider().init();
+  await MediaService.init();
 
   runApp(
     ValueListenableBuilder(

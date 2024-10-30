@@ -2,7 +2,7 @@ import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:tube_sync/app/more/downloads/download_entry_builder.dart';
 import 'package:tube_sync/main.dart';
-import 'package:tube_sync/provider/media_provider.dart';
+import 'package:tube_sync/services/media_service.dart';
 
 class ActiveDownloadsScreen extends StatefulWidget {
   const ActiveDownloadsScreen({super.key});
@@ -69,7 +69,7 @@ class _ActiveDownloadsScreenState extends State<ActiveDownloadsScreen> {
 
   Future<void> cancelAll() async {
     FileDownloader().taskQueues.forEach(FileDownloader().removeTaskQueue);
-    MediaProvider().abortQueueing();
+    MediaService().abortQueueing();
     Iterable<TaskRecord> records = await FileDownloader().database.allRecords();
 
     await FileDownloader().cancelTasksWithIds(

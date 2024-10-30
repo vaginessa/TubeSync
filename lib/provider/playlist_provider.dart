@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/model/playlist.dart';
-import 'package:tube_sync/provider/media_provider.dart';
+import 'package:tube_sync/services/media_service.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' as yt;
 
 class PlaylistProvider extends ChangeNotifier {
@@ -23,7 +23,7 @@ class PlaylistProvider extends ChangeNotifier {
 
   Future<void> refresh() async {
     try {
-      if (!await MediaProvider.hasInternet) return;
+      if (!await MediaService.hasInternet) return;
       final vids = await _ytClient.getVideos(playlist.id).toList();
       medias.clear();
       medias.addAll(vids.map(Media.fromYTVideo));
@@ -42,13 +42,13 @@ class PlaylistProvider extends ChangeNotifier {
 
   void updateDownloadStatus({Media? media}) {
     if (media != null) {
-      media.downloaded = MediaProvider().isDownloaded(media);
+      media.downloaded = MediaService().isDownloaded(media);
       notifyListeners();
       return;
     }
 
     for (final media in medias) {
-      media.downloaded = MediaProvider().isDownloaded(media);
+      media.downloaded = MediaService().isDownloaded(media);
     }
 
     notifyListeners();

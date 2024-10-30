@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
 import 'package:tube_sync/model/media.dart';
-import 'package:tube_sync/provider/media_provider.dart';
+import 'package:tube_sync/services/media_service.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
 
 class MediaMenuSheet extends StatelessWidget {
@@ -33,7 +33,7 @@ class MediaMenuSheet extends StatelessWidget {
           if (media.downloaded != true)
             ListTile(
               onTap: () {
-                MediaProvider().download(media);
+                MediaService().download(media);
                 Navigator.pop(context);
                 ActiveDownloadsScreen.showEnqueuedSnackbar(context);
               },
@@ -43,7 +43,7 @@ class MediaMenuSheet extends StatelessWidget {
           if (media.downloaded == true)
             ListTile(
               onTap: () {
-                MediaProvider().delete(media);
+                MediaService().delete(media);
                 context.read<PlaylistProvider>().updateDownloadStatus(
                       media: media,
                     );
