@@ -30,7 +30,7 @@ class PlaylistHeader extends StatelessWidget {
                       height: 120,
                       width: double.maxFinite,
                       imageUrl: playlist(context).thumbnail.high,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.none,
                     ),
                   ),
                   Positioned.fill(

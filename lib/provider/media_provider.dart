@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:background_downloader/background_downloader.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' as yt;
@@ -17,6 +18,7 @@ class MediaProvider {
   Future<void> init() async {
     final dir = await getApplicationCacheDirectory();
     mediaFileDir = dir.path + Platform.pathSeparator;
+    JustAudioMediaKit.ensureInitialized();
   }
 
   late final String mediaFileDir;
