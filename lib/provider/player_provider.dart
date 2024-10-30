@@ -27,6 +27,11 @@ class PlayerProvider {
   ValueNotifier<Media> get nowPlaying => _nowPlaying;
 
   PlayerProvider(this.playlist, {Media? start}) {
+    MediaService().bind(
+      player: player,
+      nextTrackCallback: nextTrack,
+      previousTrackCallback: previousTrack,
+    );
     _nowPlaying = ValueNotifier(start ?? playlist.medias.first);
     _playerQueue = CancelableOperation.fromFuture(beginPlay());
     nowPlaying.addListener(() async {
@@ -129,6 +134,7 @@ class PlayerProvider {
     nowPlaying.dispose();
     buffering.dispose();
     player.stop().whenComplete(player.dispose);
+    MediaService().unbind();
   }
 
   BehaviorSubject<PlaybackState> get notificationState =>

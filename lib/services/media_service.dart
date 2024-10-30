@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:path_provider/path_provider.dart';
@@ -20,6 +21,9 @@ class MediaService extends BaseAudioHandler {
 
   late final String mediaFileDir;
   final _ytClient = yt.YoutubeExplode().videos.streamsClient;
+  AudioPlayer? _player;
+  VoidCallback? _nextTrackCallback;
+  VoidCallback? _previousTrackCallback;
 
   /// Must call before runApp
   static Future<void> init() async {
@@ -28,6 +32,7 @@ class MediaService extends BaseAudioHandler {
       config: AudioServiceConfig(
         rewindInterval: Duration(seconds: 5),
         androidNotificationChannelName: 'TubeSync',
+        androidNotificationIcon: 'drawable/ic_launcher_foreground',
         preloadArtwork: true,
       ),
     );
@@ -35,6 +40,23 @@ class MediaService extends BaseAudioHandler {
     final dir = await getApplicationCacheDirectory();
     _instance.mediaFileDir = dir.path + Platform.pathSeparator;
     JustAudioMediaKit.ensureInitialized();
+  }
+
+  /// Call this method for back and forth communication
+  void bind({
+    required AudioPlayer player,
+    required VoidCallback nextTrackCallback,
+    required VoidCallback previousTrackCallback,
+  }) {
+    _player = player;
+    _nextTrackCallback = nextTrackCallback;
+    _previousTrackCallback = previousTrackCallback;
+  }
+
+  void unbind() {
+    _player = null;
+    _nextTrackCallback = null;
+    _previousTrackCallback = null;
   }
 
   File mediaFile(Media media) => File(mediaFileDir + media.id);
@@ -58,5 +80,33 @@ class MediaService extends BaseAudioHandler {
   void delete(Media media) {
     final file = mediaFile(media);
     if (file.existsSync()) file.deleteSync();
+  }
+
+  @override
+  Future<void> play() async => _player?.play();
+
+  @override
+  Future<void> pause() async => _player?.pause();
+
+  @override
+  Future<void> stop() async => _player?.stop();
+
+  @override
+  Future<void> seek(Duration position) async => _player?.seek(position);
+
+  @override
+  Future<void> skipToPrevious() async => _previousTrackCallback?.call();
+
+  @override
+  Future<void> skipToNext() async => _nextTrackCallback?.call();
+
+  @override
+  Future<void> rewind() async {
+    return _player?.seek(_player!.position - Duration(seconds: 5));
+  }
+
+  @override
+  Future<void> fastForward() async {
+    return _player?.seek(_player!.position + Duration(seconds: 5));
   }
 }
