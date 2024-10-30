@@ -1,4 +1,3 @@
-import 'package:background_downloader/background_downloader.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
@@ -7,10 +6,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/app_theme.dart';
 import 'package:tube_sync/app/home_screen.dart';
-import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/model/playlist.dart';
 import 'package:tube_sync/model/preferences.dart';
+import 'package:tube_sync/services/downloader_service.dart';
 import 'package:tube_sync/services/media_service.dart';
 
 final rootNavigator = GlobalKey<NavigatorState>();
@@ -27,27 +26,7 @@ void main() async {
     Preference.materialYou,
   );
 
-  // Limit concurrent downloads
-  await FileDownloader().configure(
-    globalConfig: (Config.holdingQueue, (3, 3, 3)),
-  );
-
-  // Background downloader notifications
-  FileDownloader().configureNotification(
-    running: TaskNotification('Downloading', '{displayName}'),
-    complete: TaskNotification('Download finished', '{displayName}'),
-    progressBar: true,
-  );
-
-  // Register notification tap handler / download listener
-  FileDownloader().registerCallbacks(
-    taskNotificationTapCallback: ActiveDownloadsScreen.notificationTapHandler,
-    taskStatusCallback: ActiveDownloadsScreen.downloadStatusListener,
-  );
-
-  // Using the database to track Tasks
-  FileDownloader().trackTasks();
-
+  await DownloaderService.init();
   await MediaService.init();
 
   runApp(

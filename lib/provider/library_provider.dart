@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:tube_sync/model/playlist.dart';
-import 'package:tube_sync/services/media_service.dart';
+import 'package:tube_sync/services/downloader_service.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' as yt;
 
 class LibraryProvider extends ChangeNotifier {
@@ -31,7 +31,7 @@ class LibraryProvider extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
-    if (!await MediaService.hasInternet) return;
+    if (!await DownloaderService.hasInternet) return;
     for (final (index, playlist) in entries.indexed) {
       try {
         var update = await _ytClient.get(playlist.id);
