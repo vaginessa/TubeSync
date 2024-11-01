@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/khaled-0/TubeSync/main/tubesync.png" height="128px" align="left" alt="logo">
+<img src="https://raw.githubusercontent.com/khaled-0/TubeSync/main/assets/tubesync.png" height="128px" align="left" alt="logo">
 
 # TubeSync
 
@@ -18,6 +18,6 @@ Follows modern material-3 interface design guidelines
 </p>
 
 ## Download
-
-For now try nightly build from [here](https://github.com/khaled-0/TubeSync/actions)
+From the [releases section](https://github.com/khaled-0/TubeSync/releases)
+Or, try nightly (unstable) build from [here](https://github.com/khaled-0/TubeSync/actions)
 

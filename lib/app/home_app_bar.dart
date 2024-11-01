@@ -11,7 +11,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: Padding(
         padding: const EdgeInsets.all(12),
         child: Image.asset(
-          "tubesync.png",
+          "assets/tubesync.png",
           color: Theme.of(context).colorScheme.primary,
         ),
       ),

@@ -44,6 +44,7 @@ class AppTheme {
             platform: CupertinoPageTransitionsBuilder()
         },
       ),
+      fontFamily: 'WantedSansStd',
       useMaterial3: true,
     );
   }

@@ -33,7 +33,7 @@ class MoreTab extends StatelessWidget {
         // BigAss Branding
         SizedBox(height: 8),
         Image.asset(
-          "tubesync.png",
+          "assets/tubesync.png",
           height: 80,
           color: Theme.of(context).colorScheme.primary,
         ),
