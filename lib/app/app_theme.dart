@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 class AppTheme {
   static ValueNotifier<bool?> dynamicColors = ValueNotifier(false);
 
-  final Color _color = Colors.red;
+  final Color _color = const Color(0xffff0000);
   final ColorScheme? colorScheme;
 
   AppTheme({this.colorScheme});
