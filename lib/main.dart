@@ -63,7 +63,12 @@ void main() async {
   );
 
   // Ensure notification permission
-  Permission.notification.isDenied.then((value) {
-    if (value) Permission.notification.request();
+  Permission.notification.isDenied.then((denied) {
+    if (denied) Permission.notification.request();
+  });
+
+  // Ensure battery optimization disabled
+  Permission.ignoreBatteryOptimizations.isDenied.then((denied) {
+    if (denied) Permission.ignoreBatteryOptimizations.request();
   });
 }
