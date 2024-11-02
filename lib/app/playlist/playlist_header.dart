@@ -22,6 +22,18 @@ class PlaylistHeader extends StatelessWidget {
           children: [
             Hero(
               tag: playlist(context).id,
+              flightShuttleBuilder: (c, animation, d, c2, c3) => SizeTransition(
+                sizeFactor: animation,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: CachedNetworkImage(
+                    height: double.maxFinite,
+                    width: double.maxFinite,
+                    imageUrl: playlist(context).thumbnail.medium,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
               child: Stack(
                 children: [
                   ClipRRect(
@@ -30,7 +42,7 @@ class PlaylistHeader extends StatelessWidget {
                       height: 120,
                       width: double.maxFinite,
                       imageUrl: playlist(context).thumbnail.high,
-                      fit: BoxFit.none,
+                      fit: BoxFit.cover,
                     ),
                   ),
                   Positioned.fill(

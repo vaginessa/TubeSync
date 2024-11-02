@@ -20,6 +20,7 @@ class LibraryEntryBuilder extends StatelessWidget {
       ),
       child: ListTile(
         onTap: onTap,
+        visualDensity: VisualDensity.comfortable,
         contentPadding: const EdgeInsets.only(left: 16, right: 8),
         leading: Hero(
           tag: playlist.id,
@@ -27,8 +28,9 @@ class LibraryEntryBuilder extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             child: CachedNetworkImage(
               width: 80,
-              imageUrl: playlist.thumbnail.low,
-              fit: BoxFit.none,
+              height: double.maxFinite,
+              imageUrl: playlist.thumbnail.medium,
+              fit: BoxFit.cover,
             ),
           ),
         ),
