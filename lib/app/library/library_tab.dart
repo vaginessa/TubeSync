@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
+import 'package:tube_sync/app/library/empty_library_view.dart';
 import 'package:tube_sync/app/library/import_playlist_dialog.dart';
 import 'package:tube_sync/app/library/library_entry_builder.dart';
 import 'package:tube_sync/app/playlist/playlist_tab.dart';
@@ -16,43 +17,46 @@ class LibraryTab extends StatelessWidget {
     return Scaffold(
       primary: false,
       body: Consumer<LibraryProvider>(
-        builder: (context, library, _) => RefreshIndicator(
-          onRefresh: library.refresh,
-          child: ListView.builder(
-            padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight * 2),
-            itemCount: library.entries.length,
-            itemBuilder: (context, index) {
-              final playlist = library.entries[index];
-              return LibraryEntryBuilder(
-                playlist,
-                onTap: () => Navigator.of(context).push(
-                  PageRouteBuilder(
-                    transitionsBuilder: (_, animation, __, child) {
-                      return SlideTransition(
-                        position: animation.drive(
-                          Tween(
-                            begin: Offset(0.0, 1.0),
-                            end: Offset.zero,
-                          ).chain(CurveTween(curve: Curves.ease)),
-                        ),
-                        child: child,
-                      );
-                    },
-                    pageBuilder: (context, _, __) {
-                      return ChangeNotifierProvider<PlaylistProvider>(
-                        child: PlaylistTab(),
-                        create: (_) => PlaylistProvider(
-                          context.read<Isar>(),
-                          playlist,
-                        ),
-                      );
-                    },
+        builder: (context, library, _) {
+          if (library.entries.isEmpty) return const EmptyLibraryView();
+          return RefreshIndicator(
+            onRefresh: library.refresh,
+            child: ListView.builder(
+              padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight * 2),
+              itemCount: library.entries.length,
+              itemBuilder: (context, index) {
+                final playlist = library.entries[index];
+                return LibraryEntryBuilder(
+                  playlist,
+                  onTap: () => Navigator.of(context).push(
+                    PageRouteBuilder(
+                      transitionsBuilder: (_, animation, __, child) {
+                        return SlideTransition(
+                          position: animation.drive(
+                            Tween(
+                              begin: Offset(0.0, 1.0),
+                              end: Offset.zero,
+                            ).chain(CurveTween(curve: Curves.ease)),
+                          ),
+                          child: child,
+                        );
+                      },
+                      pageBuilder: (context, _, __) {
+                        return ChangeNotifierProvider<PlaylistProvider>(
+                          child: PlaylistTab(),
+                          create: (_) => PlaylistProvider(
+                            context.read<Isar>(),
+                            playlist,
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                ),
-              );
-            },
-          ),
-        ),
+                );
+              },
+            ),
+          );
+        },
       ),
       floatingActionButton: ValueListenableBuilder(
         valueListenable: MediaService().isPlayerBinded,

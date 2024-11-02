@@ -69,7 +69,12 @@ class _ActiveDownloadsScreenState extends State<ActiveDownloadsScreen> {
             return Center(child: Text(snapshot.error.toString()));
           }
           if (snapshot.requireData.isEmpty) {
-            return Center(child: Text("No Active Downloads!"));
+            return Center(
+              child: Text(
+                "No Active Downloads!",
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            );
           }
 
           return ListView.builder(

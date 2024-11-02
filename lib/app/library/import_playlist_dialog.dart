@@ -50,6 +50,18 @@ class _ImportPlaylistDialogState extends State<ImportPlaylistDialog> {
               hintText: "https://youtu.be/playlist?list=...",
             ),
           ),
+          Card(
+            margin: EdgeInsets.only(top: 12),
+            child: ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.symmetric(horizontal: 6),
+              leading: Icon(Icons.info_rounded),
+              title: Text(
+                "Playlist must be public or unlisted.\n"
+                "Youtube Mix is currently unsupported.",
+              ),
+            ),
+          ),
           if (loading)
             const Padding(
               padding: EdgeInsets.all(16.0),
