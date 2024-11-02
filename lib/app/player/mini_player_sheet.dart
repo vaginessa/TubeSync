@@ -45,9 +45,11 @@ class MiniPlayerSheet extends StatelessWidget {
         DismissDirection.endToStart: 0.2,
       },
       child: ValueListenableBuilder(
+        key: ValueKey("NowPlaying"),
         valueListenable: context.read<PlayerProvider>().nowPlaying,
         builder: (context, nowPlaying, _) {
           return Column(
+            key: ValueKey(nowPlaying.hashCode),
             mainAxisSize: MainAxisSize.min,
             children: [
               mediaDetails(context, nowPlaying),
