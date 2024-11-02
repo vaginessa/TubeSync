@@ -6,6 +6,7 @@ import 'package:tube_sync/app/library/library_entry_builder.dart';
 import 'package:tube_sync/app/playlist/playlist_tab.dart';
 import 'package:tube_sync/provider/library_provider.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
+import 'package:tube_sync/services/media_service.dart';
 
 class LibraryTab extends StatelessWidget {
   const LibraryTab({super.key});
@@ -53,17 +54,27 @@ class LibraryTab extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => showDialog(
-          context: context,
-          useRootNavigator: true,
-          builder: (_) => ChangeNotifierProvider.value(
-            value: context.watch<LibraryProvider>(),
-            child: const ImportPlaylistDialog(),
+      floatingActionButton: ValueListenableBuilder(
+        valueListenable: MediaService().isPlayerBinded,
+        builder: (_, playerBinded, fab) {
+          if (!playerBinded) return fab!;
+          return Padding(
+            padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight * 1.25),
+            child: fab,
+          );
+        },
+        child: FloatingActionButton.extended(
+          onPressed: () => showDialog(
+            context: context,
+            useRootNavigator: true,
+            builder: (_) => ChangeNotifierProvider.value(
+              value: context.watch<LibraryProvider>(),
+              child: const ImportPlaylistDialog(),
+            ),
           ),
+          label: const Text("Import"),
+          icon: const Icon(Icons.add_rounded),
         ),
-        label: const Text("Import"),
-        icon: const Icon(Icons.add_rounded),
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:path_provider/path_provider.dart';
@@ -24,6 +24,7 @@ class MediaService extends BaseAudioHandler {
   AudioPlayer? _player;
   VoidCallback? _nextTrackCallback;
   VoidCallback? _previousTrackCallback;
+  ValueNotifier<bool> isPlayerBinded = ValueNotifier(false);
 
   /// Must call before runApp
   static Future<void> init() async {
@@ -52,12 +53,18 @@ class MediaService extends BaseAudioHandler {
     _player = player;
     _nextTrackCallback = nextTrackCallback;
     _previousTrackCallback = previousTrackCallback;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      isPlayerBinded.value = true;
+    });
   }
 
   void unbind() {
     _player = null;
     _nextTrackCallback = null;
     _previousTrackCallback = null;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      isPlayerBinded.value = false;
+    });
   }
 
   File mediaFile(Media media) => File(mediaFileDir + media.id);
