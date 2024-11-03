@@ -34,8 +34,10 @@ class LibraryProvider extends ChangeNotifier {
     if (!await DownloaderService.hasInternet) return;
     for (final (index, playlist) in entries.indexed) {
       try {
-        var update = await _ytClient.get(playlist.id);
-        update = await _playlistWithThumbnail(update);
+        final update = await compute((_) async {
+          var update = await _ytClient.get(playlist.id);
+          return await _playlistWithThumbnail(update);
+        }, null);
         entries[index] = Playlist.fromYTPlaylist(
           update,
           videoIds: entries[index].videoIds, // Pass previously cached videoIds
@@ -44,7 +46,6 @@ class LibraryProvider extends ChangeNotifier {
         // TODO Error
       }
     }
-
     isar.writeAsyncWith(entries, (db, data) => db.playlists.putAll(data));
     notifyListeners();
   }

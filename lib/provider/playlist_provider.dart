@@ -17,20 +17,24 @@ class PlaylistProvider extends ChangeNotifier {
       final media = isar.medias.where().idEqualTo(id).findFirst();
       if (media != null) medias.add(media);
     }
-    notifyListeners();
     updateDownloadStatus();
+    notifyListeners();
     refresh();
   }
 
   Future<void> refresh() async {
     try {
       if (!await DownloaderService.hasInternet) return;
-      final vids = await _ytClient.getVideos(playlist.id).toList();
-      medias.clear();
-      medias.addAll(vids.map(Media.fromYTVideo));
-      // Update playlist
-      playlist.videoIds.clear();
-      playlist.videoIds.addAll(medias.map((m) => m.id));
+
+      await compute((_) async {
+        final vids = await _ytClient.getVideos(playlist.id).toList();
+        medias.clear();
+        medias.addAll(vids.map(Media.fromYTVideo));
+        // Update playlist
+        playlist.videoIds.clear();
+        playlist.videoIds.addAll(medias.map((m) => m.id));
+      }, null);
+
       // Save to DB
       isar.writeAsyncWith(playlist, (db, data) => db.playlists.put(data));
       isar.writeAsyncWith(medias, (db, data) => db.medias.putAll(data));
@@ -44,15 +48,12 @@ class PlaylistProvider extends ChangeNotifier {
   void updateDownloadStatus({Media? media}) {
     if (media != null) {
       media.downloaded = MediaService().isDownloaded(media);
-      notifyListeners();
       return;
     }
 
     for (final media in medias) {
       media.downloaded = MediaService().isDownloaded(media);
     }
-
-    notifyListeners();
   }
 
   bool _disposed = false;

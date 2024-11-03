@@ -62,13 +62,12 @@ void main() async {
     ),
   );
 
-  // Ensure notification permission
-  Permission.notification.isDenied.then((denied) {
-    if (denied) Permission.notification.request();
-  });
-
-  // Ensure battery optimization disabled
-  Permission.ignoreBatteryOptimizations.isDenied.then((denied) {
-    if (denied) Permission.ignoreBatteryOptimizations.request();
-  });
+  // Ensure permissions
+  Future.wait([
+    Permission.notification.isDenied,
+    Permission.ignoreBatteryOptimizations.isDenied
+  ]).then((result) async {
+    if (result[0]) await Permission.notification.request();
+    if (result[1]) await Permission.ignoreBatteryOptimizations.request();
+  }).catchError((_) {});
 }

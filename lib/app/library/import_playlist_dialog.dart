@@ -35,8 +35,8 @@ class _ImportPlaylistDialogState extends State<ImportPlaylistDialog> {
     return AlertDialog(
       title: const Text("Import Playlist"),
       icon: const Icon(Icons.link_rounded),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
+      content: ListView(
+        shrinkWrap: true,
         children: [
           const SizedBox(height: 16),
           TextFormField(
