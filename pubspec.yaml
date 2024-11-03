@@ -55,8 +55,6 @@ dependencies:
   # Utils
   dynamic_color: ^1.7.0
   cached_network_image: ^3.4.1
-  async: ^2.11.0
-  collection: ^1.18.0
   permission_handler: ^11.3.1
 
 

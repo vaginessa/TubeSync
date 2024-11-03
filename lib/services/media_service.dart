@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
@@ -68,7 +69,7 @@ class MediaService extends BaseAudioHandler {
 
   File mediaFile(Media media) => File(mediaFileDir + media.id);
 
-  Future<AudioSource> getMedia(Media media) async {
+  Future<AudioSource> getMediaSource(Media media) async {
     // Try from offline
     final downloaded = mediaFile(media);
     if (downloaded.existsSync()) return AudioSource.file(downloaded.path);
@@ -77,8 +78,12 @@ class MediaService extends BaseAudioHandler {
       throw HttpException("No internet!");
     }
 
-    final videoManifest = await _ytClient.getManifest(media.id);
-    final streamUri = videoManifest.audioOnly.withHighestBitrate().url;
+    final streamUri = await compute((data) async {
+      final ytClient = data[0] as yt.StreamClient;
+      final videoManifest = await ytClient.getManifest(data[1]);
+      return videoManifest.audioOnly.withHighestBitrate().url;
+    }, [_ytClient, media.id]);
+
     return AudioSource.uri(streamUri);
   }
 

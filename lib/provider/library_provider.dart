@@ -23,7 +23,7 @@ class LibraryProvider extends ChangeNotifier {
       throw "Playlist already exists!";
     }
 
-    playlist = await _playlistWithThumbnail(playlist);
+    playlist = await _playlistWithThumbnail(_ytClient, playlist);
 
     entries.add(Playlist.fromYTPlaylist(playlist));
     isar.writeAsyncWith(entries.last, (db, data) => db.playlists.put(data));
@@ -34,12 +34,12 @@ class LibraryProvider extends ChangeNotifier {
     if (!await DownloaderService.hasInternet) return;
     for (final (index, playlist) in entries.indexed) {
       try {
-        final update = await compute((_) async {
-          var update = await _ytClient.get(playlist.id);
-          return await _playlistWithThumbnail(update);
-        }, null);
+        final updatedPlaylist = await compute((ytClient) async {
+          final update = await ytClient.get(playlist.id);
+          return await _playlistWithThumbnail(ytClient, update);
+        }, _ytClient);
         entries[index] = Playlist.fromYTPlaylist(
-          update,
+          updatedPlaylist,
           videoIds: entries[index].videoIds, // Pass previously cached videoIds
         );
       } catch (_) {
@@ -60,10 +60,12 @@ class LibraryProvider extends ChangeNotifier {
 
   // Workaround for playlist thumbnail (thumb of first vid)
   // still no custom thumbnails tho
-  Future<yt.Playlist> _playlistWithThumbnail(yt.Playlist playlist) async {
+  // Isolates require static methods
+  static Future<yt.Playlist> _playlistWithThumbnail(
+      yt.PlaylistClient ytClient, yt.Playlist playlist) async {
     return playlist.copyWith(
       thumbnails: yt.ThumbnailSet(
-        (await _ytClient.getVideos(playlist.id).first).id.value,
+        (await ytClient.getVideos(playlist.id).first).id.value,
       ),
     );
   }

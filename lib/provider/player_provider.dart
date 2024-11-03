@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:async/async.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 // ignore: depend_on_referenced_packages Just for Types. Doesn't matter
 import 'package:rxdart/rxdart.dart' show BehaviorSubject;
@@ -19,7 +17,6 @@ class PlayerProvider {
   late ValueNotifier<Media> _nowPlaying;
 
   // Reference queued beginPlay calls to cancel upon changes
-  late CancelableOperation? _playerQueue;
 
   // Buffering state because we fetch Uri on demand
   final ValueNotifier<bool> buffering = ValueNotifier(false);
@@ -33,11 +30,9 @@ class PlayerProvider {
       previousTrackCallback: previousTrack,
     );
     _nowPlaying = ValueNotifier(start ?? playlist.medias.first);
-    _playerQueue = CancelableOperation.fromFuture(beginPlay());
-    nowPlaying.addListener(() async {
-      await _playerQueue?.cancel();
-      _playerQueue = CancelableOperation.fromFuture(beginPlay());
-    });
+    // _playerQueue = CancelableOperation.fromFuture(beginPlay());
+    nowPlaying.addListener(beginPlay);
+    beginPlay();
 
     player.processingStateStream.listen((state) {
       if (state == ProcessingState.completed) nextTrack();
@@ -58,14 +53,16 @@ class PlayerProvider {
             : AudioProcessingState.values.byName(state.processingState.name),
         controls: [
           if (!hasNoPrevious) MediaControl.skipToPrevious,
+          if (!hasNoNext) MediaControl.skipToNext,
           if (!buffering.value) MediaControl.rewind,
           if (!buffering.value) MediaControl.fastForward,
-          if (!hasNoNext) MediaControl.skipToNext,
         ],
         systemActions: {
+          if (!hasNoPrevious) MediaAction.skipToPrevious,
+          if (!hasNoNext) MediaAction.skipToNext,
           if (!buffering.value) MediaAction.seek,
-          MediaAction.rewind,
-          MediaAction.fastForward,
+          if (!buffering.value) MediaAction.rewind,
+          if (!buffering.value) MediaAction.fastForward,
         },
       )),
     );
@@ -92,9 +89,11 @@ class PlayerProvider {
         playing: player.playing,
       ));
 
-      await player.setAudioSource(
-        await MediaService().getMedia(nowPlaying.value),
-      );
+      final media = nowPlaying.value;
+      final source = await MediaService().getMediaSource(media);
+
+      if (media != nowPlaying.value) return;
+      await player.setAudioSource(source);
 
       if (_disposed) return;
       // Don't await this. Ever.
@@ -130,7 +129,7 @@ class PlayerProvider {
 
   void dispose() {
     _disposed = true;
-    _playerQueue?.cancel();
+    // _playerQueue?.cancel();
     nowPlaying.dispose();
     buffering.dispose();
     player.stop().whenComplete(player.dispose);
