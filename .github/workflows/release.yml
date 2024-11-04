@@ -4,9 +4,8 @@ permissions: write-all
 
 on:
   release:
-    types: [ published , prereleased ]
+    types: [published, prereleased]
   workflow_dispatch:
-
 
 jobs:
   build-android-apk:
@@ -24,7 +23,6 @@ jobs:
           distribution: "zulu"
           java-version: "17"
           cache: gradle
-
 
       - run: flutter --version
 
@@ -48,7 +46,7 @@ jobs:
           TUBESYNC_JKS: ${{ secrets.TUBESYNC_JKS }}
 
       - name: Build Android Release
-        run: flutter build apk --release
+        run: flutter build apk --release && flutter build apk --release --split-per-abi
         env:
           TUBESYNC_KEY_PASSWORD: ${{ secrets.TUBESYNC_KEY_PASSWORD }}
 
@@ -62,5 +60,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tubesync_android_release
-          path: build/app/outputs/flutter-apk/app-release.apk
-
+          path: build/app/outputs/flutter-apk/app-*.apk
