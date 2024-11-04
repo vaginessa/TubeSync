@@ -68,7 +68,7 @@ class MediaService extends BaseAudioHandler {
     });
   }
 
-  File mediaFile(Media media) => File(mediaDir + media.id);
+  File mediaFile(Media media) => File(path.join(mediaDir, media.id));
 
   Future<AudioSource> getMediaSource(Media media) async {
     // Try from offline
