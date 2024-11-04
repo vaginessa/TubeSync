@@ -26,11 +26,14 @@ class PlaylistProvider extends ChangeNotifier {
     try {
       if (!await DownloaderService.hasInternet) return;
 
-      final vids = await compute((data) async {
-        final ytClient = data[0] as yt.PlaylistClient;
-        final videos = await ytClient.getVideos(data[1]).toList();
-        return videos.map(Media.fromYTVideo);
-      }, [_ytClient, playlist.id]);
+      final vids = await compute(
+        (data) async {
+          final ytClient = data[0] as yt.PlaylistClient;
+          final videos = await ytClient.getVideos(data[1]).toList();
+          return videos.map(Media.fromYTVideo);
+        },
+        [_ytClient, playlist.id],
+      );
 
       medias.clear();
       medias.addAll(vids);

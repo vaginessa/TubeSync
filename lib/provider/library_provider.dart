@@ -34,10 +34,13 @@ class LibraryProvider extends ChangeNotifier {
     if (!await DownloaderService.hasInternet) return;
     for (final (index, playlist) in entries.indexed) {
       try {
-        final updatedPlaylist = await compute((ytClient) async {
-          final update = await ytClient.get(playlist.id);
-          return await _playlistWithThumbnail(ytClient, update);
-        }, _ytClient);
+        final updatedPlaylist = await compute(
+          (ytClient) async {
+            final update = await ytClient.get(playlist.id);
+            return await _playlistWithThumbnail(ytClient, update);
+          },
+          _ytClient,
+        );
         entries[index] = Playlist.fromYTPlaylist(
           updatedPlaylist,
           videoIds: entries[index].videoIds, // Pass previously cached videoIds

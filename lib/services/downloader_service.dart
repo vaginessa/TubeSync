@@ -1,4 +1,5 @@
 import 'package:background_downloader/background_downloader.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
@@ -54,7 +55,10 @@ class DownloaderService {
   Future<void> download(Media media) async {
     try {
       if (MediaService().isDownloaded(media)) return;
-      final manifest = await _ytClient.getManifest(media.id);
+      final manifest = await compute(
+        (data) => (data[0] as yt.StreamClient).getManifest(data[1]),
+        [_ytClient, media.id],
+      );
       final url = manifest.audioOnly.withHighestBitrate().url.toString();
 
       final task = DownloadTask(
@@ -73,13 +77,17 @@ class DownloaderService {
   }
 
   // TODO Move this process to background or notify user to not close until this finishes
+  // https://pub.dev/packages/workmanager or https://pub.dev/packages/flutter_background_service
   Future<void> downloadAll(List<Media> medias) async {
     _abortQueueing = false;
     for (final media in medias) {
       try {
         if (MediaService().isDownloaded(media)) continue;
 
-        final manifest = await _ytClient.getManifest(media.id);
+        final manifest = await compute(
+          (data) => (data[0] as yt.StreamClient).getManifest(data[1]),
+          [_ytClient, media.id],
+        );
         final url = manifest.audioOnly.withHighestBitrate().url.toString();
 
         if (_abortQueueing) break;
