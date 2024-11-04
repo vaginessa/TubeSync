@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
+import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/services/downloader_service.dart';
@@ -20,7 +21,7 @@ class MediaService extends BaseAudioHandler {
 
   /// Singleton -->
 
-  late final String mediaFileDir;
+  late final String mediaDir;
   final _ytClient = yt.YoutubeExplode().videos.streamsClient;
   AudioPlayer? _player;
   VoidCallback? _nextTrackCallback;
@@ -39,8 +40,8 @@ class MediaService extends BaseAudioHandler {
       ),
     );
 
-    final dir = await getApplicationCacheDirectory();
-    _instance.mediaFileDir = dir.path + Platform.pathSeparator;
+    final dir = (await getApplicationSupportDirectory()).path;
+    _instance.mediaDir = path.join(dir, "downloads");
     JustAudioMediaKit.ensureInitialized();
   }
 
@@ -67,7 +68,7 @@ class MediaService extends BaseAudioHandler {
     });
   }
 
-  File mediaFile(Media media) => File(mediaFileDir + media.id);
+  File mediaFile(Media media) => File(mediaDir + media.id);
 
   Future<AudioSource> getMediaSource(Media media) async {
     // Try from offline
@@ -78,11 +79,14 @@ class MediaService extends BaseAudioHandler {
       throw HttpException("No internet!");
     }
 
-    final streamUri = await compute((data) async {
-      final ytClient = data[0] as yt.StreamClient;
-      final videoManifest = await ytClient.getManifest(data[1]);
-      return videoManifest.audioOnly.withHighestBitrate().url;
-    }, [_ytClient, media.id]);
+    final streamUri = await compute(
+      (data) async {
+        final ytClient = data[0] as yt.StreamClient;
+        final videoManifest = await ytClient.getManifest(data[1]);
+        return videoManifest.audioOnly.withHighestBitrate().url;
+      },
+      [_ytClient, media.id],
+    );
 
     return AudioSource.uri(streamUri);
   }

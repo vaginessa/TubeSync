@@ -1,7 +1,13 @@
 import 'package:background_downloader/background_downloader.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:file/file.dart';
+import 'package:file/local.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart' as cache;
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
 import 'package:tube_sync/main.dart';
 import 'package:tube_sync/model/media.dart';
@@ -19,6 +25,15 @@ class DownloaderService {
   /// Singleton -->
   /// Must call before runApp
   static Future<void> init() async {
+    CachedNetworkImageProvider.defaultCacheManager = cache.CacheManager(
+      cache.Config(
+        _ThumbnailCacheFS.cacheKey,
+        fileSystem: _ThumbnailCacheFS(),
+        stalePeriod: Duration(days: 9999999999),
+        maxNrOfCacheObjects: 9999999999,
+      ),
+    );
+
     await FileDownloader().configure(
       globalConfig: [
         // Limit concurrent downloads
@@ -64,7 +79,7 @@ class DownloaderService {
       final task = DownloadTask(
         url: url,
         displayName: media.title,
-        directory: MediaService().mediaFileDir,
+        directory: MediaService().mediaDir,
         filename: media.id,
         baseDirectory: BaseDirectory.root,
         updates: Updates.statusAndProgress,
@@ -95,7 +110,7 @@ class DownloaderService {
         FileDownloader().enqueue(DownloadTask(
           url: url,
           displayName: media.title,
-          directory: MediaService().mediaFileDir,
+          directory: MediaService().mediaDir,
           filename: media.id,
           baseDirectory: BaseDirectory.root,
           updates: Updates.statusAndProgress,
@@ -169,3 +184,24 @@ typedef DownloadRecord = TaskRecord;
 typedef DownloadProgressUpdate = TaskProgressUpdate;
 typedef DownloadStatusUpdate = TaskStatusUpdate;
 typedef DownloadStatus = TaskStatus;
+
+class _ThumbnailCacheFS implements cache.FileSystem {
+  static String cacheKey = "thumbnails";
+  final Future<Directory> _cacheDirectory;
+
+  _ThumbnailCacheFS() : _cacheDirectory = createDirectory();
+
+  static Future<Directory> createDirectory() async {
+    final baseDir = (await getApplicationSupportDirectory()).path;
+    const fs = LocalFileSystem();
+    final directory = fs.directory(path.join(baseDir, cacheKey));
+    return await directory.create(recursive: true);
+  }
+
+  @override
+  Future<File> createFile(String name) async {
+    final directory = await _cacheDirectory;
+    if (!directory.existsSync()) await createDirectory();
+    return directory.childFile(name);
+  }
+}

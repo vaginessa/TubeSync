@@ -24,7 +24,11 @@ class PlaylistProvider extends ChangeNotifier {
 
   Future<void> refresh() async {
     try {
-      if (!await DownloaderService.hasInternet) return;
+      if (!await DownloaderService.hasInternet) {
+        updateDownloadStatus();
+        notifyListeners();
+        return;
+      }
 
       final vids = await compute(
         (data) async {
