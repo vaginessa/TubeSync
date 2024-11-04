@@ -51,10 +51,10 @@ jobs:
           TUBESYNC_KEY_PASSWORD: ${{ secrets.TUBESYNC_KEY_PASSWORD }}
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: build/app/outputs/flutter-apk/app-release.apk
+          files: build/app/outputs/flutter-apk/app-*.apk
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
