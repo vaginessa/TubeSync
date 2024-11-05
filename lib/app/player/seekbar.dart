@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:squiggly_slider/slider.dart';
 
 class SeekBar extends StatefulWidget {
   final Duration duration;
@@ -9,15 +10,17 @@ class SeekBar extends StatefulWidget {
   final ValueChanged<Duration>? onChanged;
   final ValueChanged<Duration>? onChangeEnd;
   final bool buffering;
+  final bool playing;
 
   const SeekBar({
     super.key,
     required this.duration,
     required this.position,
     required this.bufferedPosition,
+    required this.buffering,
+    required this.playing,
     this.onChanged,
     this.onChangeEnd,
-    required this.buffering,
   });
 
   @override
@@ -48,7 +51,11 @@ class SeekBarState extends State<SeekBar> {
             onChanged: (_) {},
           ),
         ),
-        Slider(
+        SquigglySlider(
+          useLineThumb: true,
+          squiggleAmplitude: widget.playing ? 1.8 : 0,
+          squiggleWavelength: 4.20,
+          squiggleSpeed: 0.08,
           inactiveColor: Colors.transparent,
           max: widget.duration.inMilliseconds.toDouble(),
           value: max(
