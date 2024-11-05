@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
@@ -16,8 +15,6 @@ class PlayerProvider {
 
   late ValueNotifier<Media> _nowPlaying;
 
-  // Reference queued beginPlay calls to cancel upon changes
-
   // Buffering state because we fetch Uri on demand
   final ValueNotifier<bool> buffering = ValueNotifier(false);
 
@@ -30,7 +27,6 @@ class PlayerProvider {
       previousTrackCallback: previousTrack,
     );
     _nowPlaying = ValueNotifier(start ?? playlist.medias.first);
-    // _playerQueue = CancelableOperation.fromFuture(beginPlay());
     nowPlaying.addListener(beginPlay);
     beginPlay();
 
@@ -69,6 +65,7 @@ class PlayerProvider {
   }
 
   Future<void> beginPlay() async {
+    final media = nowPlaying.value;
     try {
       buffering.value = true;
       await player.pause();
@@ -89,7 +86,6 @@ class PlayerProvider {
         playing: player.playing,
       ));
 
-      final media = nowPlaying.value;
       final source = await MediaService().getMediaSource(media);
 
       if (media != nowPlaying.value) return;
@@ -101,7 +97,9 @@ class PlayerProvider {
       player.play();
       buffering.value = false;
     } catch (err) {
-      if (err is HttpException) nextTrack();
+      if (_disposed) return;
+      if (media != nowPlaying.value) return;
+      nextTrack();
       //TODO Show error
     }
   }
@@ -129,7 +127,6 @@ class PlayerProvider {
 
   void dispose() {
     _disposed = true;
-    // _playerQueue?.cancel();
     nowPlaying.dispose();
     buffering.dispose();
     player.stop().whenComplete(player.dispose);

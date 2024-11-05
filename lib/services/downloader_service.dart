@@ -21,7 +21,6 @@ class DownloaderService {
   /// Singleton -->
   /// Must call before runApp
   static Future<void> init() async {
-    cache.CacheManager.logLevel = CacheManagerLogLevel.verbose;
     CachedNetworkImageProvider.defaultCacheManager = cache.CacheManager(
       cache.Config(
         "libCachedImageData",
