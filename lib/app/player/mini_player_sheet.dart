@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/app/player/expanded_player_sheet.dart';
+import 'package:tube_sync/app/player/large_player_sheet.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/provider/player_provider.dart';
 
@@ -162,7 +162,7 @@ class MiniPlayerSheet extends StatelessWidget {
       useRootNavigator: true,
       builder: (_) => Provider<PlayerProvider>.value(
         value: context.read<PlayerProvider>(),
-        child: ExpandedPlayerSheet(),
+        child: LargePlayerSheet(),
       ),
     );
   }

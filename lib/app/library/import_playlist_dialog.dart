@@ -52,6 +52,7 @@ class _ImportPlaylistDialogState extends State<ImportPlaylistDialog> {
           ),
           Card(
             margin: EdgeInsets.only(top: 12),
+            elevation: 0,
             child: ListTile(
               dense: true,
               contentPadding: EdgeInsets.symmetric(horizontal: 6),
