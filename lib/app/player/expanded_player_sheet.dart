@@ -23,7 +23,7 @@ class ExpandedPlayerSheet extends StatelessWidget {
             leading: CircleAvatar(
               radius: 24,
               backgroundImage: CachedNetworkImageProvider(
-                media.thumbnail.low,
+                media.thumbnail.medium,
               ),
             ),
             titleTextStyle: Theme.of(context).textTheme.bodyMedium,

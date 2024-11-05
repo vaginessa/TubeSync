@@ -23,8 +23,9 @@ class MediaEntryBuilder extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             child: CachedNetworkImage(
               width: 80,
-              imageUrl: media.thumbnail.low,
-              fit: BoxFit.none,
+              height: double.maxFinite,
+              imageUrl: media.thumbnail.medium,
+              fit: BoxFit.cover,
             ),
           ),
           Positioned(
