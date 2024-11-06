@@ -68,7 +68,11 @@ class PlaylistHeader extends StatelessWidget {
                   child: FilledButton.tonalIcon(
                     onPressed: onPlayAll,
                     icon: const Icon(Icons.play_arrow_rounded),
-                    label: const Text("Play All"),
+                    label: const Text(
+                      "Play All",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),

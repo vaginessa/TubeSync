@@ -1,16 +1,29 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/app/player/artwork.dart';
-import 'package:tube_sync/app/player/seekbar.dart';
+import 'package:tube_sync/app/player/components/artwork.dart';
+import 'package:tube_sync/app/player/components/seekbar.dart';
 import 'package:tube_sync/extensions.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/model/playlist.dart';
 import 'package:tube_sync/provider/player_provider.dart';
 
-class LargePlayerSheet extends StatelessWidget {
+class LargePlayerSheet extends StatefulWidget {
   const LargePlayerSheet({super.key});
+
+  @override
+  State<LargePlayerSheet> createState() => _LargePlayerSheetState();
+}
+
+class _LargePlayerSheetState extends State<LargePlayerSheet>
+    with TickerProviderStateMixin {
+  late final tabController = TabController(length: 3, vsync: this);
+
+  @override
+  void dispose() {
+    super.dispose();
+    tabController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,59 +36,95 @@ class LargePlayerSheet extends StatelessWidget {
             child: const Icon(Icons.arrow_back_ios_new_rounded),
           ),
         ),
+        title: Image.asset(
+          "assets/tubesync.png",
+          height: 30,
+          fit: BoxFit.contain,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.more_vert_rounded),
+          ),
+          SizedBox(width: 8),
+        ],
       ),
       body: Column(
         children: [
+          SizedBox(height: 16),
+          SegmentedButton<int>(
+            segments: const [
+              ButtonSegment(
+                value: 0,
+                label: Text('Music'),
+                icon: Icon(Icons.art_track_rounded),
+              ),
+              ButtonSegment(
+                value: 1,
+                label: Text('Lyrics'),
+                icon: Icon(Icons.lyrics_rounded),
+              ),
+              ButtonSegment(
+                value: 2,
+                label: Text('Video'),
+                icon: Icon(Icons.play_circle_fill_rounded),
+              ),
+            ],
+            showSelectedIcon: false,
+            selected: {tabController.index},
+            onSelectionChanged: (value) => setState(
+              () => tabController.animateTo(value.first),
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: tabController,
+              children: [
+                Artwork(),
+                Center(child: Text("Soon")),
+                Center(child: Text("Soon")),
+              ],
+            ),
+          ),
           ValueListenableBuilder(
             valueListenable: context.read<PlayerProvider>().nowPlaying,
             builder: (context, media, child) {
-              return StreamBuilder(
-                stream: context.read<PlayerProvider>().player.positionStream,
-                initialData: context.read<PlayerProvider>().player.position,
-                builder: (context, state) => Artwork(
-                  media: media,
-                  duration: state.requireData,
-                ),
-              );
-              return ListTile(
-                contentPadding: const EdgeInsets.only(left: 8, right: 4),
-                leading: CircleAvatar(
-                  radius: 24,
-                  backgroundImage: CachedNetworkImageProvider(
-                    media.thumbnail.medium,
+              return Card.outlined(
+                elevation: 0,
+                margin: EdgeInsets.symmetric(horizontal: 8),
+                child: ListTile(
+                  onTap: () {},
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  title: Text(
+                    media.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                titleTextStyle: Theme.of(context).textTheme.bodyMedium,
-                title: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      media.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      media.author,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Text(
-                      "${positionInPlaylist(context, media)} \u2022 ${playlistInfo(context)}",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-                trailing: IconButton(
-                  onPressed: () => Navigator.maybePop(context),
-                  icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        media.author,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        "${positionInPlaylist(context, media)} \u2022 ${playlistInfo(context)}",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                  leading: Icon(Icons.playlist_play_rounded),
+                  trailing: Icon(Icons.keyboard_arrow_right_rounded),
                 ),
               );
             },
           ),
+          SizedBox(height: 16),
           // SeekBar
           StreamBuilder<Duration>(
             stream: player(context).positionStream,

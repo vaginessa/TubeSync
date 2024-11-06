@@ -32,7 +32,7 @@ class AppTheme {
         ),
       ),
       cardTheme: const CardTheme(
-        margin: EdgeInsets.all(12),
+        margin: EdgeInsets.all(8),
         clipBehavior: Clip.antiAlias,
       ),
       appBarTheme: AppBarTheme(
