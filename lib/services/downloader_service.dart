@@ -1,8 +1,6 @@
 import 'package:background_downloader/background_downloader.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart' as cache;
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
 import 'package:tube_sync/main.dart';
@@ -21,14 +19,6 @@ class DownloaderService {
   /// Singleton -->
   /// Must call before runApp
   static Future<void> init() async {
-    CachedNetworkImageProvider.defaultCacheManager = cache.CacheManager(
-      cache.Config(
-        "libCachedImageData",
-        stalePeriod: Duration(days: 999),
-        maxNrOfCacheObjects: 999999,
-      ),
-    );
-
     await FileDownloader().configure(
       globalConfig: [
         // Limit concurrent downloads
