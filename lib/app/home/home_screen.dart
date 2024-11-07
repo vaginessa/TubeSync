@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
+import 'package:tube_sync/app/app_theme.dart';
 import 'package:tube_sync/app/library/library_tab.dart';
 import 'package:tube_sync/app/more/more_tab.dart';
 import 'package:tube_sync/provider/library_provider.dart';
@@ -28,10 +29,26 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
         builder: (context, child) {
+          if (AppTheme.isDesktop) {
+            return Row(
+              children: [
+                HomeNavigationBar.rail(),
+                const VerticalDivider(thickness: 1, width: 1),
+                Expanded(
+                  child: Scaffold(
+                    key: Provider.of<GlobalKey<ScaffoldState>>(context),
+                    appBar: const HomeAppBar(),
+                    body: child!,
+                    bottomNavigationBar: const HomeNavigationBar(),
+                  ),
+                ),
+              ],
+            );
+          }
           return Scaffold(
             key: Provider.of<GlobalKey<ScaffoldState>>(context),
             appBar: const HomeAppBar(),
-            body: child,
+            body: child!,
             bottomNavigationBar: const HomeNavigationBar(),
           );
         },

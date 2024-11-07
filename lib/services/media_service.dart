@@ -59,10 +59,11 @@ class MediaService extends BaseAudioHandler {
     });
   }
 
+  // FIXME: This causes newly bind player to unbind when switching without close
   void unbind() {
-    _player = null;
-    _nextTrackCallback = null;
-    _previousTrackCallback = null;
+    // _player = null;
+    // _nextTrackCallback = null;
+    // _previousTrackCallback = null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       isPlayerBinded.value = false;
     });

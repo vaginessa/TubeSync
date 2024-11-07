@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:dynamic_color/dynamic_color.dart';
@@ -41,7 +42,7 @@ class AppTheme {
       pageTransitionsTheme: PageTransitionsTheme(
         builders: {
           for (final platform in TargetPlatform.values)
-            platform: CupertinoPageTransitionsBuilder()
+            platform: CupertinoPageTransitionsBuilder(),
         },
       ),
       fontFamily: 'WantedSansStd',
@@ -69,6 +70,10 @@ class AppTheme {
       physics: const BouncingScrollPhysics(),
       dragDevices: PointerDeviceKind.values.toSet(),
     );
+  }
+
+  static bool get isDesktop {
+    return Platform.isLinux || Platform.isWindows || Platform.isMacOS;
   }
 
   // https://github.com/material-foundation/flutter-packages/issues/582#issuecomment-2081174158

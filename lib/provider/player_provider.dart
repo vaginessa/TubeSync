@@ -21,14 +21,15 @@ class PlayerProvider {
   ValueNotifier<Media> get nowPlaying => _nowPlaying;
 
   PlayerProvider(this.playlist, {Media? start}) {
+    _nowPlaying = ValueNotifier(start ?? playlist.medias.first);
+    nowPlaying.addListener(beginPlay);
+    beginPlay();
+
     MediaService().bind(
       player: player,
       nextTrackCallback: nextTrack,
       previousTrackCallback: previousTrack,
     );
-    _nowPlaying = ValueNotifier(start ?? playlist.medias.first);
-    nowPlaying.addListener(beginPlay);
-    beginPlay();
 
     player.processingStateStream.listen((state) {
       if (state == ProcessingState.completed) nextTrack();
@@ -68,8 +69,6 @@ class PlayerProvider {
     final media = nowPlaying.value;
     try {
       buffering.value = true;
-      await player.pause();
-      await player.seek(Duration.zero);
 
       // Post service notification update
       notificationMetadata.add(MediaItem(
@@ -83,8 +82,11 @@ class PlayerProvider {
 
       notificationState.add(notificationState.value.copyWith(
         processingState: AudioProcessingState.loading,
-        playing: player.playing,
+        playing: false,
       ));
+
+      await player.pause();
+      await player.seek(Duration.zero);
 
       final source = await MediaService().getMediaSource(media);
 

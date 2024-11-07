@@ -22,7 +22,10 @@ class LibraryTab extends StatelessWidget {
           return RefreshIndicator(
             onRefresh: library.refresh,
             child: ListView.builder(
-              padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight * 2),
+              padding: EdgeInsets.only(
+                top: 8,
+                bottom: kBottomNavigationBarHeight * 2,
+              ),
               itemCount: library.entries.length,
               itemBuilder: (context, index) {
                 final playlist = library.entries[index];
