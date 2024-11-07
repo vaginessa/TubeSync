@@ -32,12 +32,28 @@ void main() async {
 
   if (AppTheme.isDesktop) {
     await WindowManager.instance.ensureInitialized();
-    await WindowManager.instance.setIcon("assets/tubesync.png");
+    WindowManager.instance.setIcon("assets/tubesync.png");
+    WindowManager.instance.setMinimumSize(const Size(480, 360));
 
     // Remove Native title on Desktop
     WindowManager.instance.waitUntilReadyToShow().then(
           (_) => WindowManager.instance.setAsFrameless(),
         );
+  }
+
+  MaterialApp app({
+    required ThemeData light,
+    required ThemeData dark,
+    required Widget home,
+  }) {
+    return MaterialApp(
+      navigatorKey: rootNavigator,
+      debugShowCheckedModeBanner: false,
+      theme: light,
+      darkTheme: dark,
+      scrollBehavior: AppTheme.scrollBehavior,
+      home: home,
+    );
   }
 
   runApp(
@@ -46,25 +62,15 @@ void main() async {
       builder: (_, dynamicColor, home) {
         if (dynamicColor == true) {
           return DynamicColorBuilder(
-            builder: (light, dark) => MaterialApp(
-              navigatorKey: rootNavigator,
-              debugShowCheckedModeBanner: false,
-              theme: AppTheme(colorScheme: light).light,
-              darkTheme: AppTheme(colorScheme: dark).dark,
-              scrollBehavior: AppTheme.scrollBehavior,
+            builder: (light, dark) => app(
+              light: AppTheme(colorScheme: light).light,
+              dark: AppTheme(colorScheme: dark).dark,
               home: home!,
             ),
           );
         }
-    
-        return MaterialApp(
-          navigatorKey: rootNavigator,
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme().light,
-          darkTheme: AppTheme().dark,
-          scrollBehavior: AppTheme.scrollBehavior,
-          home: home!,
-        );
+
+        return app(light: AppTheme().light, dark: AppTheme().dark, home: home!);
       },
       child: DragToResizeArea(
         child: Provider<Isar>(
@@ -74,7 +80,6 @@ void main() async {
       ),
     ),
   );
-
   // Ensure permissions
   Future.wait([
     Permission.notification.isDenied,

@@ -17,7 +17,8 @@ class LargePlayerSheet extends StatefulWidget {
 
 class _LargePlayerSheetState extends State<LargePlayerSheet>
     with TickerProviderStateMixin {
-  late final tabController = TabController(length: 3, vsync: this);
+  late final tabController = TabController(length: 3, vsync: this)
+    ..addListener(() => setState(() {}));
 
   @override
   void dispose() {
@@ -96,7 +97,6 @@ class _LargePlayerSheetState extends State<LargePlayerSheet>
                 margin: EdgeInsets.symmetric(horizontal: 8),
                 child: ListTile(
                   onTap: () {},
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
                   title: Text(
                     media.title,
                     maxLines: 1,

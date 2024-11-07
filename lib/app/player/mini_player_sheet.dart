@@ -160,6 +160,7 @@ class MiniPlayerSheet extends StatelessWidget {
       isScrollControlled: true,
       useSafeArea: true,
       useRootNavigator: true,
+      barrierColor: Colors.transparent,
       builder: (_) => Provider<PlayerProvider>.value(
         value: context.read<PlayerProvider>(),
         child: LargePlayerSheet(),
