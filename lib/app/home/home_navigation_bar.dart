@@ -31,13 +31,13 @@ class _HomeNavigationBarState extends State<HomeNavigationBar> {
       labelType: NavigationRailLabelType.selected,
       destinations: const [
         NavigationRailDestination(
-          padding: EdgeInsets.symmetric(vertical: 2),
+          padding: EdgeInsets.symmetric(vertical: 4),
           icon: Icon(Icons.my_library_music_outlined),
           selectedIcon: Icon(Icons.my_library_music_rounded),
           label: Text('Library'),
         ),
         NavigationRailDestination(
-          padding: EdgeInsets.symmetric(vertical: 2),
+          padding: EdgeInsets.symmetric(vertical: 4),
           icon: Icon(Icons.more_horiz_rounded),
           selectedIcon: Icon(Icons.more_vert_rounded),
           label: Text('More'),

@@ -47,6 +47,9 @@ static void my_application_activate(GApplication* application) {
     gtk_window_set_title(window, "TubeSync");
   }
 
+  // Disable title bar
+  gtk_window_set_decorated(window, FALSE);
+
   gtk_window_set_default_size(window, 980, 540);
   gtk_widget_show(GTK_WIDGET(window));
 

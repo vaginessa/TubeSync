@@ -17,6 +17,13 @@ final rootNavigator = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  if (AppTheme.isDesktop) {
+    await WindowManager.instance.ensureInitialized();
+    WindowManager.instance.setIcon("assets/tubesync.png");
+    WindowManager.instance.setMinimumSize(const Size(480, 360));
+  }
+
   // DB Initialization
   final isarDB = Isar.open(
     schemas: [PreferencesSchema, PlaylistSchema, MediaSchema],
@@ -29,17 +36,6 @@ void main() async {
 
   await DownloaderService.init();
   await MediaService.init();
-
-  if (AppTheme.isDesktop) {
-    await WindowManager.instance.ensureInitialized();
-    WindowManager.instance.setIcon("assets/tubesync.png");
-    WindowManager.instance.setMinimumSize(const Size(480, 360));
-
-    // Remove Native title on Desktop
-    WindowManager.instance.waitUntilReadyToShow().then(
-          (_) => WindowManager.instance.setAsFrameless(),
-        );
-  }
 
   MaterialApp app({
     required ThemeData light,
