@@ -36,14 +36,14 @@ class PlayerProvider {
     });
 
     player.positionStream.listen(
-      (position) => notificationState.add(notificationState.value.copyWith(
+      (position) => notificationState?.add(notificationState!.value.copyWith(
         updatePosition: position,
         bufferedPosition: player.bufferedPosition,
       )),
     );
 
     player.playerStateStream.listen(
-      (state) => notificationState.add(notificationState.value.copyWith(
+      (state) => notificationState?.add(notificationState!.value.copyWith(
         playing: state.playing,
         processingState: buffering.value
             ? AudioProcessingState.loading
@@ -71,7 +71,7 @@ class PlayerProvider {
       buffering.value = true;
 
       // Post service notification update
-      notificationMetadata.add(MediaItem(
+      notificationMetadata?.add(MediaItem(
         id: nowPlaying.value.id,
         title: nowPlaying.value.title,
         artist: nowPlaying.value.author,
@@ -80,7 +80,7 @@ class PlayerProvider {
         artUri: Uri.parse(nowPlaying.value.thumbnail.medium),
       ));
 
-      notificationState.add(notificationState.value.copyWith(
+      notificationState?.add(notificationState!.value.copyWith(
         processingState: AudioProcessingState.loading,
         playing: false,
       ));
@@ -132,12 +132,16 @@ class PlayerProvider {
     nowPlaying.dispose();
     buffering.dispose();
     player.stop().whenComplete(player.dispose);
-    MediaService().unbind();
+    MediaService().unbind(player);
   }
 
-  BehaviorSubject<PlaybackState> get notificationState =>
-      MediaService().playbackState;
+  BehaviorSubject<PlaybackState>? get notificationState {
+    if (_disposed) return null;
+    return MediaService().playbackState;
+  }
 
-  BehaviorSubject<MediaItem?> get notificationMetadata =>
-      MediaService().mediaItem;
+  BehaviorSubject<MediaItem?>? get notificationMetadata {
+    if (_disposed) return null;
+    return MediaService().mediaItem;
+  }
 }

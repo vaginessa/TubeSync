@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
@@ -61,28 +62,34 @@ class LibraryTab extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: ValueListenableBuilder(
-        valueListenable: MediaService().isPlayerBinded,
-        builder: (_, playerBinded, fab) {
-          if (!playerBinded) return fab!;
+      floatingActionButton: StreamBuilder<PlaybackState>(
+        stream: MediaService().playbackState.stream,
+        builder: (_, state) {
+          if (state.data?.processingState == AudioProcessingState.idle) {
+            return importFab(context);
+          }
+
           return Padding(
             padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight * 1.25),
-            child: fab,
+            child: importFab(context),
           );
         },
-        child: FloatingActionButton.extended(
-          onPressed: () => showDialog(
-            context: context,
-            useRootNavigator: true,
-            builder: (_) => ChangeNotifierProvider.value(
-              value: context.watch<LibraryProvider>(),
-              child: const ImportPlaylistDialog(),
-            ),
-          ),
-          label: const Text("Import"),
-          icon: const Icon(Icons.add_rounded),
+      ),
+    );
+  }
+
+  FloatingActionButton importFab(BuildContext context) {
+    return FloatingActionButton.extended(
+      onPressed: () => showDialog(
+        context: context,
+        useRootNavigator: true,
+        builder: (_) => ChangeNotifierProvider.value(
+          value: context.watch<LibraryProvider>(),
+          child: const ImportPlaylistDialog(),
         ),
       ),
+      label: const Text("Import"),
+      icon: const Icon(Icons.add_rounded),
     );
   }
 }
