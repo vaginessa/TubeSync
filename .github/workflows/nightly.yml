@@ -3,7 +3,7 @@ name: Nightly Build
 on:
   workflow_dispatch:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
 
 jobs:
   build-android-apk:
@@ -44,7 +44,7 @@ jobs:
           TUBESYNC_JKS: ${{ secrets.TUBESYNC_JKS }}
 
       - name: Build Android Profile Apk
-        run: flutter build apk --profile && flutter build apk --profile --split-per-abi
+        run: flutter build apk --profile
         env:
           TUBESYNC_KEY_PASSWORD: ${{ secrets.TUBESYNC_KEY_PASSWORD }}
 
@@ -52,4 +52,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tubesync_android_nightly
-          path: build/app/outputs/flutter-apk/app-*.apk
+          path: build/app/outputs/flutter-apk/app-profile.apk

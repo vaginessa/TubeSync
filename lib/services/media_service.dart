@@ -61,7 +61,10 @@ class MediaService extends BaseAudioHandler {
     _player = null;
     _nextTrackCallback = null;
     _previousTrackCallback = null;
-    super.pause().whenComplete(super.stop);
+    playbackState.add(playbackState.value.copyWith(
+      playing: false,
+      processingState: AudioProcessingState.idle,
+    ));
   }
 
   File mediaFile(Media media) => File(path.join(mediaDir, media.id));
