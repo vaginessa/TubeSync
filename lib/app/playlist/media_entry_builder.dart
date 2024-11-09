@@ -1,10 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:network_to_file_image/network_to_file_image.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/playlist/media_menu_sheet.dart';
 import 'package:tube_sync/extensions.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
+import 'package:tube_sync/services/media_service.dart';
 
 class MediaEntryBuilder extends StatelessWidget {
   final Media media;
@@ -21,10 +22,13 @@ class MediaEntryBuilder extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: CachedNetworkImage(
+            child: Image(
               width: 80,
               height: double.maxFinite,
-              imageUrl: media.thumbnail.medium,
+              image: NetworkToFileImage(
+                url: media.thumbnail.medium,
+                file: MediaService().thumbnailFile(media.thumbnail.medium),
+              ),
               fit: BoxFit.cover,
             ),
           ),

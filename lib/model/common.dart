@@ -5,7 +5,9 @@ part 'common.g.dart';
 
 @embedded
 class Thumbnails {
+  //low, high has vertical black borders
   final String low, medium, high;
+
 
   Thumbnails(this.low, this.medium, this.high);
 

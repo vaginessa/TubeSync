@@ -20,11 +20,15 @@ class MediaService extends BaseAudioHandler {
 
   /// Singleton -->
 
-  late final String mediaDir;
+  late final String _storageDir;
   final _ytClient = yt.YoutubeExplode().videos.streamsClient;
   AudioPlayer? _player;
   VoidCallback? _nextTrackCallback;
   VoidCallback? _previousTrackCallback;
+
+  String get downloadsDir => path.join(_storageDir, "downloads");
+
+  String get thumbnailsDir => path.join(_storageDir, "thumbnails");
 
   /// Must call before runApp
   static Future<void> init() async {
@@ -38,8 +42,9 @@ class MediaService extends BaseAudioHandler {
       ),
     );
 
-    final dir = (await getApplicationSupportDirectory()).path;
-    _instance.mediaDir = path.join(dir, "downloads");
+    _instance._storageDir = (await getApplicationSupportDirectory()).path;
+    Directory(_instance.downloadsDir).createSync(recursive: true);
+    Directory(_instance.thumbnailsDir).createSync(recursive: true);
     JustAudioMediaKit.ensureInitialized();
   }
 
@@ -67,7 +72,13 @@ class MediaService extends BaseAudioHandler {
     ));
   }
 
-  File mediaFile(Media media) => File(path.join(mediaDir, media.id));
+  File mediaFile(Media media) => File(
+        path.join(downloadsDir, media.id),
+      );
+
+  File thumbnailFile(String fileName) => File(
+        path.join(thumbnailsDir, Uri.encodeComponent(fileName)),
+      );
 
   Future<AudioSource> getMediaSource(Media media) async {
     // Try from offline

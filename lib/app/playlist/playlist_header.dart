@@ -1,9 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:network_to_file_image/network_to_file_image.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/playlist/playlist_menu_sheet.dart';
 import 'package:tube_sync/model/playlist.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
+import 'package:tube_sync/services/media_service.dart';
 
 class PlaylistHeader extends StatelessWidget {
   const PlaylistHeader({super.key, required this.onPlayAll});
@@ -26,10 +27,15 @@ class PlaylistHeader extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: CachedNetworkImage(
+                    child: Image(
                       height: 120,
                       width: double.maxFinite,
-                      imageUrl: playlist(context).thumbnail.high,
+                      image: NetworkToFileImage(
+                        url: playlist(context).thumbnail.high,
+                        file: MediaService().thumbnailFile(
+                          playlist(context).thumbnail.high,
+                        ),
+                      ),
                       fit: BoxFit.cover,
                     ),
                   ),

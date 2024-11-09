@@ -1,7 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:network_to_file_image/network_to_file_image.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/provider/player_provider.dart';
+import 'package:tube_sync/services/media_service.dart';
 
 class Artwork extends StatelessWidget {
   const Artwork({super.key});
@@ -21,8 +22,9 @@ class Artwork extends StatelessWidget {
               child: CircleAvatar(
                 maxRadius: 120,
                 minRadius: 50,
-                backgroundImage: CachedNetworkImageProvider(
-                  media.thumbnail.high,
+                backgroundImage: NetworkToFileImage(
+                  url: media.thumbnail.high,
+                  file: MediaService().thumbnailFile(media.thumbnail.high),
                 ),
                 child: Icon(
                   Icons.circle,

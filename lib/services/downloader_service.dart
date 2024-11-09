@@ -64,7 +64,7 @@ class DownloaderService {
       final task = DownloadTask(
         url: url,
         displayName: media.title,
-        directory: MediaService().mediaDir,
+        directory: MediaService().downloadsDir,
         filename: media.id,
         baseDirectory: BaseDirectory.root,
         updates: Updates.statusAndProgress,
@@ -95,7 +95,7 @@ class DownloaderService {
         FileDownloader().enqueue(DownloadTask(
           url: url,
           displayName: media.title,
-          directory: MediaService().mediaDir,
+          directory: MediaService().downloadsDir,
           filename: media.id,
           baseDirectory: BaseDirectory.root,
           updates: Updates.statusAndProgress,

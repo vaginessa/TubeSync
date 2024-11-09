@@ -1,9 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:network_to_file_image/network_to_file_image.dart';
 import 'package:provider/provider.dart';
 import 'package:tube_sync/app/player/large_player_sheet.dart';
 import 'package:tube_sync/model/media.dart';
 import 'package:tube_sync/provider/player_provider.dart';
+import 'package:tube_sync/services/media_service.dart';
 
 class MiniPlayerSheet extends StatelessWidget {
   const MiniPlayerSheet({super.key});
@@ -87,8 +88,9 @@ class MiniPlayerSheet extends StatelessWidget {
       contentPadding: const EdgeInsets.only(left: 8, right: 4),
       leading: CircleAvatar(
         radius: 24,
-        backgroundImage: CachedNetworkImageProvider(
-          media.thumbnail.medium,
+        backgroundImage: NetworkToFileImage(
+          url: media.thumbnail.medium,
+          file: MediaService().thumbnailFile(media.thumbnail.medium),
         ),
       ),
       titleTextStyle: Theme.of(context).textTheme.bodyMedium,
