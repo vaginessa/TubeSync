@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-android-apk:
+  build-android:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -61,3 +61,42 @@ jobs:
         with:
           name: tubesync_android_release
           path: build/app/outputs/flutter-apk/app-*.apk
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          cache: true
+
+      - run: flutter --version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Perform Code Generation
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Build Linux Release
+        run: flutter build linux --release
+
+      - name: Zip everything in output
+        run: |
+          cd build/linux/x64/release/bundle
+          zip -r tubesync_linux.zip .
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: build/linux/x64/release/bundle/tubesync_linux.zip
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tubesync_linux_release
+          path: |
+            build/linux/x64/release/bundle/
+            !build/linux/x64/release/bundle/tubesync_linux.zip
