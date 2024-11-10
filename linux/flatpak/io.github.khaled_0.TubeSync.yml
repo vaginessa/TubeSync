@@ -114,15 +114,15 @@ modules:
         path: ./
 
       - type: file
-        url: https://github.com/khaled-0/TubeSync/releases/download/0.1.2/tubesync_linux_release.zip
-        sha256: 180e050d7adabefb52f8567b6c3e04ff2439dfee4b810acd8c0a0bcdc94049c5
+        url: https://github.com/khaled-0/TubeSync/releases/download/0.1.3/tubesync_linux.zip
+        sha256: 4f1e1422f9a93851fb07a849b04bf0f56fa6a70b4002d92a96fb5491b509f676
+        dest-filename: tubesync_linux_release.zip
 
 finish-args:
-  - --socket=wayland # Wayland
+  - --socket=wayland # Wayland by default
   - --socket=fallback-x11 # Fallback x11
   - --share=ipc # X11 performance
   - --device=dri # OpenGL rendering
   - --socket=pulseaudio # Audio Playback
   - --socket=system-bus # Flutter seems to complain without it
-  - --share=network # Access the network
-
+  - --share=network
