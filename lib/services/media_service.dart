@@ -37,6 +37,7 @@ class MediaService extends BaseAudioHandler {
       config: AudioServiceConfig(
         rewindInterval: Duration(seconds: 5),
         androidNotificationChannelName: 'TubeSync',
+        androidNotificationChannelId: 'TubeSync',
         androidNotificationIcon: 'drawable/ic_launcher_foreground',
         preloadArtwork: true,
       ),

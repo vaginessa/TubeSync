@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/flatpak/flatpak-builder/main/data/flatpak-manifest.schema.json
+id: io.github.khaled_0.TubeSync
+runtime: org.freedesktop.Platform
+runtime-version: "23.08"
+sdk: org.freedesktop.Sdk
+command: tubesync
+modules:
+  - name: tubesync
+    buildsystem: simple
+    build-commands:
+      - chmod +x build-flatpak.sh
+      - ./build-flatpak.sh
+    sources:
+      - type: dir
+        path: ./
+
+      - type: file
+        url: https://github.com/khaled-0/TubeSync/releases/download/0.1.2/tubesync_linux_release.zip
+        sha256: 180e050d7adabefb52f8567b6c3e04ff2439dfee4b810acd8c0a0bcdc94049c5
+
+finish-args:
+  - --socket=wayland # Wayland
+  - --socket=fallback-x11 # Fallback x11
+  - --share=ipc # X11 performance
+  - --device=dri # OpenGL rendering
+  - --share=network # Access the network
+
