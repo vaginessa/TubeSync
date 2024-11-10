@@ -112,8 +112,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
-        with:
-          cache-key: flatpak-builder-${{ github.sha }}
 
       - name: Build Flatpak
         run: flatpak run org.flatpak.Builder --force-clean --sandbox --install-deps-from=flathub --ccache --mirror-screenshots-url=https://dl.flathub.org/media/ --repo=build/flatpak-repo build/flatpak linux/flatpak/io.github.khaled_0.TubeSync.yml
