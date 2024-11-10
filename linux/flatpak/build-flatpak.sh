@@ -6,25 +6,24 @@ set -e
 # Echo all commands for debug purposes
 set -x
 
-projectName=TubeSync
+projectBundleDir=tubesync
 projectId=io.github.khaled_0.TubeSync
 executableName=tubesync
 
 # Unzip Binary
-mkdir $projectName
-unzip tubesync_linux_release.zip -d $projectName
+mkdir $projectBundleDir
+unzip $projectBundleDir.zip -d $projectBundleDir
 
 # Copy the portable app to the Flatpak-based location.
-cp -r $projectName /app/
-chmod +x /app/$projectName/$executableName
+cp -r $projectBundleDir /app/
+chmod +x /app/$projectBundleDir/$executableName
 mkdir -p /app/bin
-ln -s /app/$projectName/$executableName /app/bin/$executableName
+ln -s /app/$projectBundleDir/$executableName /app/bin/$executableName
 
 # Install the icon.
 iconDir=/app/share/icons/hicolor/scalable/apps
 mkdir -p $iconDir
-ls $projectName/
-cp -r $projectName/data/flutter_assets/assets/tubesync.png $iconDir/$projectId.png
+cp -r $projectBundleDir/data/flutter_assets/assets/tubesync.png $iconDir/$projectId.png
 
 # Install the desktop file.
 desktopFileDir=/app/share/applications

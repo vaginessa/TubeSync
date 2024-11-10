@@ -4,7 +4,17 @@ runtime: org.freedesktop.Platform
 runtime-version: "23.08"
 sdk: org.freedesktop.Sdk
 command: tubesync
-base-version: 0.1.2
+finish-args:
+  - --socket=wayland # Wayland by default
+  - --socket=fallback-x11 # Fallback x11
+  - --share=ipc # X11 performance
+  - --device=dri # OpenGL rendering
+  - --socket=pulseaudio # Audio Playback
+  - --socket=system-bus # Flutter seems to complain without it
+  - --share=network
+  - --own-name=org.mpris.MediaPlayer2.tubesync.* #FIXME
+  - --own-name=org.mpris.MediaPlayer2.TubeSync.* #FIXME
+
 modules:
   - name: libmpv
     cleanup:
@@ -110,19 +120,11 @@ modules:
       - chmod +x build-flatpak.sh
       - ./build-flatpak.sh
     sources:
-      - type: dir
-        path: ./
-
       - type: file
-        url: https://github.com/khaled-0/TubeSync/releases/download/0.1.2/tubesync_linux_release.zip
-        sha256: 180e050d7adabefb52f8567b6c3e04ff2439dfee4b810acd8c0a0bcdc94049c5
-
-finish-args:
-  - --socket=wayland # Wayland
-  - --socket=fallback-x11 # Fallback x11
-  - --share=ipc # X11 performance
-  - --device=dri # OpenGL rendering
-  - --socket=pulseaudio # Audio Playback
-  - --socket=system-bus # Flutter seems to complain without it
-  - --share=network # Access the network
-
+        path: ./build-flatpak.sh
+      - type: file
+        path: ./io.github.khaled_0.TubeSync.desktop
+      - type: file
+        path: ./io.github.khaled_0.TubeSync.metainfo.xml
+      - type: file
+        path: ./tubesync.zip
