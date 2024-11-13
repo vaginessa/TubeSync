@@ -962,14 +962,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.0"
-  squiggly_slider:
-    dependency: "direct main"
-    description:
-      name: squiggly_slider
-      sha256: "68c08cb1b6c6bccafa8707844e36f3e61fa2860f32ed47bf11b3cd7af338ad46"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.5"
   stack_trace:
     dependency: transitive
     description:
@@ -1171,5 +1163,5 @@ packages:
     source: hosted
     version: "2.3.5"
 sdks:
-  dart: ">=3.5.3 <3.20.0"
+  dart: ">=3.5.3 <4.0.0"
   flutter: ">=3.24.0"

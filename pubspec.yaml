@@ -51,7 +51,6 @@ dependencies:
 
   # Visuals
   dynamic_color: ^1.7.0
-  squiggly_slider: ^1.0.5
   window_manager: ^0.4.3
 
   # Utils

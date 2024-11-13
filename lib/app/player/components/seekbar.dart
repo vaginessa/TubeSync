@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:squiggly_slider/slider.dart';
 
 class SeekBar extends StatefulWidget {
   final Duration duration;
@@ -10,7 +9,6 @@ class SeekBar extends StatefulWidget {
   final ValueChanged<Duration>? onChanged;
   final ValueChanged<Duration>? onChangeEnd;
   final bool buffering;
-  final bool playing;
 
   const SeekBar({
     super.key,
@@ -18,7 +16,6 @@ class SeekBar extends StatefulWidget {
     required this.position,
     required this.bufferedPosition,
     required this.buffering,
-    required this.playing,
     this.onChanged,
     this.onChangeEnd,
   });
@@ -32,57 +29,46 @@ class SeekBarState extends State<SeekBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SliderTheme(
-          data: Theme.of(context).sliderTheme.copyWith(
-                thumbShape: HiddenThumbComponentShape(),
-                activeTrackColor: Theme.of(
-                  context,
-                ).colorScheme.primary.withOpacity(0.35),
-                trackHeight: 2,
-              ),
-          child: Slider(
-            max: widget.duration.inMilliseconds.toDouble(),
-            value: min(
+    return Slider(
+      secondaryTrackValue: min(
+        widget.duration.inMilliseconds,
+        widget.buffering ? 0 : widget.bufferedPosition.inMilliseconds,
+      ).toDouble(),
+      max: widget.duration.inMilliseconds.toDouble(),
+      value: max(
+        _dragValue ??
+            min(
+              widget.position.inMilliseconds,
               widget.duration.inMilliseconds,
-              widget.buffering ? 0 : widget.bufferedPosition.inMilliseconds,
             ).toDouble(),
-            onChanged: (_) {},
-          ),
-        ),
-        SquigglySlider(
-          useLineThumb: true,
-          squiggleAmplitude: widget.playing ? 1.8 : 0,
-          squiggleWavelength: 4.20,
-          squiggleSpeed: 0.08,
-          inactiveColor: Colors.transparent,
-          max: widget.duration.inMilliseconds.toDouble(),
-          value: max(
-            _dragValue ??
-                min(
-                  widget.position.inMilliseconds,
-                  widget.duration.inMilliseconds,
-                ).toDouble(),
-            Duration.zero.inMilliseconds.toDouble(),
-          ),
-          onChanged: (value) {
-            setState(() => _dragValue = value);
-            widget.onChanged?.call(Duration(milliseconds: value.round()));
-          },
-          onChangeEnd: (value) {
-            widget.onChangeEnd?.call(Duration(milliseconds: value.round()));
-            _dragValue = null;
-          },
-        ),
-      ],
+        Duration.zero.inMilliseconds.toDouble(),
+      ),
+      onChanged: (value) {
+        setState(() => _dragValue = value);
+        widget.onChanged?.call(Duration(milliseconds: value.round()));
+      },
+      onChangeEnd: (value) {
+        widget.onChangeEnd?.call(Duration(milliseconds: value.round()));
+        _dragValue = null;
+      },
     );
   }
 }
 
-class HiddenThumbComponentShape extends SliderComponentShape {
+/// A variant of the default circle thumb shape
+/// Similar to the one found in Android 13 Media control
+class LineThumbShape extends SliderComponentShape {
+  /// The size of the thumb
+  final Size thumbSize;
+
+  const LineThumbShape({
+    this.thumbSize = const Size(8, 32),
+  });
+
   @override
-  Size getPreferredSize(bool isEnabled, bool isDiscrete) => Size.zero;
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) {
+    return thumbSize;
+  }
 
   @override
   void paint(
@@ -98,5 +84,27 @@ class HiddenThumbComponentShape extends SliderComponentShape {
     required double value,
     required double textScaleFactor,
     required Size sizeWithOverflow,
-  }) {}
+  }) {
+    assert(sliderTheme.disabledThumbColor != null);
+    assert(sliderTheme.thumbColor != null);
+
+    final colorTween = ColorTween(
+      begin: sliderTheme.disabledThumbColor,
+      end: sliderTheme.thumbColor,
+    );
+
+    final paint = Paint()..color = colorTween.evaluate(enableAnimation)!;
+
+    context.canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(
+          center: center,
+          width: thumbSize.width,
+          height: thumbSize.height,
+        ),
+        Radius.circular(thumbSize.width),
+      ),
+      paint,
+    );
+  }
 }

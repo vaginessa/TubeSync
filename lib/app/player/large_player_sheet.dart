@@ -147,7 +147,6 @@ class _LargePlayerSheetState extends State<LargePlayerSheet>
                     if (nowPlaying(context).duration != null)
                       SeekBar(
                         buffering: buffering(context),
-                        playing: player(context).playing,
                         duration: nowPlaying(context).duration!,
                         position: currentPosition.requireData,
                         bufferedPosition: player(context).bufferedPosition,
