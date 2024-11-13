@@ -26,8 +26,8 @@ class Artwork extends StatelessWidget {
                 maxRadius: 120,
                 minRadius: 50,
                 backgroundImage: NetworkToFileImage(
-                  url: media.thumbnail.high,
-                  file: MediaService().thumbnailFile(media.thumbnail.high),
+                  url: media.thumbnail.medium,
+                  file: MediaService().thumbnailFile(media.thumbnail.medium),
                 ),
                 child: Icon(
                   Icons.circle,

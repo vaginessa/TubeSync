@@ -30,6 +30,14 @@ class PlaylistHeader extends StatelessWidget {
                     child: Image(
                       height: 120,
                       width: double.maxFinite,
+                      frameBuilder: (context, child, frame, synchronous) {
+                        if (synchronous) return child;
+                        return AnimatedOpacity(
+                          opacity: frame == null ? 0 : 1,
+                          duration: Durations.long4,
+                          child: child,
+                        );
+                      },
                       image: NetworkToFileImage(
                         url: playlist(context).thumbnail.high,
                         file: MediaService().thumbnailFile(
