@@ -6,21 +6,14 @@ on:
     branches: ["main"]
 
 jobs:
-  build-android:
-    runs-on: ubuntu-latest
+  build-ios:
+    runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
           cache: true
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: "zulu"
-          java-version: "17"
-          cache: gradle
 
       - run: flutter --version
 
@@ -30,54 +23,18 @@ jobs:
       - name: Perform Code Generation
         run: flutter pub run build_runner build --delete-conflicting-outputs
 
-      - name: Generate SplashScreen
-        run: flutter pub run flutter_native_splash:create
+      - name: Build iOS Release
+        run: flutter build ios --release --no-codesign
 
-      - name: Generate Launcher Icons
-        run: flutter pub run flutter_launcher_icons -f flutter_launcher_icons.yaml
-
-      - name: Decode Release Key
+      - name: Prepare .ipa
         run: |
-          echo "$TUBESYNC_JKS" > tubesync.b64
-          base64 --decode tubesync.b64 > tubesync.jks
-        env:
-          TUBESYNC_JKS: ${{ secrets.TUBESYNC_JKS }}
-
-      - name: Build Android Profile Apk
-        run: flutter build apk --profile
-        env:
-          TUBESYNC_KEY_PASSWORD: ${{ secrets.TUBESYNC_KEY_PASSWORD }}
+          ls -R
+          mkdir Payload
+          mv build/ios/iphoneos/Runner.app/ Payload
+          zip -qq -r -9 tubesync_unsigned.ipa Payload
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tubesync_android_nightly
-          path: build/app/outputs/flutter-apk/app-profile.apk
-
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-          cache: true
-
-      - run: flutter --version
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
-          flutter pub get
-
-      - name: Perform Code Generation
-        run: flutter pub run build_runner build --delete-conflicting-outputs
-
-      - name: Build Linux Release
-        run: flutter build linux --release
-
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: tubesync_linux_nightly
-          path: build/linux/x64/release/bundle/
+          name: tubesync_ios_nightly
+          path: tubesync_unsigned.ipa
