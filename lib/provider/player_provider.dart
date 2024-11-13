@@ -70,6 +70,13 @@ class PlayerProvider {
     try {
       buffering.value = true;
 
+      final thumbnail = MediaService().thumbnailFile(
+        nowPlaying.value.thumbnail.medium,
+      );
+
+      var artUri = Uri.parse(nowPlaying.value.thumbnail.medium);
+      if (thumbnail.existsSync()) artUri = thumbnail.uri;
+
       // Post service notification update
       notificationMetadata?.add(MediaItem(
         id: nowPlaying.value.id,
@@ -77,7 +84,7 @@ class PlayerProvider {
         artist: nowPlaying.value.author,
         duration: nowPlaying.value.duration,
         album: playlist.playlist.title,
-        artUri: Uri.parse(nowPlaying.value.thumbnail.medium),
+        artUri: artUri,
       ));
 
       notificationState?.add(notificationState!.value.copyWith(

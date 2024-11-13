@@ -77,8 +77,8 @@ class MediaService extends BaseAudioHandler {
         path.join(downloadsDir, media.id),
       );
 
-  File thumbnailFile(String fileName) => File(
-        path.join(thumbnailsDir, Uri.encodeComponent(fileName)),
+  File thumbnailFile(String url) => File(
+        path.join(thumbnailsDir, url.hashCode.toString()),
       );
 
   Future<AudioSource> getMediaSource(Media media) async {
