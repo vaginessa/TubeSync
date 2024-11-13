@@ -30,6 +30,13 @@ class LibraryEntryBuilder extends StatelessWidget {
             child: Image(
               width: 80,
               height: double.maxFinite,
+              errorBuilder: (_, __, ___) => SizedBox(
+                width: 80,
+                height: double.maxFinite,
+                child: ColoredBox(
+                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                ),
+              ),
               frameBuilder: (context, child, frame, synchronous) {
                 if (synchronous) return child;
                 return AnimatedOpacity(

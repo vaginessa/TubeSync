@@ -30,6 +30,7 @@ class PlaylistHeader extends StatelessWidget {
                     child: Image(
                       height: 120,
                       width: double.maxFinite,
+                      errorBuilder: (_, __, ___) => SizedBox(height: 120),
                       frameBuilder: (context, child, frame, synchronous) {
                         if (synchronous) return child;
                         return AnimatedOpacity(
