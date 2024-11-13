@@ -19,6 +19,7 @@ class HomeScreen extends StatelessWidget {
       length: HomeNavigationBar.length,
       child: MultiProvider(
         providers: [
+          //FIXME https://github.com/fluttercommunity/plus_plugins/issues/1241
           StreamProvider<InternetStatus>(
             create: (_) => InternetConnection().onStatusChange,
             initialData: InternetStatus.connected,

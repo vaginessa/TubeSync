@@ -34,3 +34,9 @@ extension StringExtensions on String {
         (match) => " ${match[0]}",
       );
 }
+
+extension NumberExtensions on num {
+  double toPrecision(int precision) {
+    return double.parse((this).toStringAsFixed(precision));
+  }
+}

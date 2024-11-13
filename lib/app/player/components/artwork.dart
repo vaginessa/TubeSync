@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:network_to_file_image/network_to_file_image.dart';
 import 'package:provider/provider.dart';
+import 'package:tube_sync/extensions.dart';
 import 'package:tube_sync/provider/player_provider.dart';
 import 'package:tube_sync/services/media_service.dart';
 
@@ -17,8 +18,10 @@ class Artwork extends StatelessWidget {
           stream: context.read<PlayerProvider>().player.positionStream,
           initialData: context.read<PlayerProvider>().player.position,
           builder: (context, position) {
+            // Modulo by 360 degree / 6.28 rad so the angle doesn't get too large
+            final angle = (position.requireData.inMilliseconds / 30000) % 6.28;
             return Transform.rotate(
-              angle: position.requireData.inMilliseconds / 30000,
+              angle: angle.toPrecision(3),
               child: CircleAvatar(
                 maxRadius: 120,
                 minRadius: 50,
