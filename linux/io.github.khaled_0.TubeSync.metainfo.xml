@@ -4,12 +4,21 @@
 
   <name>TubeSync</name>
   <summary>Sync YouTube playlists offline</summary>
-  <url type="homepage">https://github.com/khaled-0/TubeSync/</url>
+  <url type="homepage">https://github.com/khaled-0/TubeSync/blob/main/README.md</url>
+  <url type="bugtracker">https://github.com/khaled-0/TubeSync/issues</url>
+  <!-- <url type="donation">TODO</url> -->
+  <url type="vcs-browser">https://github.com/khaled-0/TubeSync/</url>
+  <!-- <url type="contribute">TODO</url> -->
 
+  <branding>
+    <color type="primary" scheme_preference="light">#abcdfe</color>
+    <color type="primary" scheme_preference="dark">#3d4758</color>
+  </branding>
 
   <metadata_license>FSFAP</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <content_rating type="oars-1.1" />
+
 
   <supports>
     <control>pointing</control>
@@ -17,8 +26,23 @@
     <control>touch</control>
   </supports>
 
+  <keywords>
+    <keyword>YouTube</keyword>
+    <keyword>offline</keyword>
+    <keyword>music</keyword>
+    <keyword>video</keyword>
+    <keyword>download</keyword>
+    <keyword>playlist</keyword>
+    <keyword>player</keyword>
+    <keyword>Flutter</keyword>
+    <keyword>Dart</keyword>
+  </keywords>
+
+
   <description>
-    <p>TubeSync - Sync YouTube playlists offline. Because YT Music lacks offline functionality.</p>
+    <p>Tired of YouTube's limitations on offline playback? TubeSync lets you download your favorite
+      playlists and listen to them anytime, anywhere. Enjoy your music and videos without an
+      internet connection, perfect for long commutes, flights, or simply relaxing offline.</p>
     <p>Features:</p>
     <ul>
       <li>Offline downloads</li>

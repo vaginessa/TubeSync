@@ -1,6 +1,7 @@
 <img src="https://github.com/user-attachments/assets/54def1c1-4305-4d30-b546-83031f7a7c89" alt="banner">
 
 # TubeSync
+
 Sync YouTube playlists offline. Because YT Music \<insert reason here\>
 
 ## Features
@@ -40,12 +41,12 @@ Sync YouTube playlists offline. Because YT Music \<insert reason here\>
 
 To download TubeSync, you can access the stable release from the [releases section on GitHub](https://github.com/khaled-0/TubeSync/releases).
 
-<a href='https://flathub.org/apps/io.github.zen_browser.zen'>
-  <img width='240' alt='Get it on Flathub' src='https://flathub.org/api/badge?locale=en'/>
+<a href="https://flathub.org/apps/io.github.khaled_0.TubeSync" target="_blank">
+  <img width="240" alt="Get it on Flathub" src="https://flathub.org/api/badge?locale=en"/>
 </a>
 <br /> <br />
 
 Alternatively, you can try the nightly (unstable) build:
+
 - [Latest nightly build link](https://nightly.link/khaled-0/TubeSync/workflows/nightly/main/)
 - [Actions page for nightly builds](https://github.com/khaled-0/TubeSync/actions)
-
