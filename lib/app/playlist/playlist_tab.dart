@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tube_sync/app/app_theme.dart';
 import 'package:tube_sync/app/player/mini_player_sheet.dart';
 import 'package:tube_sync/app/playlist/media_entry_builder.dart';
 import 'package:tube_sync/app/playlist/playlist_header.dart';
@@ -16,24 +17,47 @@ class PlaylistTab extends StatelessWidget {
       primary: false,
       body: Consumer<PlaylistProvider>(
         child: PlaylistHeader(onPlayAll: () => launchPlayer(context: context)),
-        builder: (context, playlist, header) => RefreshIndicator(
-          onRefresh: playlist.refresh,
-          child: ListView.builder(
-            padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight * 2),
-            itemCount: playlist.medias.length + 1,
-            itemBuilder: (context, index) {
-              if (index == 0) return header;
-              return MediaEntryBuilder(
-                playlist.medias[index - 1],
-                onTap: () => launchPlayer(
-                  context: context,
-                  initialMedia: playlist.medias[index - 1],
-                ),
-              );
-            },
-          ),
-        ),
+        builder: (context, playlist, header) {
+          if (AppTheme.isDesktop) {
+            return RefreshIndicator(
+              onRefresh: playlist.refresh,
+              child: Row(
+                children: [
+                  Flexible(child: header!),
+                  Flexible(
+                    flex: 2,
+                    child: playlistView(context, playlist),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: playlist.refresh,
+            child: playlistView(context, playlist, header: header),
+          );
+        },
       ),
+    );
+  }
+
+  Widget playlistView(
+    BuildContext context,
+    PlaylistProvider playlist, {
+    Widget? header,
+  }) {
+    return ListView.builder(
+      padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight * 2),
+      itemCount: playlist.medias.length + (header != null ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (header != null && index == 0) return header;
+        final media = playlist.medias[index - (header != null ? 1 : 0)];
+        return MediaEntryBuilder(
+          media,
+          onTap: () => launchPlayer(context: context, initialMedia: media),
+        );
+      },
     );
   }
 

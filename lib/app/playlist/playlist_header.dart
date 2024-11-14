@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:network_to_file_image/network_to_file_image.dart';
 import 'package:provider/provider.dart';
+import 'package:tube_sync/app/app_theme.dart';
 import 'package:tube_sync/app/playlist/playlist_menu_sheet.dart';
 import 'package:tube_sync/model/playlist.dart';
 import 'package:tube_sync/provider/playlist_provider.dart';
@@ -16,9 +17,9 @@ class PlaylistHeader extends StatelessWidget {
     return Card(
       elevation: 0,
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(adaptivePadding),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: adaptiveMainAxisSize,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Hero(
@@ -28,7 +29,7 @@ class PlaylistHeader extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image(
-                      height: 120,
+                      height: AppTheme.isDesktop ? 240 : 120,
                       width: double.maxFinite,
                       errorBuilder: (_, __, ___) => SizedBox(height: 120),
                       frameBuilder: (context, child, frame, synchronous) {
@@ -48,30 +49,40 @@ class PlaylistHeader extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  Positioned.fill(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Colors.transparent,
-                            Colors.transparent,
-                            Colors.black38,
-                            Colors.black54,
-                            Colors.black87,
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomLeft,
-                          stops: [0, 0.3, 0.6, 0.7, 1],
+                  if (!AppTheme.isDesktop) ...{
+                    Positioned.fill(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          gradient: const LinearGradient(
+                            colors: [
+                              Colors.transparent,
+                              Colors.transparent,
+                              Colors.black38,
+                              Colors.black54,
+                              Colors.black87,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomLeft,
+                            stops: [0, 0.3, 0.6, 0.7, 1],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Positioned(left: 8, bottom: 8, child: playlistInfo(context)),
+                    Positioned(
+                      left: 8,
+                      bottom: 8,
+                      child: playlistInfo(context),
+                    ),
+                  },
                 ],
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: adaptivePadding),
+            if (AppTheme.isDesktop) ...{
+              playlistInfo(context),
+              SizedBox(height: adaptivePadding),
+            },
             Row(
               children: [
                 IconButton.filledTonal(
@@ -111,6 +122,14 @@ class PlaylistHeader extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  MainAxisSize get adaptiveMainAxisSize {
+    return AppTheme.isDesktop ? MainAxisSize.max : MainAxisSize.min;
+  }
+
+  double get adaptivePadding {
+    return AppTheme.isDesktop ? 12 : 8;
   }
 
   Widget playlistInfo(BuildContext context) {
