@@ -71,7 +71,7 @@ class PlaylistTab extends StatelessWidget {
         dispose: (_, provider) => provider.dispose(),
         child: MiniPlayerSheet(),
       ),
-      enableDrag: false,
+      enableDrag: true,
       shape: InputBorder.none,
       elevation: 0,
     );
