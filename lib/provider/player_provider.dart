@@ -69,6 +69,8 @@ class PlayerProvider {
     final media = nowPlaying.value;
     try {
       buffering.value = true;
+      await player.stop();
+      await player.seek(Duration.zero);
 
       final thumbnail = MediaService().thumbnailFile(
         nowPlaying.value.thumbnail.medium,
@@ -90,10 +92,8 @@ class PlayerProvider {
       notificationState?.add(notificationState!.value.copyWith(
         processingState: AudioProcessingState.loading,
         playing: false,
+        updatePosition: Duration.zero,
       ));
-
-      await player.pause();
-      await player.seek(Duration.zero);
 
       final source = await MediaService().getMediaSource(media);
 
