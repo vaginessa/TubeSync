@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:tube_sync/app/player/components/seekbar.dart';
 
 class AppTheme {
-  static ValueNotifier<bool?> dynamicColors = ValueNotifier(false);
+  static ValueNotifier<bool> dynamicColors = ValueNotifier(false);
 
   final Color _color = const Color(0xffff0000);
   final ColorScheme? colorScheme;

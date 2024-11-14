@@ -32,6 +32,7 @@ void main() async {
 
   AppTheme.dynamicColors.value = isarDB.preferences.getValue<bool>(
     Preference.materialYou,
+    false,
   );
 
   await DownloaderService.init();
@@ -53,25 +54,32 @@ void main() async {
   }
 
   runApp(
-    ValueListenableBuilder(
-      valueListenable: AppTheme.dynamicColors,
-      builder: (_, dynamicColor, home) {
-        if (dynamicColor == true) {
-          return DynamicColorBuilder(
-            builder: (light, dark) => app(
-              light: AppTheme(colorScheme: light).light,
-              dark: AppTheme(colorScheme: dark).dark,
-              home: home!,
-            ),
-          );
-        }
-
-        return app(light: AppTheme().light, dark: AppTheme().dark, home: home!);
-      },
+    Directionality(
+      textDirection: TextDirection.ltr,
       child: DragToResizeArea(
-        child: Provider<Isar>(
-          create: (context) => isarDB,
-          child: const HomeScreen(),
+        child: ValueListenableBuilder(
+          valueListenable: AppTheme.dynamicColors,
+          builder: (_, dynamicColor, home) {
+            if (dynamicColor == true) {
+              return DynamicColorBuilder(
+                builder: (light, dark) => app(
+                  light: AppTheme(colorScheme: light).light,
+                  dark: AppTheme(colorScheme: dark).dark,
+                  home: home!,
+                ),
+              );
+            }
+
+            return app(
+              light: AppTheme().light,
+              dark: AppTheme().dark,
+              home: home!,
+            );
+          },
+          child: Provider<Isar>(
+            create: (context) => isarDB,
+            child: const HomeScreen(),
+          ),
         ),
       ),
     ),

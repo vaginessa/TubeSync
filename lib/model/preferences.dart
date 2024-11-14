@@ -48,7 +48,7 @@ extension PreferenceExtension on IsarCollection<String, Preferences> {
     isar.writeAsyncWith(preference, (db, data) => db.preferences.put(data));
   }
 
-  T? getValue<T>(Preference key) {
-    return get(key.name)?.get<T>();
+  T getValue<T>(Preference key, T defaultValue) {
+    return get(key.name)?.get<T>() ?? defaultValue;
   }
 }
