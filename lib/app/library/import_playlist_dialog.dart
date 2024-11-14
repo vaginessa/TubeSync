@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/provider/library_provider.dart';
+import 'package:tubesync/provider/library_provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class ImportPlaylistDialog extends StatefulWidget {

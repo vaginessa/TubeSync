@@ -1,5 +1,5 @@
 import 'package:isar/isar.dart';
-import 'package:tube_sync/model/common.dart';
+import 'package:tubesync/model/common.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' as yt;
 
 part 'media.g.dart';

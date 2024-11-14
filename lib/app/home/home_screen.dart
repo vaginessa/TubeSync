@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/app/app_theme.dart';
-import 'package:tube_sync/app/library/library_tab.dart';
-import 'package:tube_sync/app/more/more_tab.dart';
-import 'package:tube_sync/provider/library_provider.dart';
+import 'package:tubesync/app/app_theme.dart';
+import 'package:tubesync/app/library/library_tab.dart';
+import 'package:tubesync/app/more/more_tab.dart';
+import 'package:tubesync/provider/library_provider.dart';
 
 import 'home_app_bar.dart';
 import 'home_navigation_bar.dart';

@@ -6,8 +6,8 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
-import 'package:tube_sync/model/media.dart';
-import 'package:tube_sync/services/downloader_service.dart';
+import 'package:tubesync/model/media.dart';
+import 'package:tubesync/services/downloader_service.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' as yt;
 
 class MediaService extends BaseAudioHandler {

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:network_to_file_image/network_to_file_image.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/app/app_theme.dart';
-import 'package:tube_sync/app/playlist/playlist_menu_sheet.dart';
-import 'package:tube_sync/model/playlist.dart';
-import 'package:tube_sync/provider/playlist_provider.dart';
-import 'package:tube_sync/services/media_service.dart';
+import 'package:tubesync/app/app_theme.dart';
+import 'package:tubesync/app/playlist/playlist_menu_sheet.dart';
+import 'package:tubesync/model/playlist.dart';
+import 'package:tubesync/provider/playlist_provider.dart';
+import 'package:tubesync/services/media_service.dart';
 
 class PlaylistHeader extends StatelessWidget {
   const PlaylistHeader({super.key, required this.onPlayAll});

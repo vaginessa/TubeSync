@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:network_to_file_image/network_to_file_image.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/app/playlist/media_menu_sheet.dart';
-import 'package:tube_sync/extensions.dart';
-import 'package:tube_sync/model/media.dart';
-import 'package:tube_sync/provider/playlist_provider.dart';
-import 'package:tube_sync/services/media_service.dart';
+import 'package:tubesync/app/playlist/media_menu_sheet.dart';
+import 'package:tubesync/extensions.dart';
+import 'package:tubesync/model/media.dart';
+import 'package:tubesync/provider/playlist_provider.dart';
+import 'package:tubesync/services/media_service.dart';
 
 class MediaEntryBuilder extends StatelessWidget {
   final Media media;

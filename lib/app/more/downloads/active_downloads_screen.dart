@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tube_sync/app/more/downloads/download_entry_builder.dart';
-import 'package:tube_sync/main.dart';
-import 'package:tube_sync/services/downloader_service.dart';
+import 'package:tubesync/app/more/downloads/download_entry_builder.dart';
+import 'package:tubesync/main.dart';
+import 'package:tubesync/services/downloader_service.dart';
 
 class ActiveDownloadsScreen extends StatefulWidget {
   const ActiveDownloadsScreen({super.key});

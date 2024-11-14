@@ -2,13 +2,13 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/app/library/empty_library_view.dart';
-import 'package:tube_sync/app/library/import_playlist_dialog.dart';
-import 'package:tube_sync/app/library/library_entry_builder.dart';
-import 'package:tube_sync/app/playlist/playlist_tab.dart';
-import 'package:tube_sync/provider/library_provider.dart';
-import 'package:tube_sync/provider/playlist_provider.dart';
-import 'package:tube_sync/services/media_service.dart';
+import 'package:tubesync/app/library/empty_library_view.dart';
+import 'package:tubesync/app/library/import_playlist_dialog.dart';
+import 'package:tubesync/app/library/library_entry_builder.dart';
+import 'package:tubesync/app/playlist/playlist_tab.dart';
+import 'package:tubesync/provider/library_provider.dart';
+import 'package:tubesync/provider/playlist_provider.dart';
+import 'package:tubesync/services/media_service.dart';
 
 class LibraryTab extends StatelessWidget {
   const LibraryTab({super.key});

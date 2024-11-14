@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/app/player/components/artwork.dart';
-import 'package:tube_sync/app/player/components/seekbar.dart';
-import 'package:tube_sync/extensions.dart';
-import 'package:tube_sync/model/media.dart';
-import 'package:tube_sync/model/playlist.dart';
-import 'package:tube_sync/provider/player_provider.dart';
+import 'package:tubesync/app/player/components/artwork.dart';
+import 'package:tubesync/app/player/components/seekbar.dart';
+import 'package:tubesync/extensions.dart';
+import 'package:tubesync/model/media.dart';
+import 'package:tubesync/model/playlist.dart';
+import 'package:tubesync/provider/player_provider.dart';
 
 class LargePlayerSheet extends StatefulWidget {
   const LargePlayerSheet({super.key});

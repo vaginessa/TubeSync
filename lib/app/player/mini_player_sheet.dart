@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:network_to_file_image/network_to_file_image.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/app/app_theme.dart';
-import 'package:tube_sync/app/player/large_player_sheet.dart';
-import 'package:tube_sync/model/media.dart';
-import 'package:tube_sync/provider/player_provider.dart';
-import 'package:tube_sync/services/media_service.dart';
+import 'package:tubesync/app/app_theme.dart';
+import 'package:tubesync/app/player/large_player_sheet.dart';
+import 'package:tubesync/model/media.dart';
+import 'package:tubesync/provider/player_provider.dart';
+import 'package:tubesync/services/media_service.dart';
 
 class MiniPlayerSheet extends StatelessWidget {
   const MiniPlayerSheet({super.key});

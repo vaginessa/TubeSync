@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tube_sync/app/player/components/seekbar.dart';
+import 'package:tubesync/app/player/components/seekbar.dart';
 
 class AppTheme {
   static ValueNotifier<bool> dynamicColors = ValueNotifier(false);

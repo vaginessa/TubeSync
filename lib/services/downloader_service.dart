@@ -2,10 +2,10 @@ import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
-import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
-import 'package:tube_sync/main.dart';
-import 'package:tube_sync/model/media.dart';
-import 'package:tube_sync/services/media_service.dart';
+import 'package:tubesync/app/more/downloads/active_downloads_screen.dart';
+import 'package:tubesync/main.dart';
+import 'package:tubesync/model/media.dart';
+import 'package:tubesync/services/media_service.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' as yt;
 
 class DownloaderService {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
-import 'package:tube_sync/provider/playlist_provider.dart';
-import 'package:tube_sync/services/downloader_service.dart';
+import 'package:tubesync/app/more/downloads/active_downloads_screen.dart';
+import 'package:tubesync/provider/playlist_provider.dart';
+import 'package:tubesync/services/downloader_service.dart';
 
 class PlaylistMenuSheet extends StatelessWidget {
   const PlaylistMenuSheet({super.key});

@@ -5,9 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 // ignore: depend_on_referenced_packages Just for Types. Doesn't matter
 import 'package:rxdart/rxdart.dart' show BehaviorSubject;
-import 'package:tube_sync/model/media.dart';
-import 'package:tube_sync/provider/playlist_provider.dart';
-import 'package:tube_sync/services/media_service.dart';
+import 'package:tubesync/model/media.dart';
+import 'package:tubesync/provider/playlist_provider.dart';
+import 'package:tubesync/services/media_service.dart';
 
 class PlayerProvider {
   final player = AudioPlayer();
