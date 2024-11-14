@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
-import 'package:tube_sync/app/app_theme.dart';
-import 'package:tube_sync/app/more/downloads/active_downloads_screen.dart';
-import 'package:tube_sync/model/preferences.dart';
+import 'package:tubesync/app/app_theme.dart';
+import 'package:tubesync/app/more/about_screen.dart';
+import 'package:tubesync/app/more/downloads/active_downloads_screen.dart';
+import 'package:tubesync/model/preferences.dart';
 
 class MoreTab extends StatelessWidget {
   MoreTab({super.key});
@@ -32,10 +33,13 @@ class MoreTab extends StatelessWidget {
       children: [
         // BigAss Branding
         SizedBox(height: 8),
-        Image.asset(
-          "assets/tubesync.png",
-          height: 80,
-          color: Theme.of(context).colorScheme.primary,
+        Hero(
+          tag: "branding",
+          child: Image.asset(
+            "assets/tubesync.png",
+            height: 80,
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
         SizedBox(height: 16),
         Divider(),
@@ -67,7 +71,10 @@ class MoreTab extends StatelessWidget {
         ),
         Divider(),
         ListTile(
-          onTap: () {},
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AboutScreen()),
+          ),
           leading: Icon(Icons.info_rounded),
           title: Text("About"),
         ),
