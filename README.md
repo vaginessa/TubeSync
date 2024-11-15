@@ -48,5 +48,5 @@ To download TubeSync, you can access the stable release from the [releases secti
 
 Alternatively, you can try the nightly (unstable) build:
 
-- [Latest nightly build link](https://nightly.link/khaled-0/TubeSync/workflows/nightly/main/)
+- [Latest nightly build link](https://nightly.link/khaled-0/TubeSync/workflows/nightly/main)
 - [Actions page for nightly builds](https://github.com/khaled-0/TubeSync/actions)

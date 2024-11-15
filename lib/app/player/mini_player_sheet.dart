@@ -14,18 +14,18 @@ class MiniPlayerSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       key: const Key("MiniPlayer"),
-      confirmDismiss: (direction) {
+      confirmDismiss: (direction) async {
         switch (direction) {
           case DismissDirection.startToEnd:
             context.read<PlayerProvider>().previousTrack();
-            return Future.value(false);
+            return false;
 
           case DismissDirection.endToStart:
             context.read<PlayerProvider>().nextTrack();
-            return Future.value(false);
+            return false;
 
           default:
-            return Future.value(false);
+            return false;
         }
       },
       direction: DismissDirection.horizontal,

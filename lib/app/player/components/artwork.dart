@@ -19,12 +19,16 @@ class Artwork extends StatelessWidget {
           initialData: context.read<PlayerProvider>().player.position,
           builder: (context, position) {
             // Modulo by 360 degree / 6.28 rad so the angle doesn't get too large
-            final angle = (position.requireData.inMilliseconds / 26000) % 6.28;
+            final angle = (position.requireData.inMilliseconds / 20000) % 6.28;
             return Transform.rotate(
               angle: angle.toPrecision(3),
               child: CircleAvatar(
                 maxRadius: 120,
                 minRadius: 50,
+                foregroundImage:  NetworkToFileImage(
+                  url: media.thumbnail.high,
+                  file: MediaService().thumbnailFile(media.thumbnail.high),
+                ),
                 backgroundImage: NetworkToFileImage(
                   url: media.thumbnail.medium,
                   file: MediaService().thumbnailFile(media.thumbnail.medium),
