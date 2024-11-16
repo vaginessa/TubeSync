@@ -32,18 +32,29 @@ class PlayerQueueSheet extends StatelessWidget {
               final playlist = context.read<PlayerProvider>().playlist;
               return ValueListenableBuilder(
                 valueListenable: context.read<PlayerProvider>().nowPlaying,
-                builder: (context, nowPlaying, _) => ListView.builder(
-                  itemCount: playlist.medias.length,
-                  itemBuilder: (context, index) => MediaEntryBuilder(
-                    playlist.medias[index],
-                    selected: playlist.medias[index] == nowPlaying,
-                    trailing: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Icon(Icons.drag_handle_rounded),
+                builder: (context, nowPlaying, _) {
+                  return ReorderableListView.builder(
+                    buildDefaultDragHandles: false,
+                    padding: EdgeInsets.only(
+                      bottom: kBottomNavigationBarHeight,
                     ),
-                    onTap: () => context.read<PlayerProvider>().jumpTo(index),
-                  ),
-                ),
+                    itemCount: playlist.medias.length,
+                    onReorder: playlist.reorderList,
+                    itemBuilder: (context, index) => MediaEntryBuilder(
+                      key: ValueKey(playlist.medias[index].hashCode),
+                      playlist.medias[index],
+                      selected: playlist.medias[index] == nowPlaying,
+                      trailing: ReorderableDragStartListener(
+                        index: index,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Icon(Icons.drag_handle_rounded),
+                        ),
+                      ),
+                      onTap: () => context.read<PlayerProvider>().jumpTo(index),
+                    ),
+                  );
+                },
               );
             },
           ),

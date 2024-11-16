@@ -72,6 +72,14 @@ class PlaylistProvider extends ChangeNotifier {
     }
   }
 
+  void reorderList(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) newIndex -= 1;
+
+    final item = medias.removeAt(oldIndex);
+    medias.insert(newIndex, item);
+    notifyListeners();
+  }
+
   bool _disposed = false;
 
   @override
