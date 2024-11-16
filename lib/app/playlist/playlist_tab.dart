@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
 import 'package:tubesync/app/app_theme.dart';
 import 'package:tubesync/app/player/mini_player_sheet.dart';
@@ -61,11 +62,16 @@ class PlaylistTab extends StatelessWidget {
     );
   }
 
-  void launchPlayer({required BuildContext context, Media? initialMedia}) {
-    scaffold(context)?.showBottomSheet(
+  static void launchPlayer({
+    required BuildContext context,
+    PlaylistProvider? playlist,
+    Media? initialMedia,
+  }) {
+    _scaffoldOf(context)?.showBottomSheet(
       (_) => Provider<PlayerProvider>(
         create: (_) => PlayerProvider(
-          context.read<PlaylistProvider>(),
+          context.read<Isar>(),
+          playlist ?? context.read<PlaylistProvider>(),
           start: initialMedia,
         ),
         dispose: (_, provider) => provider.dispose(),
@@ -77,6 +83,6 @@ class PlaylistTab extends StatelessWidget {
     );
   }
 
-  ScaffoldState? scaffold(BuildContext context) =>
+  static ScaffoldState? _scaffoldOf(BuildContext context) =>
       context.read<GlobalKey<ScaffoldState>>().currentState;
 }

@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:isar/isar.dart';
+import 'package:tubesync/model/common.dart';
 
 part 'preferences.g.dart';
 
-enum Preference { materialYou }
+enum Preference { materialYou, lastPlayed }
 
 @collection
 class Preferences {
@@ -13,7 +16,8 @@ class Preferences {
   int? intValue;
   double? doubleValue;
   bool? boolValue;
-  String? dateTimeValue;
+
+  String? jsonObject;
 
   Preferences(this.key);
 
@@ -32,23 +36,42 @@ class Preferences {
         boolValue = value;
         break;
       default:
-        throw UnsupportedError('${value.runtimeType} is not supported');
+        jsonObject = jsonEncode(value);
+        break;
     }
   }
 
   T get<T>() {
+    if (jsonObject != null) return _fromJson<T>(jsonDecode(jsonObject!));
     return (stringValue ?? intValue ?? doubleValue ?? boolValue) as T;
+  }
+
+  T _fromJson<T>(Map<String, dynamic> value) {
+    switch (T) {
+      case const (LastPlayedMedia):
+        return LastPlayedMedia.fromJson(value) as T;
+
+      default:
+        throw UnimplementedError("$T is not defined");
+    }
   }
 }
 
 extension PreferenceExtension on IsarCollection<String, Preferences> {
-  void setValue(Preference key, dynamic value) {
+  void setValue<T>(Preference key, T value) {
     final preference = Preferences(key.name)..set(value);
 
     isar.writeAsyncWith(preference, (db, data) => db.preferences.put(data));
   }
 
-  T getValue<T>(Preference key, T defaultValue) {
+  void remove(Preference key) => isar.write(
+        (isar) => isar.preferences.where().keyEqualTo(key.name).deleteFirst(),
+      );
+
+  bool valueExists(Preference key) =>
+      !isar.preferences.where().keyEqualTo(key.name).isEmpty();
+
+  T? getValue<T>(Preference key, T? defaultValue) {
     return get(key.name)?.get<T>() ?? defaultValue;
   }
 }

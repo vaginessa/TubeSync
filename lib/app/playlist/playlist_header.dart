@@ -134,11 +134,11 @@ class PlaylistHeader extends StatelessWidget {
 
   Widget playlistInfo(BuildContext context) {
     final titleStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
-          color: Colors.white,
+          color: AppTheme.isDesktop ? null : Colors.white,
         );
 
     final bodyStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Colors.white,
+          color: AppTheme.isDesktop ? null : Colors.white,
         );
 
     return Column(

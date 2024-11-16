@@ -33,7 +33,7 @@ void main() async {
   AppTheme.dynamicColors.value = isarDB.preferences.getValue<bool>(
     Preference.materialYou,
     false,
-  );
+  )!;
 
   await DownloaderService.init();
   await MediaService.init();

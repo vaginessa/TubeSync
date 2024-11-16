@@ -2,14 +2,19 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
+import 'package:isar/isar.dart';
 import 'package:just_audio/just_audio.dart';
 // ignore: depend_on_referenced_packages Just for Types. Doesn't matter
 import 'package:rxdart/rxdart.dart' show BehaviorSubject;
+import 'package:tubesync/model/common.dart';
 import 'package:tubesync/model/media.dart';
+import 'package:tubesync/model/preferences.dart';
 import 'package:tubesync/provider/playlist_provider.dart';
 import 'package:tubesync/services/media_service.dart';
 
 class PlayerProvider {
+  final Isar isar;
+
   final player = AudioPlayer();
   final PlaylistProvider playlist;
 
@@ -20,7 +25,7 @@ class PlayerProvider {
 
   ValueNotifier<Media> get nowPlaying => _nowPlaying;
 
-  PlayerProvider(this.playlist, {Media? start}) {
+  PlayerProvider(this.isar, this.playlist, {Media? start}) {
     _nowPlaying = ValueNotifier(start ?? playlist.medias.first);
     nowPlaying.addListener(beginPlay);
     beginPlay();
@@ -105,6 +110,15 @@ class PlayerProvider {
       // Fuck. I wasted whole day on this
       player.play();
       buffering.value = false;
+
+      // Store the currently playing media for resuming later
+      isar.preferences.setValue<LastPlayedMedia>(
+        Preference.lastPlayed,
+        LastPlayedMedia(
+          mediaId: media.id,
+          playlistId: playlist.playlist.id,
+        ),
+      );
     } catch (err) {
       if (_disposed) return;
       if (media != nowPlaying.value) return;

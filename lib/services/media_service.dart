@@ -50,6 +50,7 @@ class MediaService extends BaseAudioHandler {
   }
 
   /// Call this method for back and forth communication
+  /// TODO Make player an internal of this, no need for player provider
   void bind({
     required AudioPlayer player,
     required VoidCallback nextTrackCallback,

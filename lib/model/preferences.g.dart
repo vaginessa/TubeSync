@@ -41,7 +41,7 @@ const PreferencesSchema = IsarGeneratedSchema(
         type: IsarType.bool,
       ),
       IsarPropertySchema(
-        name: 'dateTimeValue',
+        name: 'jsonObject',
         type: IsarType.string,
       ),
     ],
@@ -77,7 +77,7 @@ int serializePreferences(IsarWriter writer, Preferences object) {
     }
   }
   {
-    final value = object.dateTimeValue;
+    final value = object.jsonObject;
     if (value == null) {
       IsarCore.writeNull(writer, 6);
     } else {
@@ -118,7 +118,7 @@ Preferences deserializePreferences(IsarReader reader) {
       object.boolValue = IsarCore.readBool(reader, 5);
     }
   }
-  object.dateTimeValue = IsarCore.readString(reader, 6);
+  object.jsonObject = IsarCore.readString(reader, 6);
   return object;
 }
 
@@ -169,7 +169,7 @@ sealed class _PreferencesUpdate {
     int? intValue,
     double? doubleValue,
     bool? boolValue,
-    String? dateTimeValue,
+    String? jsonObject,
   });
 }
 
@@ -185,7 +185,7 @@ class _PreferencesUpdateImpl implements _PreferencesUpdate {
     Object? intValue = ignore,
     Object? doubleValue = ignore,
     Object? boolValue = ignore,
-    Object? dateTimeValue = ignore,
+    Object? jsonObject = ignore,
   }) {
     return collection.updateProperties([
           key
@@ -194,7 +194,7 @@ class _PreferencesUpdateImpl implements _PreferencesUpdate {
           if (intValue != ignore) 3: intValue as int?,
           if (doubleValue != ignore) 4: doubleValue as double?,
           if (boolValue != ignore) 5: boolValue as bool?,
-          if (dateTimeValue != ignore) 6: dateTimeValue as String?,
+          if (jsonObject != ignore) 6: jsonObject as String?,
         }) >
         0;
   }
@@ -207,7 +207,7 @@ sealed class _PreferencesUpdateAll {
     int? intValue,
     double? doubleValue,
     bool? boolValue,
-    String? dateTimeValue,
+    String? jsonObject,
   });
 }
 
@@ -223,14 +223,14 @@ class _PreferencesUpdateAllImpl implements _PreferencesUpdateAll {
     Object? intValue = ignore,
     Object? doubleValue = ignore,
     Object? boolValue = ignore,
-    Object? dateTimeValue = ignore,
+    Object? jsonObject = ignore,
   }) {
     return collection.updateProperties(key, {
       if (stringValue != ignore) 2: stringValue as String?,
       if (intValue != ignore) 3: intValue as int?,
       if (doubleValue != ignore) 4: doubleValue as double?,
       if (boolValue != ignore) 5: boolValue as bool?,
-      if (dateTimeValue != ignore) 6: dateTimeValue as String?,
+      if (jsonObject != ignore) 6: jsonObject as String?,
     });
   }
 }
@@ -247,7 +247,7 @@ sealed class _PreferencesQueryUpdate {
     int? intValue,
     double? doubleValue,
     bool? boolValue,
-    String? dateTimeValue,
+    String? jsonObject,
   });
 }
 
@@ -263,14 +263,14 @@ class _PreferencesQueryUpdateImpl implements _PreferencesQueryUpdate {
     Object? intValue = ignore,
     Object? doubleValue = ignore,
     Object? boolValue = ignore,
-    Object? dateTimeValue = ignore,
+    Object? jsonObject = ignore,
   }) {
     return query.updateProperties(limit: limit, {
       if (stringValue != ignore) 2: stringValue as String?,
       if (intValue != ignore) 3: intValue as int?,
       if (doubleValue != ignore) 4: doubleValue as double?,
       if (boolValue != ignore) 5: boolValue as bool?,
-      if (dateTimeValue != ignore) 6: dateTimeValue as String?,
+      if (jsonObject != ignore) 6: jsonObject as String?,
     });
   }
 }
@@ -294,7 +294,7 @@ class _PreferencesQueryBuilderUpdateImpl implements _PreferencesQueryUpdate {
     Object? intValue = ignore,
     Object? doubleValue = ignore,
     Object? boolValue = ignore,
-    Object? dateTimeValue = ignore,
+    Object? jsonObject = ignore,
   }) {
     final q = query.build();
     try {
@@ -303,7 +303,7 @@ class _PreferencesQueryBuilderUpdateImpl implements _PreferencesQueryUpdate {
         if (intValue != ignore) 3: intValue as int?,
         if (doubleValue != ignore) 4: doubleValue as double?,
         if (boolValue != ignore) 5: boolValue as bool?,
-        if (dateTimeValue != ignore) 6: dateTimeValue as String?,
+        if (jsonObject != ignore) 6: jsonObject as String?,
       });
     } finally {
       q.close();
@@ -930,21 +930,21 @@ extension PreferencesQueryFilter
   }
 
   QueryBuilder<Preferences, Preferences, QAfterFilterCondition>
-      dateTimeValueIsNull() {
+      jsonObjectIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const IsNullCondition(property: 6));
     });
   }
 
   QueryBuilder<Preferences, Preferences, QAfterFilterCondition>
-      dateTimeValueIsNotNull() {
+      jsonObjectIsNotNull() {
     return QueryBuilder.apply(not(), (query) {
       return query.addFilterCondition(const IsNullCondition(property: 6));
     });
   }
 
   QueryBuilder<Preferences, Preferences, QAfterFilterCondition>
-      dateTimeValueEqualTo(
+      jsonObjectEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -960,7 +960,7 @@ extension PreferencesQueryFilter
   }
 
   QueryBuilder<Preferences, Preferences, QAfterFilterCondition>
-      dateTimeValueGreaterThan(
+      jsonObjectGreaterThan(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -976,7 +976,7 @@ extension PreferencesQueryFilter
   }
 
   QueryBuilder<Preferences, Preferences, QAfterFilterCondition>
-      dateTimeValueGreaterThanOrEqualTo(
+      jsonObjectGreaterThanOrEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -992,7 +992,7 @@ extension PreferencesQueryFilter
   }
 
   QueryBuilder<Preferences, Preferences, QAfterFilterCondition>
-      dateTimeValueLessThan(
+      jsonObjectLessThan(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -1008,7 +1008,7 @@ extension PreferencesQueryFilter
   }
 
   QueryBuilder<Preferences, Preferences, QAfterFilterCondition>
-      dateTimeValueLessThanOrEqualTo(
+      jsonObjectLessThanOrEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -1024,7 +1024,7 @@ extension PreferencesQueryFilter
   }
 
   QueryBuilder<Preferences, Preferences, QAfterFilterCondition>
-      dateTimeValueBetween(
+      jsonObjectBetween(
     String? lower,
     String? upper, {
     bool caseSensitive = true,
@@ -1042,7 +1042,7 @@ extension PreferencesQueryFilter
   }
 
   QueryBuilder<Preferences, Preferences, QAfterFilterCondition>
-      dateTimeValueStartsWith(
+      jsonObjectStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1058,7 +1058,7 @@ extension PreferencesQueryFilter
   }
 
   QueryBuilder<Preferences, Preferences, QAfterFilterCondition>
-      dateTimeValueEndsWith(
+      jsonObjectEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1074,7 +1074,7 @@ extension PreferencesQueryFilter
   }
 
   QueryBuilder<Preferences, Preferences, QAfterFilterCondition>
-      dateTimeValueContains(String value, {bool caseSensitive = true}) {
+      jsonObjectContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
@@ -1087,7 +1087,7 @@ extension PreferencesQueryFilter
   }
 
   QueryBuilder<Preferences, Preferences, QAfterFilterCondition>
-      dateTimeValueMatches(String pattern, {bool caseSensitive = true}) {
+      jsonObjectMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
@@ -1100,7 +1100,7 @@ extension PreferencesQueryFilter
   }
 
   QueryBuilder<Preferences, Preferences, QAfterFilterCondition>
-      dateTimeValueIsEmpty() {
+      jsonObjectIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
@@ -1112,7 +1112,7 @@ extension PreferencesQueryFilter
   }
 
   QueryBuilder<Preferences, Preferences, QAfterFilterCondition>
-      dateTimeValueIsNotEmpty() {
+      jsonObjectIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
@@ -1207,7 +1207,7 @@ extension PreferencesQuerySortBy
     });
   }
 
-  QueryBuilder<Preferences, Preferences, QAfterSortBy> sortByDateTimeValue(
+  QueryBuilder<Preferences, Preferences, QAfterSortBy> sortByJsonObject(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
@@ -1217,7 +1217,7 @@ extension PreferencesQuerySortBy
     });
   }
 
-  QueryBuilder<Preferences, Preferences, QAfterSortBy> sortByDateTimeValueDesc(
+  QueryBuilder<Preferences, Preferences, QAfterSortBy> sortByJsonObjectDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
@@ -1295,14 +1295,14 @@ extension PreferencesQuerySortThenBy
     });
   }
 
-  QueryBuilder<Preferences, Preferences, QAfterSortBy> thenByDateTimeValue(
+  QueryBuilder<Preferences, Preferences, QAfterSortBy> thenByJsonObject(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(6, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Preferences, Preferences, QAfterSortBy> thenByDateTimeValueDesc(
+  QueryBuilder<Preferences, Preferences, QAfterSortBy> thenByJsonObjectDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(6, sort: Sort.desc, caseSensitive: caseSensitive);
@@ -1338,8 +1338,8 @@ extension PreferencesQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Preferences, Preferences, QAfterDistinct>
-      distinctByDateTimeValue({bool caseSensitive = true}) {
+  QueryBuilder<Preferences, Preferences, QAfterDistinct> distinctByJsonObject(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(6, caseSensitive: caseSensitive);
     });
@@ -1378,7 +1378,7 @@ extension PreferencesQueryProperty1
     });
   }
 
-  QueryBuilder<Preferences, String?, QAfterProperty> dateTimeValueProperty() {
+  QueryBuilder<Preferences, String?, QAfterProperty> jsonObjectProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(6);
     });
@@ -1419,8 +1419,7 @@ extension PreferencesQueryProperty2<R>
     });
   }
 
-  QueryBuilder<Preferences, (R, String?), QAfterProperty>
-      dateTimeValueProperty() {
+  QueryBuilder<Preferences, (R, String?), QAfterProperty> jsonObjectProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(6);
     });
@@ -1462,7 +1461,7 @@ extension PreferencesQueryProperty3<R1, R2>
   }
 
   QueryBuilder<Preferences, (R1, R2, String?), QOperations>
-      dateTimeValueProperty() {
+      jsonObjectProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(6);
     });

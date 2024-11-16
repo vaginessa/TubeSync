@@ -588,3 +588,19 @@ extension ThumbnailsQueryFilter
 
 extension ThumbnailsQueryObject
     on QueryBuilder<Thumbnails, Thumbnails, QFilterCondition> {}
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+LastPlayedMedia _$LastPlayedMediaFromJson(Map<String, dynamic> json) =>
+    LastPlayedMedia(
+      playlistId: json['playlistId'] as String,
+      mediaId: json['mediaId'] as String,
+    );
+
+Map<String, dynamic> _$LastPlayedMediaToJson(LastPlayedMedia instance) =>
+    <String, dynamic>{
+      'playlistId': instance.playlistId,
+      'mediaId': instance.mediaId,
+    };
