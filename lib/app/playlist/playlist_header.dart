@@ -8,9 +8,14 @@ import 'package:tubesync/provider/playlist_provider.dart';
 import 'package:tubesync/services/media_service.dart';
 
 class PlaylistHeader extends StatelessWidget {
-  const PlaylistHeader({super.key, required this.onPlayAll});
+  const PlaylistHeader({
+    super.key,
+    required this.playAll,
+    required this.shufflePlay,
+  });
 
-  final void Function() onPlayAll;
+  final void Function() playAll;
+  final void Function() shufflePlay;
 
   @override
   Widget build(BuildContext context) {
@@ -80,48 +85,85 @@ class PlaylistHeader extends StatelessWidget {
             ),
             SizedBox(height: adaptivePadding),
             if (AppTheme.isDesktop) ...{
-              playlistInfo(context),
+              Row(
+                children: [
+                  backButton(context),
+                  SizedBox(width: adaptivePadding),
+                  Expanded(child: playlistInfo(context)),
+                  SizedBox(width: adaptivePadding),
+                  menuButton(context),
+                ],
+              ),
               SizedBox(height: adaptivePadding),
             },
-            Row(
-              children: [
-                IconButton.filledTonal(
-                  onPressed: () => Navigator.maybePop(context),
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: FilledButton.tonalIcon(
-                    onPressed: onPlayAll,
-                    icon: const Icon(Icons.play_arrow_rounded),
-                    label: const Text(
-                      "Play All",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                IconButton.filledTonal(
-                  onPressed: () => showModalBottomSheet(
-                    context: context,
-                    useSafeArea: true,
-                    useRootNavigator: true,
-                    backgroundColor: Colors.transparent,
-                    builder: (_) => ChangeNotifierProvider.value(
-                      value: context.read<PlaylistProvider>(),
-                      child: PlaylistMenuSheet(),
-                    ),
-                  ),
-                  icon: const Icon(Icons.more_horiz_rounded),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
+            // Action Buttons Mobile
+            if (!AppTheme.isDesktop)
+              Row(
+                children: [
+                  backButton(context),
+                  SizedBox(width: adaptivePadding),
+                  ...actionButtons,
+                  SizedBox(width: adaptivePadding),
+                  menuButton(context),
+                ],
+              ),
+            SizedBox(height: adaptivePadding),
+            if (AppTheme.isDesktop) Row(children: actionButtons)
           ],
         ),
       ),
     );
+  }
+
+  Widget backButton(BuildContext context) {
+    return IconButton.filledTonal(
+      onPressed: () => Navigator.maybePop(context),
+      icon: const Icon(Icons.arrow_back_ios_new_rounded),
+    );
+  }
+
+  Widget menuButton(BuildContext context) {
+    return IconButton.filledTonal(
+      onPressed: () => showModalBottomSheet(
+        context: context,
+        useSafeArea: true,
+        useRootNavigator: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => ChangeNotifierProvider.value(
+          value: context.read<PlaylistProvider>(),
+          child: PlaylistMenuSheet(),
+        ),
+      ),
+      icon: const Icon(Icons.more_horiz_rounded),
+    );
+  }
+
+  List<Widget> get actionButtons {
+    return [
+      Expanded(
+        child: FilledButton.tonalIcon(
+          onPressed: playAll,
+          icon: const Icon(Icons.play_arrow_rounded),
+          label: const Text(
+            "Play",
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ),
+      const SizedBox(width: 8),
+      Expanded(
+        child: OutlinedButton.icon(
+          onPressed: shufflePlay,
+          icon: Icon(Icons.shuffle_rounded),
+          label: const Text(
+            "Shuffle",
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ),
+    ];
   }
 
   MainAxisSize get adaptiveMainAxisSize {

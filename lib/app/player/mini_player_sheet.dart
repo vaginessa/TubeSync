@@ -60,7 +60,9 @@ class MiniPlayerSheet extends StatelessWidget {
                 valueListenable: context.read<PlayerProvider>().buffering,
                 builder: (_, buffering, progressIndicator) {
                   if (!buffering) return progressIndicator!;
-                  return const LinearProgressIndicator(minHeight: 1);
+                  return LinearProgressIndicator(
+                    minHeight: adaptiveIndicatorHeight,
+                  );
                 },
                 child: StreamBuilder<Duration>(
                   stream: context.read<PlayerProvider>().player.positionStream,
@@ -70,7 +72,7 @@ class MiniPlayerSheet extends StatelessWidget {
                         ? snapshot.requireData.inMilliseconds / duration
                         : null;
                     return LinearProgressIndicator(
-                      minHeight: 1,
+                      minHeight: adaptiveIndicatorHeight,
                       value: progress,
                     );
                   },
@@ -81,6 +83,10 @@ class MiniPlayerSheet extends StatelessWidget {
         },
       ),
     );
+  }
+
+  double get adaptiveIndicatorHeight {
+    return AppTheme.isDesktop ? 3 : 1.5;
   }
 
   Widget mediaDetails(BuildContext context, Media media) {

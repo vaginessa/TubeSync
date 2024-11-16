@@ -6,6 +6,7 @@ import 'package:tubesync/app/player/mini_player_sheet.dart';
 import 'package:tubesync/app/playlist/media_entry_builder.dart';
 import 'package:tubesync/app/playlist/playlist_header.dart';
 import 'package:tubesync/model/media.dart';
+import 'package:tubesync/model/playlist.dart';
 import 'package:tubesync/provider/player_provider.dart';
 import 'package:tubesync/provider/playlist_provider.dart';
 
@@ -17,16 +18,25 @@ class PlaylistTab extends StatelessWidget {
     return Scaffold(
       primary: false,
       body: Consumer<PlaylistProvider>(
-        child: PlaylistHeader(onPlayAll: () => launchPlayer(context: context)),
+        child: PlaylistHeader(
+          playAll: () => launchPlayer(context: context),
+          shufflePlay: () {
+            launchPlayer(
+              context: context,
+              playlist: context.read<PlaylistProvider>().playlist,
+              prepare: (playlist) => playlist.medias.shuffle(),
+            );
+          },
+        ),
         builder: (context, playlist, header) {
           if (AppTheme.isDesktop) {
             return RefreshIndicator(
               onRefresh: playlist.refresh,
               child: Row(
                 children: [
-                  Flexible(child: header!),
+                  Flexible(flex: 3, child: header!),
                   Flexible(
-                    flex: 2,
+                    flex: 5,
                     child: playlistView(context, playlist),
                   ),
                 ],
@@ -64,14 +74,24 @@ class PlaylistTab extends StatelessWidget {
 
   static void launchPlayer({
     required BuildContext context,
-    PlaylistProvider? playlist,
+    Playlist? playlist,
     Media? initialMedia,
+
+    /// Used to modify playlist beforehand, e.g shuffle
+    void Function(PlaylistProvider playlist)? prepare,
   }) {
+    // Create copy to avoid mutating original playlist
+    final playlistCopy = PlaylistProvider(
+      context.read<Isar>(),
+      playlist ?? context.read<PlaylistProvider>().playlist,
+    );
+    prepare?.call(playlistCopy);
+
     _scaffoldOf(context)?.showBottomSheet(
       (_) => Provider<PlayerProvider>(
         create: (_) => PlayerProvider(
           context.read<Isar>(),
-          playlist ?? context.read<PlaylistProvider>(),
+          playlistCopy,
           start: initialMedia,
         ),
         dispose: (_, provider) => provider.dispose(),

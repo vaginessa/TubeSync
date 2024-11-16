@@ -140,19 +140,19 @@ class LibraryTab extends StatelessWidget {
 
     final library = context.read<LibraryProvider>().entries;
     try {
-      final playlist = PlaylistProvider(
+      final playlistProvider = PlaylistProvider(
         isar,
         library.firstWhere((e) => e.id == resumeData.playlistId),
       );
 
-      final media = playlist.medias.firstWhere(
+      final media = playlistProvider.medias.firstWhere(
         (e) => e.id == resumeData.mediaId,
       );
 
       PlaylistTab.launchPlayer(
         context: context,
         initialMedia: media,
-        playlist: playlist,
+        playlist: playlistProvider.playlist,
       );
     } catch (_) {
       isar.preferences.remove(Preference.lastPlayed);

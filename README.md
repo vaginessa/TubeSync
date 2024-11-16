@@ -26,9 +26,9 @@ Sync YouTube playlists offline. Because YT Music \<insert reason here\>
 ### Desktop
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/7d312ec5-a298-4a68-a1f6-8a740ee8d0a8" width="300" alt="Screenshot 1">
-  <img src="https://github.com/user-attachments/assets/8577cf94-d86c-4ddf-b62d-e4363cf2759b" width="300" alt="Screenshot 2">
-  <img src="https://github.com/user-attachments/assets/6278fc11-afbd-4ea5-aafd-52acd2b5ba3c" width="300" alt="Screenshot 3">
+  <img src="https://github.com/user-attachments/assets/7d312ec5-a298-4a68-a1f6-8a740ee8d0a8" width="480" alt="Screenshot 1">
+  <img src="https://github.com/user-attachments/assets/8577cf94-d86c-4ddf-b62d-e4363cf2759b" width="480" alt="Screenshot 2">
+  <img src="https://i.ibb.co.com/DtpvdKh/image.png" width="480" alt="Screenshot 3">
 </p>
 
 ### Music Sheet
