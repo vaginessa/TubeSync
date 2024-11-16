@@ -41,6 +41,7 @@ class PlayerQueueSheet extends StatelessWidget {
                       padding: const EdgeInsets.all(12),
                       child: Icon(Icons.drag_handle_rounded),
                     ),
+                    onTap: () => context.read<PlayerProvider>().jumpTo(index),
                   ),
                 ),
               );
@@ -57,13 +58,12 @@ class PlayerQueueSheet extends StatelessWidget {
         onPressed: context.read<PlayerProvider>().playlist.shuffle,
         icon: Icon(Icons.shuffle_rounded),
       ),
-      StreamBuilder(
-        stream: context.read<PlayerProvider>().player.loopModeStream,
-        initialData: context.read<PlayerProvider>().player.loopMode,
-        builder: (context, snapshot) => IconButton(
+      ValueListenableBuilder(
+        valueListenable: context.read<PlayerProvider>().loopMode,
+        builder: (context, loopMode, _) => IconButton(
           onPressed: context.read<PlayerProvider>().toggleLoopMode,
           icon: Icon(
-            switch (snapshot.requireData) {
+            switch (loopMode) {
               LoopMode.off => Icons.repeat_rounded,
               LoopMode.one => Icons.repeat_one_rounded,
               LoopMode.all => Icons.repeat_on_rounded,

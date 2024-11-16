@@ -23,6 +23,10 @@ class PlayerProvider {
   // Buffering state because we fetch Uri on demand
   final ValueNotifier<bool> buffering = ValueNotifier(false);
 
+  // We can't use the default player one because nextTrack isn't called
+  // I don't want to migrate to just_audio dependent queue system
+  final ValueNotifier<LoopMode> loopMode = ValueNotifier(LoopMode.all);
+
   ValueNotifier<Media> get nowPlaying => _nowPlaying;
 
   PlayerProvider(this.isar, this.playlist, {Media? start}) {
@@ -135,8 +139,8 @@ class PlayerProvider {
   }
 
   void toggleLoopMode() {
-    int next = (LoopMode.values.indexOf(player.loopMode) + 1);
-    player.setLoopMode(LoopMode.values[next % LoopMode.values.length]);
+    int next = (LoopMode.values.indexOf(loopMode.value) + 1);
+    loopMode.value = LoopMode.values[next % LoopMode.values.length];
   }
 
   void previousTrack() {
@@ -147,9 +151,16 @@ class PlayerProvider {
 
   void nextTrack() {
     final currentIndex = playlist.medias.indexOf(nowPlaying.value);
-    if (currentIndex + 1 == playlist.medias.length) return;
-    nowPlaying.value = playlist.medias[currentIndex + 1];
+    final int? nextIndex = switch (loopMode.value) {
+      LoopMode.one => currentIndex,
+      LoopMode.off => hasNext ? currentIndex + 1 : null,
+      LoopMode.all => hasNext ? currentIndex + 1 : 0,
+    };
+
+    if (nextIndex != null) nowPlaying.value = playlist.medias[nextIndex];
   }
+
+  void jumpTo(int index) => nowPlaying.value = playlist.medias[index];
 
   bool _disposed = false;
 
