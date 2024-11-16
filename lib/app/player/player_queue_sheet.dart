@@ -13,7 +13,7 @@ class PlayerQueueSheet extends StatelessWidget {
       children: [
         Row(
           children: [
-            SizedBox(width: 12),
+            SizedBox(width: 16),
             Text(
               "Playlist (${context.read<PlayerProvider>().playlist.medias.length})",
               style: Theme.of(context).textTheme.titleLarge,

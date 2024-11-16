@@ -26,9 +26,9 @@ Sync YouTube playlists offline. Because YT Music \<insert reason here\>
 ### Desktop
 
 <p align="center">
+  <img src="https://i.ibb.co.com/DtpvdKh/image.png" width="480" alt="Screenshot 3">
   <img src="https://github.com/user-attachments/assets/7d312ec5-a298-4a68-a1f6-8a740ee8d0a8" width="480" alt="Screenshot 1">
   <img src="https://github.com/user-attachments/assets/8577cf94-d86c-4ddf-b62d-e4363cf2759b" width="480" alt="Screenshot 2">
-  <img src="https://i.ibb.co.com/DtpvdKh/image.png" width="480" alt="Screenshot 3">
 </p>
 
 ### Music Sheet
@@ -41,11 +41,27 @@ Sync YouTube playlists offline. Because YT Music \<insert reason here\>
 
 To download TubeSync, you can access the stable release from the [releases section on GitHub](https://github.com/khaled-0/TubeSync/releases).
 
-<a href="https://flathub.org/apps/io.github.khaled_0.TubeSync" target="_blank">
-  <img width="240" alt="Get it on Flathub" src="https://flathub.org/api/badge?locale=en"/>
-</a>
-<br /> <br />
+Also available in your favourite app stores
 
+### Android
+
+<p align="center">
+  <a href="https://apt.izzysoft.de/fdroid/index/apk/tubesync.app" target="_blank">
+    <span>Get it on IzzyOnDroid</span><br>
+    <img width="240" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="IzzyOnDroid"/>
+  </a>
+</p>
+
+### Linux
+
+<p align="center">
+  <a href="https://flathub.org/apps/io.github.khaled_0.TubeSync" target="_blank">
+    <span>Get it on Flathub</span><br>
+    <img width="240" src="https://flathub.org/api/badge?locale=en" alt="Flathub"/>
+  </a>
+</p>
+
+<br /> 
 Alternatively, you can try the nightly (unstable) build:
 
 - [Latest nightly build link](https://nightly.link/khaled-0/TubeSync/workflows/nightly/main)
