@@ -116,11 +116,15 @@ class MiniPlayerSheet extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodySmall,
           ),
-          Text(
-            "${positionInPlaylist(context, media)} \u2022 ${playlistInfo(context)}",
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodySmall,
+          ListenableBuilder(
+            listenable: context.read<PlayerProvider>().playlist,
+            builder: (context, _) => Text(
+              "${positionInPlaylist(context, media)}"
+              " \u2022 ${playlistInfo(context)}",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ),
         ],
       ),

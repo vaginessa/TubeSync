@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tubesync/app/player/components/artwork.dart';
 import 'package:tubesync/app/player/components/seekbar.dart';
+import 'package:tubesync/app/player/player_queue_sheet.dart';
 import 'package:tubesync/extensions.dart';
 import 'package:tubesync/model/media.dart';
+import 'package:tubesync/model/playlist.dart';
 import 'package:tubesync/provider/player_provider.dart';
 
 class LargePlayerSheet extends StatefulWidget {
@@ -94,7 +96,7 @@ class _LargePlayerSheetState extends State<LargePlayerSheet>
                 elevation: 0,
                 margin: EdgeInsets.symmetric(horizontal: 8),
                 child: ListTile(
-                  onTap: () => showPlayerQueue(context),
+                  onTap: showPlayerQueue,
                   title: Text(
                     media.title,
                     maxLines: 1,
@@ -109,11 +111,15 @@ class _LargePlayerSheetState extends State<LargePlayerSheet>
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      Text(
-                        "${positionInPlaylist(context, media)} \u2022 ${playlistInfo(context)}",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      ListenableBuilder(
+                        listenable: context.read<PlayerProvider>().playlist,
+                        builder: (_, __) => Text(
+                          "${positionInPlaylist(context.read<PlayerProvider>().playlist.medias, media)} "
+                          "\u2022 ${playlistInfo(context.read<PlayerProvider>().playlist.playlist)}",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
                     ],
                   ),
                   leading: Icon(Icons.playlist_play_rounded),
@@ -171,9 +177,18 @@ class _LargePlayerSheetState extends State<LargePlayerSheet>
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  IconButton(
-                    onPressed: player.hasPrevious ? player.previousTrack : null,
-                    icon: Icon(Icons.skip_previous_rounded),
+                  ListenableBuilder(
+                    listenable: context.read<PlayerProvider>().playlist,
+                    child: Icon(Icons.skip_previous_rounded),
+                    builder: (_, icon) {
+                      if (player.hasPrevious) {
+                        return IconButton(
+                          onPressed: player.previousTrack,
+                          icon: icon!,
+                        );
+                      }
+                      return IconButton(onPressed: null, icon: icon!);
+                    },
                   ),
                   ValueListenableBuilder(
                     valueListenable: context.read<PlayerProvider>().buffering,
@@ -192,9 +207,18 @@ class _LargePlayerSheetState extends State<LargePlayerSheet>
                     },
                     child: const CircularProgressIndicator(),
                   ),
-                  IconButton(
-                    onPressed: player.hasNext ? player.nextTrack : null,
-                    icon: Icon(Icons.skip_next_rounded),
+                  ListenableBuilder(
+                    listenable: context.read<PlayerProvider>().playlist,
+                    child: Icon(Icons.skip_next_rounded),
+                    builder: (_, icon) {
+                      if (player.hasNext) {
+                        return IconButton(
+                          onPressed: player.nextTrack,
+                          icon: icon!,
+                        );
+                      }
+                      return IconButton(onPressed: null, icon: icon!);
+                    },
                   ),
                 ],
               );
@@ -206,17 +230,22 @@ class _LargePlayerSheetState extends State<LargePlayerSheet>
     );
   }
 
-  void showPlayerQueue(BuildContext context) {
-    //
+  void showPlayerQueue() {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => Provider.value(
+        value: context.read<PlayerProvider>(),
+        child: PlayerQueueSheet(),
+      ),
+      showDragHandle: true,
+    );
   }
 
-  String playlistInfo(BuildContext context) {
-    final playlist = context.read<PlayerProvider>().playlist.playlist;
+  String playlistInfo(Playlist playlist) {
     return "${playlist.title} by ${playlist.author}";
   }
 
-  String positionInPlaylist(BuildContext context, Media media) {
-    final medias = context.read<PlayerProvider>().playlist.medias;
+  String positionInPlaylist(List<Media> medias, Media media) {
     return "${medias.indexOf(media) + 1}/${medias.length}";
   }
 }

@@ -24,7 +24,7 @@ class PlaylistTab extends StatelessWidget {
             launchPlayer(
               context: context,
               playlist: context.read<PlaylistProvider>().playlist,
-              prepare: (playlist) => playlist.medias.shuffle(),
+              prepare: (playlist) => playlist.shuffle(),
             );
           },
         ),

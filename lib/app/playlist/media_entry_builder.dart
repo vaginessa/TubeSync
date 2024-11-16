@@ -10,14 +10,24 @@ import 'package:tubesync/services/media_service.dart';
 class MediaEntryBuilder extends StatelessWidget {
   final Media media;
   final void Function()? onTap;
+  final Widget? trailing;
+  final bool selected;
 
-  const MediaEntryBuilder(this.media, {super.key, this.onTap});
+  const MediaEntryBuilder(
+    this.media, {
+    super.key,
+    this.onTap,
+    this.trailing,
+    this.selected = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onTap,
+      selected: selected,
       contentPadding: const EdgeInsets.only(left: 16, right: 8),
+      trailing: trailing ?? menuButton(context),
       leading: Stack(
         children: [
           ClipRRect(
@@ -95,19 +105,22 @@ class MediaEntryBuilder extends StatelessWidget {
           ),
         ],
       ),
-      trailing: IconButton(
-        onPressed: () => showModalBottomSheet(
-          context: context,
-          useSafeArea: true,
-          useRootNavigator: true,
-          backgroundColor: Colors.transparent,
-          builder: (_) => ChangeNotifierProvider.value(
-            value: context.read<PlaylistProvider>(),
-            child: MediaMenuSheet(media),
-          ),
+    );
+  }
+
+  Widget menuButton(BuildContext context) {
+    return IconButton(
+      onPressed: () => showModalBottomSheet(
+        context: context,
+        useSafeArea: true,
+        useRootNavigator: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => ChangeNotifierProvider.value(
+          value: context.read<PlaylistProvider>(),
+          child: MediaMenuSheet(media),
         ),
-        icon: const Icon(Icons.more_vert_rounded, size: 18),
       ),
+      icon: const Icon(Icons.more_vert_rounded, size: 18),
     );
   }
 }

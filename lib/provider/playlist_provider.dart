@@ -56,6 +56,11 @@ class PlaylistProvider extends ChangeNotifier {
     }
   }
 
+  void shuffle() {
+    medias.shuffle();
+    notifyListeners();
+  }
+
   void updateDownloadStatus({Media? media}) {
     if (media != null) {
       media.downloaded = MediaService().isDownloaded(media);

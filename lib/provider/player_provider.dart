@@ -134,6 +134,11 @@ class PlayerProvider {
         playlist.medias.length - 1;
   }
 
+  void toggleLoopMode() {
+    int next = (LoopMode.values.indexOf(player.loopMode) + 1);
+    player.setLoopMode(LoopMode.values[next % LoopMode.values.length]);
+  }
+
   void previousTrack() {
     final currentIndex = playlist.medias.indexOf(nowPlaying.value);
     if (currentIndex == 0) return;
