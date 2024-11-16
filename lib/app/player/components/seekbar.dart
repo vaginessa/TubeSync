@@ -44,10 +44,12 @@ class SeekBarState extends State<SeekBar> {
         Duration.zero.inMilliseconds.toDouble(),
       ),
       onChanged: (value) {
+        if (widget.buffering) return;
         setState(() => _dragValue = value);
         widget.onChanged?.call(Duration(milliseconds: value.round()));
       },
       onChangeEnd: (value) {
+        if (widget.buffering) return;
         widget.onChangeEnd?.call(Duration(milliseconds: value.round()));
         _dragValue = null;
       },

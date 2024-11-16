@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:tubesync/app/player/components/artwork.dart';
 import 'package:tubesync/app/player/components/seekbar.dart';
 import 'package:tubesync/extensions.dart';
 import 'package:tubesync/model/media.dart';
-import 'package:tubesync/model/playlist.dart';
 import 'package:tubesync/provider/player_provider.dart';
 
 class LargePlayerSheet extends StatefulWidget {
@@ -91,12 +89,12 @@ class _LargePlayerSheetState extends State<LargePlayerSheet>
           ),
           ValueListenableBuilder(
             valueListenable: context.read<PlayerProvider>().nowPlaying,
-            builder: (context, media, child) {
+            builder: (context, media, _) {
               return Card.outlined(
                 elevation: 0,
                 margin: EdgeInsets.symmetric(horizontal: 8),
                 child: ListTile(
-                  onTap: () {},
+                  onTap: () => showPlayerQueue(context),
                   title: Text(
                     media.title,
                     maxLines: 1,
@@ -126,11 +124,11 @@ class _LargePlayerSheetState extends State<LargePlayerSheet>
           ),
           SizedBox(height: 16),
           // SeekBar
-          StreamBuilder<Duration>(
-            stream: player(context).positionStream,
-            initialData: player(context).position,
-            builder: (context, currentPosition) {
-              return Padding(
+          ValueListenableBuilder(
+            valueListenable: context.read<PlayerProvider>().nowPlaying,
+            builder: (context, media, _) => StreamBuilder<Duration>(
+              stream: context.read<PlayerProvider>().player.positionStream,
+              builder: (context, currentPosition) => Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 8,
@@ -141,52 +139,61 @@ class _LargePlayerSheetState extends State<LargePlayerSheet>
                       children: [
                         Text(currentPosition.data.formatHHMM()),
                         Spacer(),
-                        Text(nowPlaying(context).duration.formatHHMM()),
+                        Text(media.duration.formatHHMM()),
                       ],
                     ),
-                    if (nowPlaying(context).duration != null)
-                      SeekBar(
-                        buffering: buffering(context),
-                        duration: nowPlaying(context).duration!,
-                        position: currentPosition.requireData,
-                        bufferedPosition: player(context).bufferedPosition,
-                        onChangeEnd: (v) => player(context).seek(v),
-                      ),
+                    ValueListenableBuilder(
+                      valueListenable: context.read<PlayerProvider>().buffering,
+                      builder: (context, buffering, child) {
+                        if (media.duration == null) return SizedBox();
+                        final player = context.read<PlayerProvider>().player;
+                        final position = currentPosition.data ?? Duration.zero;
+                        return SeekBar(
+                          buffering: buffering,
+                          duration: media.duration!,
+                          position: position,
+                          bufferedPosition: player.bufferedPosition,
+                          onChangeEnd: (v) => player.seek(v),
+                        );
+                      },
+                    ),
                   ],
                 ),
-              );
-            },
+              ),
+            ),
           ),
 
           StreamBuilder(
-            stream: player(context).playerStateStream,
-            initialData: player(context).playerState,
-            builder: (context, snapshot) {
+            stream: context.read<PlayerProvider>().player.playerStateStream,
+            initialData: context.read<PlayerProvider>().player.playerState,
+            builder: (context, playerState) {
+              final player = context.read<PlayerProvider>();
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   IconButton(
-                    onPressed: playerProvider(context).hasNoPrevious
-                        ? null
-                        : playerProvider(context).previousTrack,
+                    onPressed: player.hasPrevious ? player.previousTrack : null,
                     icon: Icon(Icons.skip_previous_rounded),
                   ),
-                  if (buffering(context))
-                    CircularProgressIndicator()
-                  else if (snapshot.requireData.playing)
-                    IconButton(
-                      onPressed: () => player(context).pause(),
-                      icon: const Icon(Icons.pause_rounded),
-                    )
-                  else
-                    IconButton(
-                      onPressed: () => player(context).play(),
-                      icon: const Icon(Icons.play_arrow_rounded),
-                    ),
+                  ValueListenableBuilder(
+                    valueListenable: context.read<PlayerProvider>().buffering,
+                    builder: (context, buffering, loading) {
+                      if (buffering) return loading!;
+                      if (playerState.requireData.playing) {
+                        return IconButton(
+                          onPressed: player.player.pause,
+                          icon: const Icon(Icons.pause_rounded),
+                        );
+                      }
+                      return IconButton(
+                        onPressed: player.player.play,
+                        icon: const Icon(Icons.play_arrow_rounded),
+                      );
+                    },
+                    child: const CircularProgressIndicator(),
+                  ),
                   IconButton(
-                    onPressed: playerProvider(context).hasNoNext
-                        ? null
-                        : playerProvider(context).nextTrack,
+                    onPressed: player.hasNext ? player.nextTrack : null,
                     icon: Icon(Icons.skip_next_rounded),
                   ),
                 ],
@@ -199,28 +206,17 @@ class _LargePlayerSheetState extends State<LargePlayerSheet>
     );
   }
 
-  PlayerProvider playerProvider(BuildContext context) =>
-      context.read<PlayerProvider>();
+  void showPlayerQueue(BuildContext context) {
+    //
+  }
 
-  String playlistInfo(BuildContext context) =>
-      "${playlist(context).title} by ${playlist(context).author}";
+  String playlistInfo(BuildContext context) {
+    final playlist = context.read<PlayerProvider>().playlist.playlist;
+    return "${playlist.title} by ${playlist.author}";
+  }
 
   String positionInPlaylist(BuildContext context, Media media) {
-    return "${videos(context).indexOf(media) + 1}/${playlist(context).videoCount}";
+    final medias = context.read<PlayerProvider>().playlist.medias;
+    return "${medias.indexOf(media) + 1}/${medias.length}";
   }
-
-  bool buffering(BuildContext context) {
-    return context.read<PlayerProvider>().buffering.value;
-  }
-
-  Media nowPlaying(BuildContext context) =>
-      playerProvider(context).nowPlaying.value;
-
-  Playlist playlist(BuildContext context) =>
-      playerProvider(context).playlist.playlist;
-
-  List<Media> videos(BuildContext context) =>
-      playerProvider(context).playlist.medias;
-
-  AudioPlayer player(BuildContext context) => playerProvider(context).player;
 }

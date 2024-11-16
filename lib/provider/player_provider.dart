@@ -54,14 +54,14 @@ class PlayerProvider {
             ? AudioProcessingState.loading
             : AudioProcessingState.values.byName(state.processingState.name),
         controls: [
-          if (!hasNoPrevious) MediaControl.skipToPrevious,
-          if (!hasNoNext) MediaControl.skipToNext,
+          if (hasPrevious) MediaControl.skipToPrevious,
+          if (hasNext) MediaControl.skipToNext,
           if (!buffering.value) MediaControl.rewind,
           if (!buffering.value) MediaControl.fastForward,
         ],
         systemActions: {
-          if (!hasNoPrevious) MediaAction.skipToPrevious,
-          if (!hasNoNext) MediaAction.skipToNext,
+          if (!hasPrevious) MediaAction.skipToPrevious,
+          if (!hasNext) MediaAction.skipToNext,
           if (!buffering.value) MediaAction.seek,
           if (!buffering.value) MediaAction.rewind,
           if (!buffering.value) MediaAction.fastForward,
@@ -127,11 +127,11 @@ class PlayerProvider {
     }
   }
 
-  bool get hasNoPrevious => playlist.medias.indexOf(nowPlaying.value) == 0;
+  bool get hasPrevious => playlist.medias.indexOf(nowPlaying.value) > 0;
 
-  bool get hasNoNext {
-    return playlist.medias.indexOf(nowPlaying.value) + 1 ==
-        playlist.medias.length;
+  bool get hasNext {
+    return playlist.medias.indexOf(nowPlaying.value) <
+        playlist.medias.length - 1;
   }
 
   void previousTrack() {
